@@ -15,7 +15,7 @@
  *  * Neither the name of the ALICE Project-Team nor the names of its
  *  contributors may be used to endorse or promote products derived from this
  *  software without specific prior written permission.
- * 
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,9 +38,9 @@
  *     http://www.loria.fr/~levy
  *
  *     ALICE Project
- *     LORIA, INRIA Lorraine, 
+ *     LORIA, INRIA Lorraine,
  *     Campus Scientifique, BP 239
- *     54506 VANDOEUVRE LES NANCY CEDEX 
+ *     54506 VANDOEUVRE LES NANCY CEDEX
  *     FRANCE
  *
  */
@@ -88,24 +88,24 @@
 namespace GEO {
 
     namespace Memory {
-        
+
         typedef unsigned char byte;
 
-        
+
         typedef unsigned char word8;
 
-        
+
         typedef unsigned short word16;
 
-        
+
         typedef unsigned int word32;
 
-        
+
         typedef byte* pointer;
 
-	
+
 	typedef void (*function_pointer)();
-	
+
         inline void clear(void* addr, size_t size) {
             ::memset(addr, 0, size);
         }
@@ -137,7 +137,7 @@ namespace GEO {
 	    ::memcpy(&result, &ptr, sizeof(pointer));
 	    return result;
 	}
-	
+
 #define GEO_MEMORY_ALIGNMENT 64
 
         template <int DIM>
@@ -199,7 +199,7 @@ namespace GEO {
             free(p);
 #elif defined(GEO_COMPILER_INTEL)
             _mm_free(p);
-#elif defined(GEO_COMPILER_GCC_FAMILY) 
+#elif defined(GEO_COMPILER_GCC_FAMILY)
             free(p);
 #elif defined(GEO_COMPILER_MSVC)
             _aligned_free(p);
@@ -217,7 +217,7 @@ namespace GEO {
 #elif defined(GEO_COMPILER_MSVC)
 #define geo_decl_aligned(var) __declspec(align(GEO_MEMORY_ALIGNMENT)) var
 #elif defined(GEO_COMPILER_EMSCRIPTEN)
-#define geo_decl_aligned(var) var        
+#define geo_decl_aligned(var) var
 #endif
 
 #if   defined(GEO_OS_ANDROID)
@@ -237,14 +237,14 @@ namespace GEO {
         // affected otherwise it is not taken into account (verified by
         // looking at the output of gcc -S)
 #else
-#define geo_assume_aligned(var, alignment)        
-#endif        
-#elif defined(GEO_COMPILER_MSVC) 
+#define geo_assume_aligned(var, alignment)
+#endif
+#elif defined(GEO_COMPILER_MSVC)
 #define geo_assume_aligned(var, alignment)
         // TODO: I do not know how to do that with MSVC
-#elif defined(GEO_COMPILER_EMSCRIPTEN)        
+#elif defined(GEO_COMPILER_EMSCRIPTEN)
 #define geo_assume_aligned(var, alignment)
-#elif defined(GEO_COMPILER_MINGW)        
+#elif defined(GEO_COMPILER_MINGW)
 #define geo_assume_aligned(var, alignment)
 #endif
 
@@ -255,7 +255,7 @@ namespace GEO {
 #elif defined(GEO_COMPILER_MSVC)
 #define geo_restrict __restrict
 #elif defined(GEO_COMPILER_EMSCRIPTEN)
-#define geo_restrict 
+#define geo_restrict
 #endif
 
         inline bool is_aligned(
@@ -278,30 +278,30 @@ namespace GEO {
         template <class T, int ALIGN = GEO_MEMORY_ALIGNMENT>
         class aligned_allocator {
         public:
-            
+
             typedef T value_type;
 
-            
+
             typedef T* pointer;
 
-            
+
             typedef T& reference;
 
-            
+
             typedef const T* const_pointer;
 
-            
+
             typedef const T& const_reference;
 
-            
+
             typedef ::std::size_t size_type;
 
-            
+
             typedef ::std::ptrdiff_t difference_type;
 
             template <class U>
             struct rebind {
-                
+
                 typedef aligned_allocator<U> other;
             };
 
@@ -364,7 +364,7 @@ namespace GEO {
         }
     }
 
-    
+
 
     template <class T>
     class vector : public ::std::vector<T, Memory::aligned_allocator<T> > {
@@ -433,8 +433,8 @@ namespace GEO {
             geo_debug_assert(i >= 0 && index_t(i) < size());
             return baseclass::operator[] (index_t(i));
         }
-#endif	
-	
+#endif
+
         T* data() {
             return size() == 0 ? nullptr : &(*this)[0];
         }
@@ -450,22 +450,22 @@ namespace GEO {
         typedef ::std::vector<bool> baseclass;
 
     public:
-        
+
         vector() :
             baseclass() {
         }
 
-        
+
         explicit vector(index_t size) :
             baseclass(size) {
         }
 
-        
+
         explicit vector(index_t size, bool val) :
             baseclass(size, val) {
         }
 
-        
+
         index_t size() const {
             //   casts baseclass::size() from size_t (64 bits)
             //   to index_t (32 bits), because all
@@ -491,32 +491,32 @@ namespace GEO {
 
 namespace GEO {
 
-    
+
 
     inline double det2x2(
-        double a11, double a12,                    
+        double a11, double a12,
         double a21, double a22
-    ) {                                 
+    ) {
         return a11*a22-a12*a21 ;
     }
 
     inline double det3x3(
-        double a11, double a12, double a13,                
-        double a21, double a22, double a23,                
+        double a11, double a12, double a13,
+        double a21, double a22, double a23,
         double a31, double a32, double a33
     ) {
     return
-         a11*det2x2(a22,a23,a32,a33)   
-        -a21*det2x2(a12,a13,a32,a33)   
+         a11*det2x2(a22,a23,a32,a33)
+        -a21*det2x2(a12,a13,a32,a33)
         +a31*det2x2(a12,a13,a22,a23);
-    }   
+    }
 
 
     inline double det4x4(
         double a11, double a12, double a13, double a14,
-        double a21, double a22, double a23, double a24,               
-        double a31, double a32, double a33, double a34,  
-        double a41, double a42, double a43, double a44  
+        double a21, double a22, double a23, double a24,
+        double a31, double a32, double a33, double a34,
+        double a41, double a42, double a43, double a44
     ) {
         double m12 = a21*a12 - a11*a22;
         double m13 = a31*a12 - a11*a32;
@@ -529,21 +529,21 @@ namespace GEO {
         double m124 = m24*a13 - m14*a23 + m12*a43;
         double m134 = m34*a13 - m14*a33 + m13*a43;
         double m234 = m34*a23 - m24*a33 + m23*a43;
-        
+
         return (m234*a14 - m134*a24 + m124*a34 - m123*a44);
-    }   
+    }
 
 
     template <index_t DIM, class FT>
     class Matrix {
     public:
-        
+
         typedef Matrix<DIM, FT> matrix_type;
 
-        
+
         typedef FT value_type;
 
-        
+
         static const index_t dim = DIM;
 
         inline Matrix() {
@@ -558,7 +558,7 @@ namespace GEO {
                 }
             }
         }
-        
+
         inline index_t dimension() const {
             return DIM;
         }
@@ -590,7 +590,7 @@ namespace GEO {
             }
             return true;
         }
-        
+
         inline FT& operator() (index_t i, index_t j) {
             geo_debug_assert(i < DIM);
             geo_debug_assert(j < DIM);
@@ -731,7 +731,7 @@ namespace GEO {
                     }
                 }
             }
-            
+
             return true;
         }
 
@@ -745,13 +745,13 @@ namespace GEO {
             return result;
         }
 
-        
+
 
         inline const FT* data() const {
             return &(coeff_[0][0]);
         }
 
-        
+
 
         inline FT* data() {
             return &(coeff_[0][0]);
@@ -769,7 +769,7 @@ namespace GEO {
         FT coeff_[DIM][DIM];
     };
 
-    
+
 
     template <index_t DIM, class FT>
     inline std::ostream& operator<< (
@@ -797,7 +797,7 @@ namespace GEO {
         return input;
     }
 
-    
+
 
     template <index_t DIM, class FT> inline
     void mult(const Matrix<DIM, FT>& M, const FT* x, FT* y) {
@@ -809,7 +809,7 @@ namespace GEO {
         }
     }
 
-    
+
 
     template <index_t DIM, class FT> inline
     vecng<DIM,FT> operator*(
@@ -839,8 +839,8 @@ namespace GEO {
         return y;
     }
 
-    
-    
+
+
 }
 
 #endif
@@ -931,7 +931,7 @@ namespace GEO {
             }
         }
 
-        
+
 
         template <class VEC>
         inline double triangle_area(
@@ -1068,13 +1068,13 @@ namespace GEO {
                 lambda0 = 0.0;
                 lambda1 = 1.0;
                 return distance2(point, V1);
-            } 
+            }
             lambda1 = t / l2;
             lambda0 = 1.0-lambda1;
             closest_point = lambda0 * V0 + lambda1 * V1;
             return distance2(point, closest_point);
         }
-        
+
 
         template <class VEC>
         inline double point_segment_squared_distance(
@@ -1089,7 +1089,7 @@ namespace GEO {
                 point, V0, V1, closest_point, lambda0, lambda1
             );
         }
-        
+
         template <class VEC>
         inline double point_triangle_squared_distance(
             const VEC& point,
@@ -1142,7 +1142,7 @@ namespace GEO {
 		}
 		return result;
 	    }
-	    
+
             if(s + t <= det) {
                 if(s < 0.0) {
                     if(t < 0.0) {   // region 4
@@ -1444,7 +1444,7 @@ namespace GEO {
             right = in.substr(p+1,in.length()-p);
             return true;
         }
-        
+
         std::string join_strings(
             const std::vector<std::string>& in,
             char separator
@@ -1509,7 +1509,7 @@ namespace GEO {
 
 	// Reference: https://stackoverflow.com/questions/148403/
 	//     utf8-to-from-wide-char-conversion-in-stl
-	
+
 	std::string wchar_to_UTF8(const wchar_t* in) {
 	    std::string out;
 	    unsigned int codepoint = 0;
@@ -1524,7 +1524,7 @@ namespace GEO {
 		    } else {
 			codepoint = (unsigned int)(*in);
 		    }
-		
+
 		    if (codepoint <= 0x7f) {
 			out.append(1, char(codepoint));
 		    } else if (codepoint <= 0x7ff) {
@@ -1545,8 +1545,8 @@ namespace GEO {
 	    }
 	    return out;
 	}
-	
-        
+
+
 
         ConversionError::ConversionError(
             const std::string& s, const std::string& type
@@ -1591,9 +1591,9 @@ namespace GEO {
         const ITERATOR& begin, const ITERATOR& end
     ) {
         if(uses_parallel_algorithm()) {
-#if defined(GEO_USE_GCC_PARALLEL_STL) 
+#if defined(GEO_USE_GCC_PARALLEL_STL)
             __gnu_parallel::sort(begin, end);
-#elif defined(GEO_USE_MSVC_PARALLEL_STL) 
+#elif defined(GEO_USE_MSVC_PARALLEL_STL)
             concurrency::parallel_sort(begin, end);
 #else
             std::sort(begin, end);
@@ -1625,7 +1625,7 @@ namespace GEO {
         std::sort(v.begin(), v.end());
         // Note that std::unique leaves a 'queue' of duplicated elements
         // at the end of the vector, and returns an iterator that
-        // indicates where to stop. 
+        // indicates where to stop.
         v.erase(
             std::unique(v.begin(), v.end()), v.end()
         );
@@ -1661,7 +1661,7 @@ namespace GEO {
 	    std::swap(items[2], items[3]);
 	}
     }
-    
+
 }
 
 #endif
@@ -1704,11 +1704,11 @@ namespace GEO {
 	class GEOGRAM_API Node : public Counted {
 	public:
 	    Node();
-	    
+
 	    ~Node() override;
 
-	    
-	    
+
+
 	    virtual bool is_file(const std::string& path);
 
 	    virtual bool is_directory(const std::string& path);
@@ -1749,9 +1749,9 @@ namespace GEO {
 
 
 	    virtual std::string load_file_as_string(const std::string& path);
-	    
-	    
-	    
+
+
+
 	    virtual std::string extension(const std::string& path);
 
 	    virtual std::string base_name(
@@ -1787,37 +1787,37 @@ namespace GEO {
 
 	    MemoryNode(const std::string& path="/") : path_(path) {
 	    }
-	    
-	    
+
+
 	    bool copy_file(
 		const std::string& from, const std::string& to
 	    ) override ;
 
-	    	    
+
 	    std::string load_file_as_string(const std::string& path) override;
 
-	    
+
 	    virtual bool is_file(const std::string& path) override;
 
-	    	    
+
 	    virtual bool is_directory(const std::string& path) override;
 
-	    	    	    
+
 	    virtual bool create_directory(const std::string& path) override;
 
-	    	    	    	    
+
 	    virtual bool delete_directory(const std::string& path) override;
 
-	    
+
 	    virtual bool delete_file(const std::string& path) override;
 
-	    
+
 	    bool get_directory_entries(
 		const std::string& path, std::vector<std::string>& result
 	    ) override;
 
 
-	    
+
 	    bool rename_file(
 		const std::string& old_name, const std::string& new_name
 	    ) override;
@@ -1825,121 +1825,121 @@ namespace GEO {
 	    const char* get_file_contents(const std::string& path);
 
 	    bool create_file(const std::string& path, const char* content);
-	    
+
 	protected:
 	    static void split_path(
-		const std::string& path, std::string& leadingsubdir, 
+		const std::string& path, std::string& leadingsubdir,
 		std::string& rest
 	    );
-	    
+
 	private:
 	    std::string path_;
 	    std::map<std::string, SmartPointer<MemoryNode> > subnodes_;
 	    std::map<std::string, const char*> files_;
 	};
-	
+
 	typedef SmartPointer<Node> Node_var;
 
-	
+
 
 	void GEOGRAM_API initialize();
 
 	void GEOGRAM_API terminate();
-	
-        
+
+
         bool GEOGRAM_API is_file(const std::string& path);
 
-        
+
         bool GEOGRAM_API is_directory(const std::string& path);
 
-	
+
         bool GEOGRAM_API create_directory(const std::string& path);
 
-		
+
         bool GEOGRAM_API delete_directory(const std::string& path);
 
-		
+
         bool GEOGRAM_API delete_file(const std::string& path);
 
-		
+
         bool GEOGRAM_API get_directory_entries(
             const std::string& path, std::vector<std::string>& result
         );
 
-		
+
         std::string GEOGRAM_API get_current_working_directory();
         bool GEOGRAM_API set_current_working_directory(
             const std::string& path
         );
 
-		
+
         bool GEOGRAM_API rename_file(
             const std::string& old_name, const std::string& new_name
         );
 
-		
+
         Numeric::uint64 GEOGRAM_API get_time_stamp(
             const std::string& path
         );
 
-		
+
         std::string GEOGRAM_API extension(const std::string& path);
 
-		
+
         std::string GEOGRAM_API base_name(
             const std::string& path, bool remove_extension = true
         );
-	
-		
+
+
         std::string GEOGRAM_API dir_name(const std::string& path);
 
-		
+
         void GEOGRAM_API get_directory_entries(
             const std::string& path,
             std::vector<std::string>& result, bool recursive
         );
 
-		
+
         void GEOGRAM_API get_files(
             const std::string& path,
             std::vector<std::string>& result, bool recursive = false
         );
 
-		
+
         void GEOGRAM_API get_subdirectories(
             const std::string& path,
             std::vector<std::string>& result, bool recursive = false
         );
 
-		
+
         void GEOGRAM_API flip_slashes(std::string& path);
 
-		
+
         bool GEOGRAM_API copy_file(
             const std::string& from, const std::string& to
         );
 
-		
+
         bool GEOGRAM_API set_executable_flag(const std::string& filename);
 
-		
+
         bool GEOGRAM_API touch(const std::string& filename);
 
-		
+
         std::string GEOGRAM_API normalized_path(const std::string& path);
 
-		
+
         std::string GEOGRAM_API home_directory();
 
-		
+
         std::string GEOGRAM_API documents_directory();
 
 	void GEOGRAM_API get_root(Node*& root);
-	
+
 #ifdef GEO_OS_EMSCRIPTEN
 	void set_file_system_changed_callback(void(*callback)());
-#endif	
-	
+#endif
+
     }
 }
 
@@ -1956,7 +1956,7 @@ namespace {
 
     class RootEnvironment : public Environment {
     protected:
-        
+
         bool get_local_value(
             const std::string& name, std::string& value
         ) const override {
@@ -1968,7 +1968,7 @@ namespace {
             return false;
         }
 
-        
+
         bool set_local_value(
             const std::string& name, const std::string& value
         ) override {
@@ -1976,12 +1976,12 @@ namespace {
             return true;
         }
 
-        
+
         ~RootEnvironment() override {
         }
 
     private:
-        
+
         typedef std::map<std::string, std::string> ValueMap;
         ValueMap values_;
     };
@@ -1989,7 +1989,7 @@ namespace {
 
 namespace GEO {
 
-    
+
 
     VariableObserver::VariableObserver(
         const std::string& var_name
@@ -2006,7 +2006,7 @@ namespace GEO {
         environment_->remove_observer(observed_variable_, this);
     }
 
-    
+
 
     void VariableObserverList::notify_observers(
         const std::string& value
@@ -2037,7 +2037,7 @@ namespace GEO {
         observers_.erase(it);
     }
 
-    
+
 
     Environment::Environment_var Environment::instance_;
 
@@ -2133,7 +2133,7 @@ namespace GEO {
         }
         return nullptr;
     }
-    
+
     bool Environment::add_observer(
         const std::string& name, VariableObserver* observer
     ) {
@@ -2181,7 +2181,7 @@ namespace GEO {
         return true;
     }
 
-    
+
 
     SystemEnvironment::~SystemEnvironment() {
     }
@@ -2240,62 +2240,62 @@ namespace {
     std::string config_file_name = "geogram.ini";
     bool auto_create_args = false;
     bool loaded_config_file = false;
-    
+
     int geo_argc = 0;
     char** geo_argv = nullptr;
-    
+
     // True if displaying help in a way that
     // it will be easily processed by help2man
     bool man_mode = false;
-    
+
     struct Arg {
-        
+
         std::string name;
-        
+
         std::string desc;
-        
+
         ArgType type;
-        
+
         ArgFlags flags;
     };
 
-    
+
     typedef std::map<std::string, Arg> Args;
 
     typedef std::vector<std::string> GroupArgs;
 
     struct Group {
-        
+
         std::string name;
-        
+
         std::string desc;
-        
+
         ArgFlags flags;
-        
+
         GroupArgs args;
     };
 
-    
+
     typedef std::map<std::string, Group> Groups;
 
-    
+
     typedef std::vector<std::string> GroupNames;
 
     struct CommandLineDesc {
-        
+
         std::string argv0;
-        
+
         Args args;
-        
+
         Groups groups;
-        
+
         GroupNames group_names;
     };
 
-    
+
     const unsigned int feature_max_length = 12;
 
-    
+
     CommandLineDesc* desc_ = nullptr;
 
     bool arg_matches(
@@ -2401,7 +2401,7 @@ namespace {
 	    loaded_config_file= true;
 	}
     }
-    
+
     void parse_config_file(int argc, char** argv) {
 	geo_assert(argc >= 1);
 	std::string program_name = String::to_uppercase(
@@ -2422,15 +2422,15 @@ namespace {
 	    FileSystem::home_directory() + "/" + config_file_name;
 	parse_config_file(config_filename, program_name);
     }
-    
+
     bool parse_internal(
         int argc, char** argv, std::vector<std::string>& unparsed_args
     ) {
 	geo_argc = argc;
 	geo_argv = argv;
-	
+
 	parse_config_file(argc, argv);
-	
+
         bool ok = true;
         desc_->argv0 = argv[0];
         unparsed_args.clear();
@@ -2510,7 +2510,7 @@ namespace {
 	}
 	return result;
     }
-    
+
     struct Line {
         std::string name;
         std::string value;
@@ -2633,12 +2633,12 @@ namespace GEO {
 	) {
 	    parse_config_file(filename, program_name);
 	}
-	
+
 
 	bool config_file_loaded() {
 	    return loaded_config_file;
 	}
-	
+
         bool parse(
             int argc, char** argv, std::vector<std::string>& unparsed_args,
             const std::string& additional_arg_specs
@@ -2733,7 +2733,7 @@ namespace GEO {
             }
 
 #ifndef GEOGRAM_PSM
-	    nlPrintfFuncs(geogram_printf, geogram_fprintf);	    
+	    nlPrintfFuncs(geogram_printf, geogram_fprintf);
 	    nlInitialize(argc, argv);
 #endif
 	    if(
@@ -2742,7 +2742,7 @@ namespace GEO {
 	    ) {
 		geo_cite("DBLP:journals/paapp/BuatoisCL09");
 	    }
-	    
+
             return true;
         }
 
@@ -2951,25 +2951,25 @@ namespace {
     using namespace GEO;
     using namespace CmdLine;
 
-    
+
     bool ui_separator_opened = false;
 
-    
+
     index_t ui_term_width = 79;
 
-    
+
     index_t ui_left_margin = 0;
 
-    
+
     index_t ui_right_margin = 0;
 
-    
+
     const char working[] = {'|', '/', '-', '\\'};
 
-    
+
     index_t working_index = 0;
 
-    
+
     const char waves[] = {',', '.', 'o', 'O', '\'', 'O', 'o', '.', ','};
 
     inline std::ostream& ui_out() {
@@ -3021,7 +3021,7 @@ namespace {
             ui_right_margin = 4;
         }
 #endif
-#endif        
+#endif
     }
 
     inline size_t sub(size_t a, size_t b) {
@@ -3082,10 +3082,10 @@ namespace GEO {
                     ui_out() << title << " (\"" << shortt << ":*\" options)"
                              << std::endl;
                 }
-                ui_out() << std::endl << std::endl;                
+                ui_out() << std::endl << std::endl;
                 return;
             }
-            
+
             if(is_redirected()) {
                 ui_out() << std::endl;
                 if(short_title != "" && title != "") {
@@ -3260,7 +3260,7 @@ namespace GEO {
                    << std::setw(3) << percent
                    << "%]--------[";
             }
-                
+
             size_t max_L =
                 sub(ui_terminal_width(), 43 + ui_left_margin + ui_right_margin);
 
@@ -3353,7 +3353,7 @@ namespace GEO {
 	void set_android_app(android_app* app) {
 	    android_app_ = app;
 	}
-	
+
 	android_app* get_android_app() {
 	    return android_app_;
 	}
@@ -3408,7 +3408,7 @@ namespace {
             "pre:epsilon", 0,
             "Colocate tolerance (in % of bounding box diagonal)",
             ARG_ADVANCED
-        );  
+        );
         declare_arg_percent(
             "pre:max_hole_area", 0,
             "Fill holes smaller than (in % total area)"
@@ -3459,18 +3459,18 @@ namespace {
             ARG_ADVANCED
         );
 
-#ifdef GEOGRAM_WITH_VORPALINE	
+#ifdef GEOGRAM_WITH_VORPALINE
         declare_arg(
             "remesh:sharp_edges", false,
             "Reconstruct sharp edges", ARG_ADVANCED
         );
-	
+
         declare_arg(
             "remesh:Nfactor", 5.0,
             "For sharp_edges", ARG_ADVANCED
         );
 #endif
-	
+
         declare_arg(
             "remesh:multi_nerve", true,
             "Insert new vertices to preserve topology",
@@ -3598,7 +3598,7 @@ namespace {
             "opt:Newton_m", 0,
             "Number of evaluations for Hessian approximation"
         );
-#endif	
+#endif
     }
 
     void import_arg_group_sys() {
@@ -3609,13 +3609,13 @@ namespace {
             "sys:assert", "abort",
             "Assertion behavior (abort, throw, breakpoint)"
         );
-#else        
+#else
         declare_arg(
             "sys:assert", "throw",
             "Assertion behavior (abort, throw, breakpoint)"
         );
 #endif
-        
+
         declare_arg(
             "sys:multithread", Process::multithreading_enabled(),
             "Enables multi-threaded computations"
@@ -3639,7 +3639,7 @@ namespace {
 	declare_arg(
 	    "sys:ascii", false,
 	    "Use ASCII files whenever supported"
-	);	    
+	);
         declare_arg(
             "sys:compression_level", 3,
             "Compression level for created .geogram files, in [0..9]"
@@ -3657,7 +3657,7 @@ namespace {
 	    "sys:show_win32_console", false,
 	    "Display MSDOS window"
 	);
-#endif	
+#endif
     }
 
     void import_arg_group_nl() {
@@ -3671,7 +3671,7 @@ namespace {
 	    "Use NVidia CUDA (if available in the system)"
 	);
     }
-    
+
     void import_arg_group_log() {
         declare_arg_group("log", "Logger settings", ARG_ADVANCED);
         declare_arg(
@@ -3804,7 +3804,7 @@ namespace {
 	    "poly:tessellate_non_convex_facets", false,
 	    "tessellate non-convex facets"
 	);
-    }    
+    }
 
     void import_arg_group_hex() {
         declare_arg_group("hex", "Hex-dominant meshing", ARG_ADVANCED);
@@ -3909,7 +3909,7 @@ namespace {
 	    "maximum scaling correction factor (use 1.0 to disable)"
 	);
     }
-    
+
     void import_arg_group_tet() {
         declare_arg_group("tet", "Tetrahedral meshing", ARG_ADVANCED);
         declare_arg(
@@ -3935,10 +3935,10 @@ namespace {
         declare_arg(
             "gfx:GL_profile",
 #if defined(GEO_OS_ANDROID)
-	    "ES",	    		    
-#else		    
+	    "ES",
+#else
 	    "core",
-#endif	    
+#endif
             "one of core,ES"
         );
         declare_arg(
@@ -3961,7 +3961,7 @@ namespace {
         declare_arg(
 	    "gfx:no_decoration", false,
 	    "no window decoration (full screen mode)"
-	);	
+	);
 	declare_arg(
 	    "gfx:transparent", false,
 	    "use transparent backgroung (desktop integration)"
@@ -3972,7 +3972,7 @@ namespace {
 	declare_arg("gfx:geometry", "1024x1024", "resolution");
 	declare_arg("gfx:keypress", "", "initial key sequence sent to viewer");
     }
-    
+
     void import_arg_group_biblio() {
         declare_arg_group("biblio", "Bibliography options", ARG_ADVANCED);
 	declare_arg("biblio", false, "output bibliography citations");
@@ -3989,13 +3989,13 @@ namespace {
 	declare_arg("gui:font_size", 18, "font size");
 	declare_arg("gui:expert", false, "expert mode for developpers");
 #ifdef GEO_OS_ANDROID
-	declare_arg("gui:phone_screen", true, "running on a phone (or testing)");	
-#else	
+	declare_arg("gui:phone_screen", true, "running on a phone (or testing)");
+#else
 	declare_arg("gui:phone_screen", false, "running on a phone (or testing)");
-#endif	
+#endif
     }
-    
-    
+
+
 
     void set_profile_cad() {
         set_arg("pre:repair", true);
@@ -4049,7 +4049,7 @@ namespace {
     void set_profile_quad() {
         set_arg("quad", true);
     }
-    
+
     void set_profile_tet() {
         set_arg("tet", true);
     }
@@ -4071,11 +4071,11 @@ namespace GEO {
 		return true;
 	    }
 	    imported.insert(name);
-	    
+
             if(name == "standard") {
                 import_arg_group_global();
                 import_arg_group_sys();
-		import_arg_group_nl();		
+		import_arg_group_nl();
                 import_arg_group_log();
 		import_arg_group_biblio();
             } else if(name == "global") {
@@ -4277,7 +4277,7 @@ namespace GEO {
 
 namespace GEO {
 
-    
+
 
     int LoggerStreamBuf::sync() {
         std::string str(this->str());
@@ -4286,7 +4286,7 @@ namespace GEO {
         return 0;
     }
 
-    
+
 
     LoggerStream::LoggerStream(Logger* logger) :
         std::ostream(new LoggerStreamBuf(this)),
@@ -4302,12 +4302,12 @@ namespace GEO {
 	logger_->notify(this, str);
     }
 
-    
+
 
     LoggerClient::~LoggerClient() {
     }
 
-    
+
 
     ConsoleLogger::ConsoleLogger() {
     }
@@ -4335,7 +4335,7 @@ namespace GEO {
         geo_argused(str);
     }
 
-    
+
 
     FileLogger::FileLogger() :
         log_file_(nullptr) {
@@ -4393,7 +4393,7 @@ namespace GEO {
         geo_argused(str);
     }
 
-    
+
 
     SmartPointer<Logger> Logger::instance_;
 
@@ -4409,7 +4409,7 @@ namespace GEO {
     bool Logger::is_initialized() {
         return (instance_ != nullptr);
     }
-    
+
     bool Logger::set_local_value(
         const std::string& name, const std::string& value
     ) {
@@ -4423,7 +4423,7 @@ namespace GEO {
             set_minimal(String::to_bool(value));
             return true;
         }
-        
+
         if(name == "log:pretty") {
             set_pretty(String::to_bool(value));
             return true;
@@ -4480,7 +4480,7 @@ namespace GEO {
             value = String::to_string(is_minimal());
             return true;
         }
-        
+
         if(name == "log:pretty") {
             value = String::to_string(is_pretty());
             return true;
@@ -4544,7 +4544,7 @@ namespace GEO {
     void Logger::set_minimal(bool flag) {
         minimal_ = flag;
     }
-    
+
     void Logger::set_pretty(bool flag) {
         pretty_ = flag;
     }
@@ -4566,7 +4566,7 @@ namespace GEO {
         register_client(new ConsoleLogger());
 #ifdef GEO_DEBUG
         quiet_ = false;
-#endif        
+#endif
     }
 
     Logger::~Logger() {
@@ -4587,7 +4587,7 @@ namespace GEO {
     }
 
     std::ostream& Logger::div(const std::string& title) {
-	std::ostream& result = 
+	std::ostream& result =
    	    (is_initialized() && !Process::is_running_threads()) ?
             instance()->div_stream(title) :
             (std::cerr << "=====" << title << std::endl);
@@ -4603,24 +4603,24 @@ namespace GEO {
     }
 
     std::ostream& Logger::err(const std::string& feature) {
-	std::ostream& result = 
-	    (is_initialized() && !Process::is_running_threads()) ?	    
+	std::ostream& result =
+	    (is_initialized() && !Process::is_running_threads()) ?
             instance()->err_stream(feature) :
             (std::cerr << "(E)-[" << feature << "] ");
 	return result;
     }
 
     std::ostream& Logger::warn(const std::string& feature) {
-	std::ostream& result = 
-	    (is_initialized() && !Process::is_running_threads()) ?	    	    
+	std::ostream& result =
+	    (is_initialized() && !Process::is_running_threads()) ?
             instance()->warn_stream(feature) :
             (std::cerr << "(W)-[" << feature << "] ");
 	return result;
     }
 
     std::ostream& Logger::status() {
-	std::ostream& result =	
-	    (is_initialized() && !Process::is_running_threads()) ?	    	    	
+	std::ostream& result =
+	    (is_initialized() && !Process::is_running_threads()) ?
             instance()->status_stream() :
             (std::cerr << "[status] ");
 	return result;
@@ -4746,8 +4746,8 @@ namespace GEO {
         }
     }
 
-    
-    
+
+
 }
 
 extern "C" {
@@ -4758,7 +4758,7 @@ extern "C" {
 
         va_list args;
 
-        // Get the number of characters to be printed.        
+        // Get the number of characters to be printed.
         va_start(args, format);
         int nb = vsnprintf(nullptr, 0, format, args)+1; // +1, I don't know why...
         va_end(args);
@@ -4801,7 +4801,7 @@ extern "C" {
                 GEO::Logger::out("") << last_string << lines[i] << std::endl;
                 last_string.clear();
             } else {
-                GEO::Logger::out("") << lines[i] << std::endl;                
+                GEO::Logger::out("") << lines[i] << std::endl;
             }
         }
 
@@ -4815,7 +4815,7 @@ extern "C" {
 
         va_list args;
 
-        // Get the number of characters to be printed.        
+        // Get the number of characters to be printed.
         va_start(args, format);
         int nb = vsnprintf(nullptr, 0, format, args)+1; // +1, I don't know why...
         va_end(args);
@@ -4858,22 +4858,22 @@ extern "C" {
                 if(out == stdout) {
                     GEO::Logger::out("") << last_string << lines[i] << std::endl;
                 } else if(out == stderr) {
-                    GEO::Logger::err("") << last_string << lines[i] << std::endl;                    
+                    GEO::Logger::err("") << last_string << lines[i] << std::endl;
                 } else {
-                    fprintf(out, "%s%s", last_string.c_str(), lines[i]);                    
+                    fprintf(out, "%s%s", last_string.c_str(), lines[i]);
                 }
                 last_string.clear();
             } else {
                 if(out == stdout) {
                     GEO::Logger::out("") << lines[i] << std::endl;
                 } else if(out == stderr) {
-                    GEO::Logger::err("") << lines[i] << std::endl;                    
+                    GEO::Logger::err("") << lines[i] << std::endl;
                 } else {
-                    fprintf(out, "%s", lines[i]);                    
+                    fprintf(out, "%s", lines[i]);
                 }
             }
         }
-	
+
 	return nb;
     }
 }
@@ -5075,7 +5075,7 @@ namespace {
 	    CloseHandle(hfile);
 	    return true;
         }
-        
+
         std::string normalized_path(const std::string& path_in) override {
             if(path_in == "") {
                 return "";
@@ -5120,7 +5120,7 @@ namespace {
 #else
 
 
-    
+
     class FileSystemRootNode : public FileSystem::Node {
     public:
         bool is_file(const std::string& path) override {
@@ -5203,7 +5203,7 @@ namespace {
 			<< std::endl;
 		    first_time = false;
 		}
-#endif		
+#endif
                 return false;
             }
             struct dirent* entry = readdir(dir);
@@ -5266,7 +5266,7 @@ namespace {
 #ifdef GEO_OS_APPLE
            {
                 struct stat buff;
-                int rc = stat(filename.c_str(), &buff); 
+                int rc = stat(filename.c_str(), &buff);
                 if(rc != 0) {  // FABIEN NOT SURE WE GET THE TOUCH
                     Logger::err("FileSystem")
                         << "Could not touch file:"
@@ -5293,15 +5293,15 @@ namespace {
                 }
 		return true;
             }
-#endif	    
+#endif
         }
-        
+
         std::string normalized_path(const std::string& path_in) override {
 
             if(path_in == "") {
                 return "";
             }
-            
+
             std::string path = path_in;
             std::string result;
 
@@ -5334,7 +5334,7 @@ namespace {
                         if(pos == path.length()) {
                             break;
                         }
-                    } 
+                    }
                 }
             }
             flip_slashes(result);
@@ -5346,7 +5346,7 @@ namespace {
             std::string home;
 #if defined GEO_OS_EMSCRIPTEN
             home="/";
-#else            
+#else
             char* result = getenv("HOME");
             if(result != nullptr) {
                 home=result;
@@ -5364,7 +5364,7 @@ namespace {
             if(result != nullptr) {
                 home=result;
             }
-#else            
+#else
             char* result = getenv("HOME");
             if(result != nullptr) {
                 home=result;
@@ -5372,9 +5372,9 @@ namespace {
 #endif
             return home;
         }
-	
+
     };
-#endif    
+#endif
 
     FileSystem::Node_var root_;
 }
@@ -5390,7 +5390,7 @@ namespace GEO {
 	Node::~Node() {
 	}
 
-        
+
 
         std::string Node::extension(const std::string& path) {
             size_t len = path.length();
@@ -5516,13 +5516,13 @@ namespace GEO {
                     break;
                 }
             } while(rdsize == 4096);
-            
+
             fclose(fromf);
             fclose(tof);
             return result;
         }
 
-        
+
 
 	bool Node::is_file(const std::string& path) {
 	    geo_argused(path);
@@ -5533,7 +5533,7 @@ namespace GEO {
 	    geo_argused(path);
 	    return false;
 	}
-	
+
 	bool Node::create_directory(const std::string& path) {
 	    geo_argused(path);
 	    return false;
@@ -5548,7 +5548,7 @@ namespace GEO {
 	    geo_argused(path);
 	    return false;
 	}
-	
+
 	bool Node::get_directory_entries(
 	    const std::string& path, std::vector<std::string>& result
 	) {
@@ -5635,15 +5635,15 @@ namespace GEO {
 			    << "Problem occured when reading "
 			    << path
 			    << std::endl;
-			    
+
 		    }
 		}
 		fclose(f);
 	    }
 	    return result;
 	}
-	
-        
+
+
 
 	bool MemoryNode::copy_file(
 	    const std::string& from, const std::string& to
@@ -5795,7 +5795,7 @@ namespace GEO {
 		return it->second->get_directory_entries(rest, result);
 	    }
 	}
-	
+
 	bool MemoryNode::rename_file(
 	    const std::string& from, const std::string& to
 	) {
@@ -5808,7 +5808,7 @@ namespace GEO {
 	    }
 	    return create_file(to, contents);
 	}
-	
+
 	const char* MemoryNode::get_file_contents(const std::string& path) {
 	    std::string subdir;
 	    std::string rest;
@@ -5827,7 +5827,7 @@ namespace GEO {
 	    }
 	    return result;
 	}
-	
+
 	bool MemoryNode::create_file(
 	    const std::string& path, const char* content
 	) {
@@ -5848,9 +5848,9 @@ namespace GEO {
 		return n->create_file(rest, content);
 	    }
 	}
-	
+
 	void MemoryNode::split_path(
-	    const std::string& path, std::string& leadingsubdir, 
+	    const std::string& path, std::string& leadingsubdir,
 	    std::string& rest
 	) {
 	    leadingsubdir = "";
@@ -5872,9 +5872,9 @@ namespace GEO {
 		}
 	    }
 	}
-	
-        
-	
+
+
+
 	void initialize() {
 	    root_ = new FileSystemRootNode;
 	}
@@ -5882,11 +5882,11 @@ namespace GEO {
 	void terminate() {
 	    root_.reset();
 	}
-	
+
         bool is_file(const std::string& path) {
 	    return root_->is_file(path);
 	}
-	
+
         bool is_directory(const std::string& path) {
 	    return root_->is_directory(path);
 	}
@@ -5918,17 +5918,17 @@ namespace GEO {
         ) {
 	    return root_->set_current_working_directory(path);
 	}
-	
+
         bool rename_file(
             const std::string& old_name, const std::string& new_name
         ) {
 	    return root_->rename_file(old_name, new_name);
 	}
-	
+
         Numeric::uint64 get_time_stamp(const std::string& path) {
 	    return root_->get_time_stamp(path);
 	}
-	
+
         std::string extension(const std::string& path) {
 	    return root_->extension(path);
 	}
@@ -5938,7 +5938,7 @@ namespace GEO {
         ) {
 	    return root_->base_name(path, remove_extension);
 	}
-	
+
         std::string dir_name(const std::string& path) {
 	    return root_->dir_name(path);
 	}
@@ -5949,21 +5949,21 @@ namespace GEO {
         ) {
 	    return root_->get_directory_entries(path, result, recursive);
 	}
-	
+
         void get_files(
             const std::string& path,
             std::vector<std::string>& result, bool recursive
         ) {
 	    return root_->get_files(path, result, recursive);
 	}
-	
+
         void get_subdirectories(
             const std::string& path,
             std::vector<std::string>& result, bool recursive
         ) {
 	    return root_->get_subdirectories(path, result, recursive);
 	}
-	
+
         void flip_slashes(std::string& path) {
 	    return root_->flip_slashes(path);
 	}
@@ -6276,19 +6276,19 @@ namespace {
 
     class TerminalProgressClient : public ProgressClient {
     public:
-        
+
 	void begin() override {
             const ProgressTask* task = Progress::current_task();
             CmdLine::ui_progress(task->task_name(), 0, 0);
         }
 
-        
+
 	void progress(index_t step, index_t percent) override {
             const ProgressTask* task = Progress::current_task();
             CmdLine::ui_progress(task->task_name(), step, percent);
         }
 
-        
+
 	void end(bool canceled) override {
             const ProgressTask* task = Progress::current_task();
             double elapsed = SystemStopwatch::now() - task->start_time();
@@ -6302,7 +6302,7 @@ namespace {
         }
 
     protected:
-        
+
 	~TerminalProgressClient() override {
         }
     };
@@ -6316,7 +6316,7 @@ namespace GEO {
         return "Task canceled";
     }
 
-    
+
 
     namespace Progress {
 
@@ -6351,12 +6351,12 @@ namespace GEO {
         }
     }
 
-    
+
 
     ProgressClient::~ProgressClient() {
     }
 
-    
+
 
     ProgressTask::ProgressTask(
         const std::string& task_name, index_t max_steps, bool quiet
@@ -6388,7 +6388,7 @@ namespace GEO {
         }
     }
 
-    
+
     ProgressTask::~ProgressTask() {
         if(!quiet_) {
             end_task(this);
@@ -6415,7 +6415,7 @@ namespace GEO {
     void ProgressTask::progress(index_t step) {
         if(step_ != step) {
             step_ = step;
-	    step_ = std::min(step_, max_steps_);	    
+	    step_ = std::min(step_, max_steps_);
 	    update();
         }
     }
@@ -6466,7 +6466,7 @@ namespace {
 
     double start_time_ = 0.0;
 
-    
+
 
     class ProcessEnvironment : public Environment {
     protected:
@@ -6543,12 +6543,12 @@ namespace {
             return false;
         }
 
-        
+
         virtual ~ProcessEnvironment() {
         }
     };
 
-    
+
 
 #ifdef GEO_OPENMP
 
@@ -6558,28 +6558,28 @@ namespace {
             omp_init_lock(&lock_);
         }
 
-        
+
         virtual index_t maximum_concurrent_threads() {
             return Process::number_of_cores();
         }
 
-        
+
         virtual void enter_critical_section() {
             omp_set_lock(&lock_);
         }
 
-        
+
         virtual void leave_critical_section() {
             omp_unset_lock(&lock_);
         }
 
     protected:
-        
+
         virtual ~OMPThreadManager() {
             omp_destroy_lock(&lock_);
         }
 
-        
+
         virtual void run_concurrent_threads(
             ThreadGroup& threads, index_t max_threads
         ) {
@@ -6616,11 +6616,11 @@ namespace GEO {
     Thread* Thread::current() {
         return geo_current_thread_;
     }
-    
+
     Thread::~Thread() {
     }
 
-    
+
 
     ThreadManager::~ThreadManager() {
     }
@@ -6636,7 +6636,7 @@ namespace GEO {
         }
     }
 
-    
+
 
     MonoThreadingThreadManager::~MonoThreadingThreadManager() {
     }
@@ -6659,7 +6659,7 @@ namespace GEO {
     void MonoThreadingThreadManager::leave_critical_section() {
     }
 
-    
+
 
     namespace Process {
 
@@ -6675,7 +6675,7 @@ namespace GEO {
         size_t os_used_memory();
         size_t os_max_used_memory();
         std::string os_executable_filename();
-        
+
         void initialize(int flags) {
 
             Environment* env = Environment::instance();
@@ -6701,7 +6701,7 @@ namespace GEO {
 	    ) {
 		os_install_signal_handlers();
 	    }
-	    
+
             // Initialize Process default values
             enable_multithreading(multithreading_enabled_);
             set_max_threads(number_of_cores());
@@ -6713,24 +6713,24 @@ namespace GEO {
 
         void show_stats() {
 
-            Logger::out("Process") << "Total elapsed time: " 
+            Logger::out("Process") << "Total elapsed time: "
                                    << SystemStopwatch::now() - start_time_
                                    << "s" << std::endl;
 
             const size_t K=size_t(1024);
             const size_t M=K*K;
             const size_t G=K*M;
-            
+
             size_t max_mem = Process::max_used_memory() ;
             size_t r = max_mem;
-            
+
             size_t mem_G = r / G;
             r = r % G;
             size_t mem_M = r / M;
             r = r % M;
             size_t mem_K = r / K;
             r = r % K;
-            
+
             std::string s;
             if(mem_G != 0) {
                 s += String::to_string(mem_G)+"G ";
@@ -6745,7 +6745,7 @@ namespace GEO {
                 s += String::to_string(r);
             }
 
-            Logger::out("Process") << "Maximum used memory: " 
+            Logger::out("Process") << "Maximum used memory: "
                                    << max_mem << " (" << s << ")"
                                    << std::endl;
         }
@@ -6765,9 +6765,9 @@ namespace GEO {
 		// Deactivate multithreading if thread_local is
 		// not supported (e.g. with old OS-X).
 		result = 1;
-#else		
+#else
                 result = os_number_of_cores();
-#endif		
+#endif
             }
             return result;
         }
@@ -6783,7 +6783,7 @@ namespace GEO {
         std::string executable_filename() {
             return os_executable_filename();
         }
-        
+
         void set_thread_manager(ThreadManager* thread_manager) {
             thread_manager_ = thread_manager;
         }
@@ -6807,10 +6807,10 @@ namespace GEO {
             return (
 		omp_in_parallel() ||
 		(running_threads_invocations_ > 0)
-	    );	    
-#else	    
+	    );
+#else
             return running_threads_invocations_ > 0;
-#endif	    
+#endif
         }
 
         bool multithreading_enabled() {
@@ -6869,7 +6869,7 @@ namespace GEO {
                 num_threads = 1;
             } else if(num_threads > number_of_cores()) {
                 Logger::warn("Process")
-                    << "Cannot allocate " << num_threads 
+                    << "Cannot allocate " << num_threads
                     << " for multithreading"
                     << std::endl;
                 num_threads = number_of_cores();
@@ -6990,14 +6990,14 @@ namespace {
 	index_t from_;
 	index_t to_;
     };
-    
+
 }
 
 namespace GEO {
 
     void parallel_for(
         index_t from, index_t to, std::function<void(index_t)> func,
-        index_t threads_per_core, bool interleaved 
+        index_t threads_per_core, bool interleaved
     ) {
 #ifdef GEO_OS_WINDOWS
         // TODO: This is a limitation of WindowsThreadManager, to be fixed.
@@ -7010,7 +7010,7 @@ namespace GEO {
         );
 
 	nb_threads = std::max(index_t(1), nb_threads);
-	
+
         index_t batch_size = (to - from) / nb_threads;
         if(Process::is_running_threads() || nb_threads == 1) {
             for(index_t i = from; i < to; i++) {
@@ -7052,7 +7052,7 @@ namespace GEO {
 
     void parallel_for_slice(
 	index_t from, index_t to, std::function<void(index_t, index_t)> func,
-        index_t threads_per_core 
+        index_t threads_per_core
     ) {
 #ifdef GEO_OS_WINDOWS
         // TODO: This is a limitation of WindowsThreadManager, to be fixed.
@@ -7065,7 +7065,7 @@ namespace GEO {
         );
 
 	nb_threads = std::max(index_t(1), nb_threads);
-	
+
         index_t batch_size = (to - from) / nb_threads;
         if(Process::is_running_threads() || nb_threads == 1) {
 	    func(from, to);
@@ -7106,7 +7106,7 @@ namespace GEO {
             Process::run_threads(threads);
         }
     }
-    
+
 
     void parallel(
 	std::function<void()> f1,
@@ -7129,7 +7129,7 @@ namespace GEO {
         }
     }
 
-    
+
     void parallel(
 	std::function<void()> f1,
 	std::function<void()> f2,
@@ -7138,7 +7138,7 @@ namespace GEO {
 	std::function<void()> f5,
 	std::function<void()> f6,
 	std::function<void()> f7,
-	std::function<void()> f8	 
+	std::function<void()> f8
     ) {
         if(Process::is_running_threads()) {
 	    f1();
@@ -7158,14 +7158,14 @@ namespace GEO {
 	    threads.push_back(new ParallelThread(f5));
 	    threads.push_back(new ParallelThread(f6));
 	    threads.push_back(new ParallelThread(f7));
-	    threads.push_back(new ParallelThread(f8));	    
+	    threads.push_back(new ParallelThread(f8));
             Process::run_threads(threads);
         }
     }
 
     namespace Process {
 	void sleep(index_t microseconds) {
-	    std::this_thread::sleep_for(std::chrono::microseconds(microseconds));	    
+	    std::this_thread::sleep_for(std::chrono::microseconds(microseconds));
 	}
     }
 }
@@ -7195,7 +7195,7 @@ namespace GEO {
 
 #ifdef GEO_OS_APPLE
 #include <mach-o/dyld.h>
-#include <xmmintrin.h>
+// #include <xmmintrin.h>
 #endif
 
 #ifdef GEO_OS_EMSCRIPTEN
@@ -7266,12 +7266,12 @@ namespace {
             pthread_attr_setdetachstate(&attr_, PTHREAD_CREATE_JOINABLE);
         }
 
-        
+
         index_t maximum_concurrent_threads() override {
             return Process::number_of_cores();
         }
 
-        
+
 	void enter_critical_section() override {
 #if defined(GEO_OS_RASPBERRY)
             lock_mutex_arm32(&mutex_);
@@ -7282,10 +7282,10 @@ namespace {
 #endif
         }
 
-        
+
 	void leave_critical_section() override {
 #if defined(GEO_OS_RASPBERRY)
-            unlock_mutex_arm32(&mutex_);	    
+            unlock_mutex_arm32(&mutex_);
 #elif defined(GEO_OS_ANDROID)
             unlock_mutex_android(&mutex_);
 #else
@@ -7294,7 +7294,7 @@ namespace {
         }
 
     protected:
-        
+
 	~PThreadManager() override {
             pthread_attr_destroy(&attr_);
 #ifndef GEO_OS_ANDROID
@@ -7311,7 +7311,7 @@ namespace {
             return nullptr;
         }
 
-        
+
 	void run_concurrent_threads (
             ThreadGroup& threads, index_t max_threads
         ) override {
@@ -7334,7 +7334,7 @@ namespace {
 
     private:
 #if defined(GEO_OS_RASPBERRY)
-        arm32_mutex_t mutex_;	
+        arm32_mutex_t mutex_;
 #elif defined(GEO_OS_ANDROID)
         android_mutex_t mutex_;
 #else
@@ -7349,7 +7349,7 @@ namespace {
     GEO_NORETURN_DECL void abnormal_program_termination(
         const char* message = nullptr
     ) GEO_NORETURN;
-    
+
     void abnormal_program_termination(const char* message) {
         if(message != nullptr) {
             // Do not use Logger here!
@@ -7361,7 +7361,7 @@ namespace {
     }
 
     GEO_NORETURN_DECL void signal_handler(int signal) GEO_NORETURN;
-    
+
     void signal_handler(int signal) {
         const char* sigstr = strsignal(signal);
         std::ostringstream os;
@@ -7372,7 +7372,7 @@ namespace {
     GEO_NORETURN_DECL void fpe_signal_handler(
         int signal, siginfo_t* si, void* data
     ) GEO_NORETURN;
-    
+
     void fpe_signal_handler(int signal, siginfo_t* si, void* data) {
         geo_argused(signal);
         geo_argused(data);
@@ -7421,13 +7421,13 @@ namespace {
     }
 
     GEO_NORETURN_DECL void terminate_handler() GEO_NORETURN;
-    
+
     void terminate_handler() {
         abnormal_program_termination("function terminate() was called");
     }
 
     GEO_NORETURN_DECL void memory_exhausted_handler() GEO_NORETURN;
-    
+
     void memory_exhausted_handler() {
         abnormal_program_termination("memory exhausted");
     }
@@ -7465,8 +7465,8 @@ namespace GEO {
 	   return index_t(emscripten_num_logical_cores());
 #  else
 	   return 1;
-#  endif	   
-#else	    
+#  endif
+#else
             return index_t(sysconf(_SC_NPROCESSORS_ONLN));
 #endif
         }
@@ -7480,7 +7480,7 @@ namespace GEO {
             }
             return result;
 #else
-            // The following method seems to be more 
+            // The following method seems to be more
             // reliable than  getrusage() under Linux.
             // It works for both Linux and Android.
             size_t result = 0;
@@ -7497,18 +7497,18 @@ namespace GEO {
         }
 
         size_t os_max_used_memory() {
-            // The following method seems to be more 
+            // The following method seems to be more
             // reliable than  getrusage() under Linux.
             // It works for both Linux and Android.
             size_t result = 0;
             LineInput in("/proc/self/status");
-            
+
             // Some versions of Unix may not have the proc
             // filesystem (or a different organization)
             if(!in.OK()) {
                 return result;
             }
-            
+
             while(!in.eof() && in.get_line()) {
                 in.get_fields();
                 if(in.field_matches(0,"VmPeak:")) {
@@ -7523,10 +7523,10 @@ namespace GEO {
 #ifdef GEO_OS_APPLE
            unsigned int excepts = 0
                 // | _MM_MASK_INEXACT   // inexact result
-                   | _MM_MASK_DIV_ZERO  // division by zero
-                   | _MM_MASK_UNDERFLOW // result not representable due to underflow
-                   | _MM_MASK_OVERFLOW  // result not representable due to overflow
-                   | _MM_MASK_INVALID   // invalid operation
+                //    | _MM_MASK_DIV_ZERO  // division by zero
+                //    | _MM_MASK_UNDERFLOW // result not representable due to underflow
+                //    | _MM_MASK_OVERFLOW  // result not representable due to overflow
+                //    | _MM_MASK_INVALID   // invalid operation
                    ;
             // _MM_SET_EXCEPTION_MASK(_MM_GET_EXCEPTION_MASK() & ~excepts);
             geo_argused(flag);
@@ -7543,13 +7543,13 @@ namespace GEO {
 #ifdef GEO_OS_EMSCRIPTEN
             geo_argused(flag);
             geo_argused(excepts);
-#else            
+#else
             if(flag) {
                 feenableexcept(excepts);
             } else {
                 fedisableexcept(excepts);
             }
-#endif            
+#endif
             return true;
 #endif
         }
@@ -7570,7 +7570,7 @@ namespace GEO {
             signal(SIGILL, signal_handler);
             signal(SIGBUS, signal_handler);
 
-            // Use sigaction for SIGFPE as it provides more details 
+            // Use sigaction for SIGFPE as it provides more details
             // about the error.
             struct sigaction sa, old_sa;
             sa.sa_flags = SA_SIGINFO;
@@ -7607,15 +7607,15 @@ namespace GEO {
             }
             return std::string("");
 #endif
-        }        
-        
+        }
+
     }
 }
 
-#else 
+#else
 
 // Declare a dummy variable so that
-// MSVC does not complain that it 
+// MSVC does not complain that it
 // generated an empty object file.
 int dummy_process_unix_compiled = 1;
 
@@ -7667,30 +7667,30 @@ namespace {
             InitializeCriticalSection(&lock_);
         }
 
-        
+
 	index_t maximum_concurrent_threads() override {
             SYSTEM_INFO sysinfo;
             GetSystemInfo(&sysinfo);
             return sysinfo.dwNumberOfProcessors;
         }
 
-        
+
 	void enter_critical_section() override {
             EnterCriticalSection(&lock_);
         }
 
-        
+
 	void leave_critical_section() override {
             LeaveCriticalSection(&lock_);
         }
 
     protected:
-        
+
 	~WindowsThreadManager() override {
             DeleteCriticalSection(&lock_);
         }
 
-        
+
 	void run_concurrent_threads(
             ThreadGroup& threads, index_t max_threads
         ) override {
@@ -7748,18 +7748,18 @@ namespace {
         }
 
     protected:
-        
+
 	~WindowsThreadPoolManager() override {
 // It makes it crash on exit when calling these functions
-// with dynamic libs, I do not know why...            
+// with dynamic libs, I do not know why...
 // TODO: investigate...
-#ifndef GEO_DYNAMIC_LIBS            
+#ifndef GEO_DYNAMIC_LIBS
             CloseThreadpool(pool_);
             CloseThreadpoolCleanupGroup(cleanupGroup_);
-#endif            
+#endif
         }
 
-        
+
 	void run_concurrent_threads(
             ThreadGroup& threads, index_t max_threads
         ) override {
@@ -7807,7 +7807,7 @@ namespace {
 
 #endif
 
-#ifdef GEO_COMPILER_MSVC    
+#ifdef GEO_COMPILER_MSVC
     void abnormal_program_termination(const char* message = nullptr) {
         if(message != nullptr) {
             // Do not use Logger here!
@@ -7893,21 +7893,21 @@ namespace {
 // Microsoft Visual C++
 // (abnormal_program_termination() does not return,
 //  but memory_exhausted_handler() needs to return
-//  something...)    
+//  something...)
 #ifdef GEO_COMPILER_MSVC
 #pragma warning(push)
 #pragma warning(disable: 4702)
 #endif
-    
+
     int memory_exhausted_handler(size_t) {
         abnormal_program_termination("memory exhausted");
-        return 0; 
+        return 0;
     }
 
-#ifdef GEO_COMPILER_MSVC    
+#ifdef GEO_COMPILER_MSVC
 #pragma warning(pop)
 #endif
-    
+
     void pure_call_handler() {
         abnormal_program_termination("pure virtual function called");
     }
@@ -7942,12 +7942,12 @@ namespace {
         wprintf(L"Abnormal program termination: ");
         vwprintf(format, vl);
         wprintf(
-            L"\nModule: %s\nFile: %s\nLine: %d\n", 
+            L"\nModule: %s\nFile: %s\nLine: %d\n",
             moduleName, filename, linenumber
 
         );
         va_end(vl);
-        
+
         // Must return 1 to force the program to stop with an exception which
         // will be captured by the unhandled exception handler
         return 1;
@@ -7959,7 +7959,7 @@ namespace {
             abnormal_program_termination(message);
         }
 
-        // Runtime warning messages        
+        // Runtime warning messages
         if(Logger::is_initialized()) {
             Logger::err("SignalHandler") << message << std::endl;
         } else {
@@ -7974,9 +7974,9 @@ namespace {
         // Tell _CrtDbgReport that no further reporting is required.
         return TRUE;
     }
-    
+
 #endif
-    
+
 }
 
 
@@ -8011,10 +8011,10 @@ namespace GEO {
             return true;
 #  endif
 #else
-	   // If compiling for Windows with a compiler different from MSVC, 
+	   // If compiling for Windows with a compiler different from MSVC,
 	   // return false, and use OpenMP fallback from process.cpp
 	   return false;
-#endif	   
+#endif
         }
 
         void os_brute_force_kill() {
@@ -8074,32 +8074,32 @@ namespace GEO {
 #ifdef GEO_COMPILER_MSVC
             PROCESS_MEMORY_COUNTERS info;
 #if (PSAPI_VERSION >= 2)
-            K32GetProcessMemoryInfo(GetCurrentProcess( ), &info, sizeof(info));            
-#else            
+            K32GetProcessMemoryInfo(GetCurrentProcess( ), &info, sizeof(info));
+#else
             GetProcessMemoryInfo(GetCurrentProcess( ), &info, sizeof(info));
-#endif            
+#endif
             return size_t(info.WorkingSetSize);
 #else
 	   return size_t(0);
-#endif	   
+#endif
         }
 
         size_t os_max_used_memory() {
-#ifdef GEO_COMPILER_MSVC	   
+#ifdef GEO_COMPILER_MSVC
             PROCESS_MEMORY_COUNTERS info;
 #if (PSAPI_VERSION >= 2)
-            K32GetProcessMemoryInfo(GetCurrentProcess( ), &info, sizeof(info));            
-#else            
+            K32GetProcessMemoryInfo(GetCurrentProcess( ), &info, sizeof(info));
+#else
             GetProcessMemoryInfo(GetCurrentProcess( ), &info, sizeof(info));
-#endif            
+#endif
             return size_t(info.PeakWorkingSetSize);
 #else
 	   return size_t(0);
-#endif	   
+#endif
         }
 
         bool os_enable_FPE(bool flag) {
-#ifdef GEO_COMPILER_MSVC	    
+#ifdef GEO_COMPILER_MSVC
             if(flag) {
                 unsigned int excepts = 0
                     // | _EM_INEXACT // inexact result
@@ -8117,11 +8117,11 @@ namespace GEO {
 #else
 	    geo_argused(flag);
 	    return false;
-#endif	    
+#endif
         }
 
         bool os_enable_cancel(bool flag) {
-#ifdef GEO_COMPILER_MSVC	    
+#ifdef GEO_COMPILER_MSVC
             if(flag) {
                 signal(SIGINT, sigint_handler);
             } else {
@@ -8131,10 +8131,10 @@ namespace GEO {
 #else
 	    geo_argused(flag);
 	    return false;
-#endif	    
+#endif
         }
 
-#ifdef GEO_COMPILER_MSVC	
+#ifdef GEO_COMPILER_MSVC
         void os_install_signal_handlers() {
 
             // Install signal handlers
@@ -8143,12 +8143,12 @@ namespace GEO {
             signal(SIGBREAK, signal_handler);
             signal(SIGTERM, signal_handler);
 
-            // SIGFPE has a dedicated handler 
+            // SIGFPE has a dedicated handler
             // that provides more details about the error.
             typedef void (__cdecl * sighandler_t)(int);
             signal(SIGFPE, (sighandler_t) fpe_signal_handler);
 
-            // Install uncaught c++ exception handlers	    
+            // Install uncaught c++ exception handlers
             std::set_terminate(uncaught_exception_handler);
 
             // Install memory allocation handler
@@ -8183,7 +8183,7 @@ namespace GEO {
             // _CrtDbgReport that prints the error message, print the stack
             // trace and exit the application.
             // NOTE: when this hook is installed, it takes precedence over the
-            // invalid_parameter_handler(), but not over the 
+            // invalid_parameter_handler(), but not over the
             // runtime_error_handler().
             // Windows error handling is a nightmare!
             _CrtSetReportHook(debug_report_hook);
@@ -8198,15 +8198,15 @@ namespace GEO {
             _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
             _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
             _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
- 
-            // Do not open dialog box on error 
+
+            // Do not open dialog box on error
 	    SetErrorMode(SEM_NOGPFAULTERRORBOX);
         }
 #else
         void os_install_signal_handlers() {
 	}
-#endif	
-	
+#endif
+
         std::string os_executable_filename() {
             TCHAR result[MAX_PATH];
             GetModuleFileName( nullptr, result, MAX_PATH);
@@ -8277,10 +8277,10 @@ namespace GEO {
 
     namespace {
 #ifdef GEO_DEBUG
-        AssertMode assert_mode_ = ASSERT_ABORT;        
+        AssertMode assert_mode_ = ASSERT_ABORT;
 #else
         AssertMode assert_mode_ = ASSERT_THROW;
-#endif        
+#endif
         bool aborting = false;
     }
 
@@ -8306,9 +8306,9 @@ namespace GEO {
 	__debugbreak();
 #else
 	geo_abort();
-#endif	
+#endif
     }
-    
+
     void geo_assertion_failed(
         const std::string& condition_string,
         const std::string& file, int line
@@ -8387,7 +8387,7 @@ namespace GEO {
 
 namespace GEO {
 
-    
+
 
     SystemStopwatch::SystemStopwatch() {
 #if defined(GEO_OS_WINDOWS)
@@ -8406,7 +8406,7 @@ namespace GEO {
         return double(long(GetTickCount()) - start_) / 1000.0;
 #elif defined(GEO_OS_EMSCRIPTEN)
         return now() - startf_;
-#else        
+#else
         clock_t end_user;
         tms end;
         end_user = times(&end);
@@ -8419,7 +8419,7 @@ namespace GEO {
         return double(GetTickCount()) / 1000.0;
 #elif defined(GEO_OS_EMSCRIPTEN)
         // times() hangs on Emscripten but
-        // clock() works. TODO: check with emscripten_get_now();        
+        // clock() works. TODO: check with emscripten_get_now();
         return double(clock()) / double(CLOCKS_PER_SEC);
 #else
         tms now_tms;
@@ -8454,7 +8454,7 @@ namespace GEO {
 #endif
     }
 
-    
+
 
     // For now, uses SystemStopwatch,
     // TODO: If need be, reimplement with ASM RDTSC instruction
@@ -8463,7 +8463,7 @@ namespace GEO {
         return Numeric::uint64(SystemStopwatch::now() * 1000.0);
     }
 
-    
+
 }
 
 
@@ -8481,18 +8481,18 @@ namespace GEO {
 
         bool is_nan(float32 x) {
 #ifdef GEO_COMPILER_MSVC
-            return _isnan(x) || !_finite(x);	    
-#else	    
+            return _isnan(x) || !_finite(x);
+#else
             return std::isnan(x) || !std::isfinite(x);
-#endif	    
+#endif
         }
 
         bool is_nan(float64 x) {
 #ifdef GEO_COMPILER_MSVC
-            return _isnan(x) || !_finite(x);	    	    
-#else	    
+            return _isnan(x) || !_finite(x);
+#else
             return std::isnan(x) || !std::isfinite(x);
-#endif	    
+#endif
         }
 
         void random_reset() {
@@ -8552,7 +8552,7 @@ namespace GEO {
 namespace GEO {
 
 
-#ifndef GEOGRAM_PSM     
+#ifndef GEOGRAM_PSM
     class Mesh;
 
     enum MeshOrder {
@@ -8565,7 +8565,7 @@ namespace GEO {
     );
 
 #endif
-    
+
     void GEOGRAM_API compute_Hilbert_order(
         index_t total_nb_vertices, const double* vertices,
         vector<index_t>& sorted_indices,
@@ -8573,7 +8573,7 @@ namespace GEO {
         index_t last,
         index_t dimension, index_t stride = 3
     );
-    
+
     void GEOGRAM_API compute_BRIO_order(
         index_t nb_vertices, const double* vertices,
         vector<index_t>& sorted_indices,
@@ -8594,8 +8594,8 @@ namespace GEO {
 	double period = 1.0
     );
 
-    
-    
+
+
 }
 
 #endif
@@ -8622,7 +8622,7 @@ namespace {
         return middle;
     }
 
-    
+
 
     class VertexArray {
     public:
@@ -8657,8 +8657,8 @@ namespace {
         }
         VertexArray vertices;
     };
-    
-    
+
+
 
     template <int COORD, bool UP, class MESH>
     struct Hilbert_vcmp {
@@ -8696,7 +8696,7 @@ namespace {
         const MESH& mesh_;
     };
 
-    
+
 
     template <int COORD, bool UP, class MESH>
     struct Morton_vcmp {
@@ -8714,10 +8714,10 @@ namespace {
         const MESH& mesh_;
     };
 
-    
+
 
 #ifndef GEOGRAM_PSM
-    
+
     template <int COORD, class MESH>
     class Base_fcmp {
     public:
@@ -8731,7 +8731,7 @@ namespace {
             for(index_t c: mesh_.facets.corners(f)) {
                 result += s*mesh_.vertices.point_ptr(
                     mesh_.facet_corners.vertex(c)
-		)[COORD]; 
+		)[COORD];
             }
             return result;
         }
@@ -8780,7 +8780,7 @@ namespace {
         }
     };
 
-    
+
 
     template <int COORD, class MESH>
     class Base_tcmp {
@@ -8843,8 +8843,8 @@ namespace {
         }
     };
 
-    
-    
+
+
     template <int COORD, class MESH>
     class Base_ccmp {
     public:
@@ -8907,9 +8907,9 @@ namespace {
     };
 
 #endif
-    
-    
-    
+
+
+
     template <template <int COORD, bool UP, class MESH> class CMP, class MESH>
     struct HilbertSort3d {
 
@@ -8970,19 +8970,19 @@ namespace {
 
 // Unfortunately we cannot access consts for template arguments in lambdas in all
 // compilers (gcc is OK but not MSVC) so I'm using (ugly) macros here...
-	    
+
 #          define COORDX 0
 #          define COORDY 1
 #          define COORDZ 2
 #          define UPX false
 #          define UPY false
 #          define UPZ false
-	    
+
             m0_ = b;
             m8_ = e;
             m4_ = reorder_split(m0_, m8_, CMP<COORDX, UPX, MESH>(M));
 
-	    
+
 	    parallel(
 		[this]() { m2_ = reorder_split(m0_, m4_, CMP<COORDY,  UPY, MESH>(M_)); },
 		[this]() { m6_ = reorder_split(m4_, m8_, CMP<COORDY, !UPY, MESH>(M_)); }
@@ -9011,7 +9011,7 @@ namespace {
 #          undef COORDZ
 #          undef UPX
 #          undef UPY
-#          undef UPZ	    
+#          undef UPZ
         }
 
     private:
@@ -9020,7 +9020,7 @@ namespace {
             m0_, m1_, m2_, m3_, m4_, m5_, m6_, m7_, m8_;
     };
 
-    
+
 
     template <template <int COORD, bool UP, class MESH> class CMP, class MESH>
     struct HilbertSort2d {
@@ -9071,10 +9071,10 @@ namespace {
         const MESH& M_;
     };
 
-    
+
 
 #ifndef GEOGRAM_PSM
-    
+
     void hilbert_vsort_3d(
         const Mesh& M, vector<index_t>& sorted_indices
     ) {
@@ -9159,8 +9159,8 @@ namespace {
         }
     }
 
-#endif    
-    
+#endif
+
     void compute_BRIO_order_recursive(
         index_t nb_vertices, const double* vertices,
         index_t dimension, index_t stride,
@@ -9211,7 +9211,7 @@ namespace {
 namespace GEO {
 
 #ifndef GEOGRAM_PSM
-    
+
     void mesh_reorder(Mesh& M, MeshOrder order) {
 
         geo_assert(M.vertices.dimension() >= 3);
@@ -9288,7 +9288,7 @@ namespace GEO {
 	    geo_assert_not_reached;
 	}
     }
-    
+
     void compute_BRIO_order(
         index_t nb_vertices, const double* vertices,
         vector<index_t>& sorted_indices,
@@ -9309,9 +9309,9 @@ namespace GEO {
         }
 
         //The next three lines replace the following commented-out line
-        //(random_shuffle is deprecated in C++17, and they call this 
+        //(random_shuffle is deprecated in C++17, and they call this
         // progess...)
-        //std::random_shuffle(sorted_indices.begin(), sorted_indices.end()); 
+        //std::random_shuffle(sorted_indices.begin(), sorted_indices.end());
         std::random_device rng;
         std::mt19937 urng(rng());
         std::shuffle(sorted_indices.begin(), sorted_indices.end(), urng);
@@ -9340,11 +9340,11 @@ namespace {
 	{ -1, -1,  0}, //1  -> 2   -
 	{ -1, -1,  1}, //2  -> 3   -
 	{ -1,  0, -1}, //3  -> 4   -
-	{ -1,  0,  0}, //4  -> 5   - 
+	{ -1,  0,  0}, //4  -> 5   -
 	{ -1,  0,  1}, //5  -> 6   -
 	{ -1,  1, -1}, //6  -> 7   -
 	{ -1,  1,  0}, //7  -> 8   -
-	{ -1,  1,  1}, //8  -> 9   - 
+	{ -1,  1,  1}, //8  -> 9   -
 	{  0, -1, -1}, //9  -> 10  -
 	{  0, -1,  0}, //10 -> 11  -
 	{  0, -1,  1}, //11 -> 12  -
@@ -9365,7 +9365,7 @@ namespace {
 	{  1,  1,  1}  //26 -> 26  +
     };
 
-    
+
     class PeriodicVertexArray3d {
     public:
         PeriodicVertexArray3d(
@@ -9379,7 +9379,7 @@ namespace {
 	    nb_real_vertices_ = nb_vertices_ / 27;
 	    geo_debug_assert(nb_vertices % 27 == 0);
 
-	    
+
 	    for(index_t i=0; i<27; ++i) {
 		for(index_t j=0; j<3; ++j) {
 		    xlat_[i][j] = period * double(Periodic_translation[i][j]);
@@ -9408,7 +9408,7 @@ namespace {
             const double* base, index_t stride, double period
 	) : vertices(nb_vertices, base, stride, period) {
         }
-	
+
         PeriodicVertexArray3d vertices;
     };
 
@@ -9441,7 +9441,7 @@ namespace {
         }
         const PeriodicVertexMesh3d& mesh_;
     };
-    
+
 }
 
 namespace GEO {
@@ -9455,12 +9455,12 @@ namespace GEO {
 	vector<index_t>::iterator e,
 	double period
     ) {
-	geo_assert(dimension == 3); // Only implemented for 3D.	
+	geo_assert(dimension == 3); // Only implemented for 3D.
 	geo_argused(sorted_indices); // Accessed through b and e.
 
-       
+
         //The next three lines replace the following commented-out line
-        //(random_shuffle is deprecated in C++17, and they call this 
+        //(random_shuffle is deprecated in C++17, and they call this
         // progress...)
         // std::random_shuffle(b,e);
         std::random_device rng;
@@ -9560,7 +9560,7 @@ namespace GEO {
 #endif
     }
 
-    
+
 
     class GEOGRAM_API expansion {
     public:
@@ -9623,7 +9623,7 @@ namespace GEO {
         // cppcheck does not understand that the result
         // of alloca() is passed to the placement syntax
         // of operator new.
-    expansion& new_expansion_on_stack(index_t capa);         
+    expansion& new_expansion_on_stack(index_t capa);
 #else
 #define new_expansion_on_stack(capa)                           \
     (new (alloca(expansion::bytes(capa)))expansion(capa))
@@ -9640,7 +9640,7 @@ namespace GEO {
 	    x_[0] = a;
 	    return *this;
 	}
-	
+
         static index_t sum_capacity(double a, double b) {
             geo_argused(a);
             geo_argused(b);
@@ -9858,7 +9858,7 @@ namespace GEO {
         expansion& assign_length2(
             const expansion& x, const expansion& y, const expansion& z
         );
-        
+
         // =============== some general purpose functions =========
 
         static void initialize();
@@ -9934,7 +9934,7 @@ namespace GEO {
 #define expansion_create(a)	      \
     new_expansion_on_stack(1)->assign(a)
 
-    
+
 #define expansion_sum(a, b)            \
     new_expansion_on_stack(           \
         expansion::sum_capacity(a, b)   \
@@ -10005,14 +10005,14 @@ namespace GEO {
     new_expansion_on_stack(                   \
        expansion::length2_capacity(x,y,z)     \
     )->assign_length2(x,y,z)
-    
-    
+
+
 
     Sign GEOGRAM_API sign_of_expansion_determinant(
-        const expansion& a00,const expansion& a01,  
+        const expansion& a00,const expansion& a01,
         const expansion& a10,const expansion& a11
     );
-    
+
     Sign GEOGRAM_API sign_of_expansion_determinant(
         const expansion& a00,const expansion& a01,const expansion& a02,
         const expansion& a10,const expansion& a11,const expansion& a12,
@@ -10027,10 +10027,10 @@ namespace GEO {
         const expansion& a20,const expansion& a21,
         const expansion& a22,const expansion& a23,
         const expansion& a30,const expansion& a31,
-        const expansion& a32,const expansion& a33 
+        const expansion& a32,const expansion& a33
     );
-    
-    
+
+
 }
 
 #endif
@@ -10051,8 +10051,8 @@ namespace {
 
     using namespace GEO;
 
-    
-    
+
+
     bool expansion_length_stat_ = false;
     std::vector<index_t> expansion_length_histo_;
 
@@ -10068,7 +10068,7 @@ namespace {
 
     ExpansionStatsDisplay expansion_stats_display_;
 
-    
+
 
     class Pools {
     public:
@@ -10104,10 +10104,10 @@ namespace {
             pools_[size] = ptr;
         }
 
-        
+
     protected:
         static const index_t POOL_CHUNK_SIZE = 512;
-        
+
         void new_chunk(size_t size_in) {
             size_t size = (size_in / 8 + 1)*8; // Align memory.
             Memory::pointer chunk = new Memory::byte[size * POOL_CHUNK_SIZE];
@@ -10122,32 +10122,32 @@ namespace {
             chunks_.push_back(chunk);
         }
 
-        
+
     private:
         std::vector<void*> pools_;
-        
+
         std::vector<Memory::pointer> chunks_;
 
     };
 
     static Pools pools_;
-    
-    
-    
+
+
+
     inline void fast_two_sum(double a, double b, double& x, double& y) {
         x = a + b;
         double bvirt = x - a;
         y = b - bvirt;
     }
 
-#ifdef REMOVE_ME        
+#ifdef REMOVE_ME
     inline void fast_two_diff(double a, double b, double& x, double& y) {
         x = a - b;
         double bvirt = a - x;
         y = bvirt - b;
     }
 #endif
-    
+
     inline void two_one_sum(
         double a1, double a0, double b, double& x2, double& x1, double& x0
     ) {
@@ -10544,7 +10544,7 @@ namespace GEO {
     }
 
     static Process::spinlock expansions_lock = GEOGRAM_SPINLOCK_INIT;
-    
+
     expansion* expansion::new_expansion_on_heap(index_t capa) {
 	Process::acquire_spinlock(expansions_lock);
         if(expansion_length_stat_) {
@@ -10562,9 +10562,9 @@ namespace GEO {
     }
 
     void expansion::delete_expansion_on_heap(expansion* e) {
-	Process::acquire_spinlock(expansions_lock);	
+	Process::acquire_spinlock(expansions_lock);
         pools_.free(e, expansion::bytes(e->capacity()));
-	Process::release_spinlock(expansions_lock);	
+	Process::release_spinlock(expansions_lock);
     }
 
     // ====== Initialization from expansion and double ===============
@@ -10799,7 +10799,7 @@ namespace GEO {
             expansion& d1 = expansion_dot_at(p1, p2, p0, dim1);
             expansion& d2 = expansion_dot_at(p1_2, p2_2, p0_2, dim2);
             this->assign_sum(d1, d2);
-        } 
+        }
         return *this;
     }
 
@@ -10812,11 +10812,11 @@ namespace GEO {
         this->assign_sum(x2,y2,z2);
         return *this;
     }
-    
-    
+
+
 
     Sign sign_of_expansion_determinant(
-        const expansion& a00,const expansion& a01,  
+        const expansion& a00,const expansion& a01,
         const expansion& a10,const expansion& a11
     ) {
         const expansion& result = expansion_det2x2(a00, a01, a10, a11);
@@ -10830,7 +10830,7 @@ namespace GEO {
     ) {
         // First compute the det2x2
         const expansion& m01 =
-            expansion_det2x2(a00, a10, a01, a11); 
+            expansion_det2x2(a00, a10, a01, a11);
         const expansion& m02 =
             expansion_det2x2(a00, a20, a01, a21);
         const expansion& m12 =
@@ -10844,7 +10844,7 @@ namespace GEO {
         const expansion& result = expansion_sum3(z1,z2,z3);
         return result.sign();
     }
-    
+
     Sign sign_of_expansion_determinant(
         const expansion& a00,const expansion& a01,
         const expansion& a02,const expansion& a03,
@@ -10853,10 +10853,10 @@ namespace GEO {
         const expansion& a20,const expansion& a21,
         const expansion& a22,const expansion& a23,
         const expansion& a30,const expansion& a31,
-        const expansion& a32,const expansion& a33 
+        const expansion& a32,const expansion& a33
     ) {
 
-        // First compute the det2x2        
+        // First compute the det2x2
         const expansion& m01 =
             expansion_det2x2(a10,a00,a11,a01);
         const expansion& m02 =
@@ -10868,8 +10868,8 @@ namespace GEO {
         const expansion& m13 =
             expansion_det2x2(a30,a10,a31,a11);
         const expansion& m23 =
-            expansion_det2x2(a30,a20,a31,a21);     
-        
+            expansion_det2x2(a30,a20,a31,a21);
+
         // Now compute the minors of rank 3
         const expansion& m012_1 = expansion_product(m12,a02);
         expansion& m012_2 = expansion_product(m02,a12); m012_2.negate();
@@ -10878,10 +10878,10 @@ namespace GEO {
 
         const expansion& m013_1 = expansion_product(m13,a02);
         expansion& m013_2 = expansion_product(m03,a12); m013_2.negate();
-        
+
         const expansion& m013_3 = expansion_product(m01,a32);
         const expansion& m013 = expansion_sum3(m013_1, m013_2, m013_3);
-        
+
         const expansion& m023_1 = expansion_product(m23,a02);
         expansion& m023_2 = expansion_product(m03,a22); m023_2.negate();
         const expansion& m023_3 = expansion_product(m02,a32);
@@ -10891,7 +10891,7 @@ namespace GEO {
         expansion& m123_2 = expansion_product(m13,a22); m123_2.negate();
         const expansion& m123_3 = expansion_product(m12,a32);
         const expansion& m123 = expansion_sum3(m123_1, m123_2, m123_3);
-        
+
         // Now compute the minors of rank 4
         const expansion& m0123_1 = expansion_product(m123,a03);
         const expansion& m0123_2 = expansion_product(m023,a13);
@@ -10904,9 +10904,9 @@ namespace GEO {
         const expansion& result = expansion_diff(z1,z2);
         return result.sign();
     }
-    
-    
-    
+
+
+
 }
 
 
@@ -10931,44 +10931,44 @@ inline int side1_3d_filter( const double* p0, const double* p1, const double* q0
     if( (max1 < fabs(p0_1_p1_1)) )
     {
         max1 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max1 < fabs(p0_2_p1_2)) )
     {
         max1 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     double max2 = fabs(p0_0_p1_0);
     if( (max2 < fabs(p0_1_p1_1)) )
     {
         max2 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max2 < fabs(p0_2_p1_2)) )
     {
         max2 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max2 < fabs(q0_0_p0_0)) )
     {
         max2 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -10976,43 +10976,43 @@ inline int side1_3d_filter( const double* p0, const double* p1, const double* q0
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.23755023300058943229e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.44425370757048798480e-15 * (max1 * max2));
         if( (r > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 inline int side1_4d_filter( const double* p0, const double* p1, const double* q0) {
@@ -11037,60 +11037,60 @@ inline int side1_4d_filter( const double* p0, const double* p1, const double* q0
     if( (max1 < fabs(p0_0_p1_0)) )
     {
         max1 = fabs(p0_0_p1_0);
-    } 
+    }
     if( (max1 < fabs(p0_1_p1_1)) )
     {
         max1 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max1 < fabs(p0_2_p1_2)) )
     {
         max1 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max1 < fabs(p0_3_p1_3)) )
     {
         max1 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     double max2 = fabs(p0_0_p1_0);
     if( (max2 < fabs(p0_1_p1_1)) )
     {
         max2 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max2 < fabs(p0_2_p1_2)) )
     {
         max2 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max2 < fabs(p0_3_p1_3)) )
     {
         max2 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max2 < fabs(q0_0_p0_0)) )
     {
         max2 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max2;
@@ -11098,43 +11098,43 @@ inline int side1_4d_filter( const double* p0, const double* p1, const double* q0
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.85816790703293534018e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (6.44428177279185717888e-15 * (max1 * max2));
         if( (r > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 inline int side1_6d_filter( const double* p0, const double* p1, const double* q0) {
@@ -11165,92 +11165,92 @@ inline int side1_6d_filter( const double* p0, const double* p1, const double* q0
     if( (max1 < fabs(p0_1_p1_1)) )
     {
         max1 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max1 < fabs(p0_2_p1_2)) )
     {
         max1 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max1 < fabs(p0_3_p1_3)) )
     {
         max1 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max1 < fabs(p0_4_p1_4)) )
     {
         max1 = fabs(p0_4_p1_4);
-    } 
+    }
     if( (max1 < fabs(p0_5_p1_5)) )
     {
         max1 = fabs(p0_5_p1_5);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     double max2 = fabs(p0_0_p1_0);
     if( (max2 < fabs(p0_1_p1_1)) )
     {
         max2 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max2 < fabs(p0_2_p1_2)) )
     {
         max2 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max2 < fabs(p0_3_p1_3)) )
     {
         max2 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max2 < fabs(p0_4_p1_4)) )
     {
         max2 = fabs(p0_4_p1_4);
-    } 
+    }
     if( (max2 < fabs(p0_5_p1_5)) )
     {
         max2 = fabs(p0_5_p1_5);
-    } 
+    }
     if( (max2 < fabs(q0_0_p0_0)) )
     {
         max2 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q0_4_p0_4)) )
     {
         max2 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q0_5_p0_5)) )
     {
         max2 = fabs(q0_5_p0_5);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -11258,43 +11258,43 @@ inline int side1_6d_filter( const double* p0, const double* p1, const double* q0
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.41511993781011659868e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.11111223981318615596e-14 * (max1 * max2));
         if( (r > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 inline int side1_7d_filter( const double* p0, const double* p1, const double* q0) {
@@ -11328,108 +11328,108 @@ inline int side1_7d_filter( const double* p0, const double* p1, const double* q0
     if( (max1 < fabs(p0_1_p1_1)) )
     {
         max1 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max1 < fabs(p0_2_p1_2)) )
     {
         max1 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max1 < fabs(p0_3_p1_3)) )
     {
         max1 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max1 < fabs(p0_4_p1_4)) )
     {
         max1 = fabs(p0_4_p1_4);
-    } 
+    }
     if( (max1 < fabs(p0_5_p1_5)) )
     {
         max1 = fabs(p0_5_p1_5);
-    } 
+    }
     if( (max1 < fabs(p0_6_p1_6)) )
     {
         max1 = fabs(p0_6_p1_6);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max1 < fabs(p1_6_p0_6)) )
     {
         max1 = fabs(p1_6_p0_6);
-    } 
+    }
     double max2 = fabs(p0_0_p1_0);
     if( (max2 < fabs(p0_1_p1_1)) )
     {
         max2 = fabs(p0_1_p1_1);
-    } 
+    }
     if( (max2 < fabs(p0_2_p1_2)) )
     {
         max2 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max2 < fabs(p0_3_p1_3)) )
     {
         max2 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max2 < fabs(p0_4_p1_4)) )
     {
         max2 = fabs(p0_4_p1_4);
-    } 
+    }
     if( (max2 < fabs(p0_5_p1_5)) )
     {
         max2 = fabs(p0_5_p1_5);
-    } 
+    }
     if( (max2 < fabs(p0_6_p1_6)) )
     {
         max2 = fabs(p0_6_p1_6);
-    } 
+    }
     if( (max2 < fabs(q0_0_p0_0)) )
     {
         max2 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q0_4_p0_4)) )
     {
         max2 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q0_5_p0_5)) )
     {
         max2 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q0_6_p0_6)) )
     {
         max2 = fabs(q0_6_p0_6);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -11437,43 +11437,43 @@ inline int side1_7d_filter( const double* p0, const double* p1, const double* q0
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.27080861580266953580e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.37779349582504943796e-14 * (max1 * max2));
         if( (r > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 inline int side1_8d_filter( const double* p0, const double* p1, const double* q0) {
@@ -11510,124 +11510,124 @@ inline int side1_8d_filter( const double* p0, const double* p1, const double* q0
     if( (max1 < fabs(p0_2_p1_2)) )
     {
         max1 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p0_0_p1_0)) )
     {
         max1 = fabs(p0_0_p1_0);
-    } 
+    }
     if( (max1 < fabs(p0_3_p1_3)) )
     {
         max1 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max1 < fabs(p0_4_p1_4)) )
     {
         max1 = fabs(p0_4_p1_4);
-    } 
+    }
     if( (max1 < fabs(p0_5_p1_5)) )
     {
         max1 = fabs(p0_5_p1_5);
-    } 
+    }
     if( (max1 < fabs(p0_6_p1_6)) )
     {
         max1 = fabs(p0_6_p1_6);
-    } 
+    }
     if( (max1 < fabs(p0_7_p1_7)) )
     {
         max1 = fabs(p0_7_p1_7);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max1 < fabs(p1_6_p0_6)) )
     {
         max1 = fabs(p1_6_p0_6);
-    } 
+    }
     if( (max1 < fabs(p1_7_p0_7)) )
     {
         max1 = fabs(p1_7_p0_7);
-    } 
+    }
     double max2 = fabs(p0_1_p1_1);
     if( (max2 < fabs(p0_2_p1_2)) )
     {
         max2 = fabs(p0_2_p1_2);
-    } 
+    }
     if( (max2 < fabs(p0_0_p1_0)) )
     {
         max2 = fabs(p0_0_p1_0);
-    } 
+    }
     if( (max2 < fabs(p0_3_p1_3)) )
     {
         max2 = fabs(p0_3_p1_3);
-    } 
+    }
     if( (max2 < fabs(p0_4_p1_4)) )
     {
         max2 = fabs(p0_4_p1_4);
-    } 
+    }
     if( (max2 < fabs(p0_5_p1_5)) )
     {
         max2 = fabs(p0_5_p1_5);
-    } 
+    }
     if( (max2 < fabs(p0_6_p1_6)) )
     {
         max2 = fabs(p0_6_p1_6);
-    } 
+    }
     if( (max2 < fabs(p0_7_p1_7)) )
     {
         max2 = fabs(p0_7_p1_7);
-    } 
+    }
     if( (max2 < fabs(q0_0_p0_0)) )
     {
         max2 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q0_4_p0_4)) )
     {
         max2 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q0_5_p0_5)) )
     {
         max2 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q0_6_p0_6)) )
     {
         max2 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max2 < fabs(q0_7_p0_7)) )
     {
         max2 = fabs(q0_7_p0_7);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -11635,43 +11635,43 @@ inline int side1_8d_filter( const double* p0, const double* p1, const double* q0
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.15542931091530087067e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.66670090166682227006e-14 * (max1 * max2));
         if( (r > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/side2.h *******/
@@ -11714,32 +11714,32 @@ inline int side2_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     double max2 = fabs(q0_0_p0_0);
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_2_p0_2)) )
     {
         max2 = fabs(q1_2_p0_2);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -11749,64 +11749,64 @@ inline int side2_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.23755023300058943229e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 3.74144419156711063983e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.44425370757048798480e-15 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max3 = max1;
     if( (max3 < max2) )
     {
         max3 = max2;
-    } 
+    }
     double max4 = max2;
     if( (max4 < fabs(p2_0_p0_0)) )
     {
         max4 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(p2_1_p0_1)) )
     {
         max4 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(p2_2_p0_2)) )
     {
         max4 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max3 < max4) )
     {
         max3 = max4;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max1;
@@ -11814,48 +11814,48 @@ inline int side2_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
+    }
     if( (lower_bound_1 < 2.22985945097100191780e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 3.74144419156711063983e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.99983341597279045654e-14 * (((max1 * max4) * max4) * max3));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side2_4d_filter( const double* p0, const double* p1, const double* p2, const double* q0, const double* q1) {
@@ -11900,44 +11900,44 @@ inline int side2_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     double max2 = fabs(q0_0_p0_0);
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_2_p0_2)) )
     {
         max2 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q1_3_p0_3)) )
     {
         max2 = fabs(q1_3_p0_3);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -11947,68 +11947,68 @@ inline int side2_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.85816790703293534018e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (6.44428177279185717888e-15 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max3 = max1;
     if( (max3 < max2) )
     {
         max3 = max2;
-    } 
+    }
     double max4 = max2;
     if( (max4 < fabs(p2_0_p0_0)) )
     {
         max4 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(p2_2_p0_2)) )
     {
         max4 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(p2_1_p0_1)) )
     {
         max4 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(p2_3_p0_3)) )
     {
         max4 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max3 < max4) )
     {
         max3 = max4;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max3;
@@ -12016,41 +12016,41 @@ inline int side2_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
+    }
     if( (lower_bound_1 < 1.89528395402941802921e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.72443682410932010423e-13 * (((max1 * max4) * max4) * max3));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side2_6d_filter( const double* p0, const double* p1, const double* p2, const double* q0, const double* q1) {
@@ -12103,68 +12103,68 @@ inline int side2_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     double max2 = fabs(q0_0_p0_0);
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q0_4_p0_4)) )
     {
         max2 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q0_5_p0_5)) )
     {
         max2 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_2_p0_2)) )
     {
         max2 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q1_3_p0_3)) )
     {
         max2 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q1_4_p0_4)) )
     {
         max2 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q1_5_p0_5)) )
     {
         max2 = fabs(q1_5_p0_5);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -12174,76 +12174,76 @@ inline int side2_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.41511993781011659868e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.11111223981318615596e-14 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max3 = max1;
     if( (max3 < max2) )
     {
         max3 = max2;
-    } 
+    }
     double max4 = max2;
     if( (max4 < fabs(p2_2_p0_2)) )
     {
         max4 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(p2_4_p0_4)) )
     {
         max4 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(p2_3_p0_3)) )
     {
         max4 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(p2_0_p0_0)) )
     {
         max4 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(p2_1_p0_1)) )
     {
         max4 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(p2_5_p0_5)) )
     {
         max4 = fabs(p2_5_p0_5);
-    } 
+    }
     if( (max3 < max4) )
     {
         max3 = max4;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max1;
@@ -12251,48 +12251,48 @@ inline int side2_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
+    }
     if( (lower_bound_1 < 1.49958502193059513986e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.40007476026584016994e-13 * (((max1 * max4) * max4) * max3));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side2_7d_filter( const double* p0, const double* p1, const double* p2, const double* q0, const double* q1) {
@@ -12349,80 +12349,80 @@ inline int side2_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max1 < fabs(p1_6_p0_6)) )
     {
         max1 = fabs(p1_6_p0_6);
-    } 
+    }
     double max2 = fabs(q0_0_p0_0);
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q0_4_p0_4)) )
     {
         max2 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q0_5_p0_5)) )
     {
         max2 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q0_6_p0_6)) )
     {
         max2 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_2_p0_2)) )
     {
         max2 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q1_3_p0_3)) )
     {
         max2 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q1_4_p0_4)) )
     {
         max2 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q1_5_p0_5)) )
     {
         max2 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q1_6_p0_6)) )
     {
         max2 = fabs(q1_6_p0_6);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -12432,80 +12432,80 @@ inline int side2_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.27080861580266953580e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.37779349582504943796e-14 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max3 = max1;
     if( (max3 < max2) )
     {
         max3 = max2;
-    } 
+    }
     double max4 = max2;
     if( (max4 < fabs(p2_0_p0_0)) )
     {
         max4 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(p2_1_p0_1)) )
     {
         max4 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(p2_2_p0_2)) )
     {
         max4 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(p2_3_p0_3)) )
     {
         max4 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(p2_4_p0_4)) )
     {
         max4 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(p2_5_p0_5)) )
     {
         max4 = fabs(p2_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(p2_6_p0_6)) )
     {
         max4 = fabs(p2_6_p0_6);
-    } 
+    }
     if( (max3 < max4) )
     {
         max3 = max4;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max1;
@@ -12513,48 +12513,48 @@ inline int side2_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
+    }
     if( (lower_bound_1 < 1.36918881183883509035e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (6.33127335329798996022e-13 * (((max1 * max4) * max4) * max3));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side2_8d_filter( const double* p0, const double* p1, const double* p2, const double* q0, const double* q1) {
@@ -12615,92 +12615,92 @@ inline int side2_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_7_p0_7)) )
     {
         max1 = fabs(p1_7_p0_7);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_6_p0_6)) )
     {
         max1 = fabs(p1_6_p0_6);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     double max2 = fabs(q0_0_p0_0);
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q0_2_p0_2)) )
     {
         max2 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q0_3_p0_3)) )
     {
         max2 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q0_4_p0_4)) )
     {
         max2 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q0_5_p0_5)) )
     {
         max2 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q0_6_p0_6)) )
     {
         max2 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max2 < fabs(q0_7_p0_7)) )
     {
         max2 = fabs(q0_7_p0_7);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_2_p0_2)) )
     {
         max2 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q1_3_p0_3)) )
     {
         max2 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(q1_4_p0_4)) )
     {
         max2 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(q1_5_p0_5)) )
     {
         max2 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(q1_6_p0_6)) )
     {
         max2 = fabs(q1_6_p0_6);
-    } 
+    }
     if( (max2 < fabs(q1_7_p0_7)) )
     {
         max2 = fabs(q1_7_p0_7);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -12710,84 +12710,84 @@ inline int side2_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.15542931091530087067e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.66670090166682227006e-14 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max3 = max2;
     if( (max3 < max1) )
     {
         max3 = max1;
-    } 
+    }
     double max4 = max2;
     if( (max4 < fabs(p2_4_p0_4)) )
     {
         max4 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(p2_2_p0_2)) )
     {
         max4 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(p2_0_p0_0)) )
     {
         max4 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(p2_1_p0_1)) )
     {
         max4 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(p2_3_p0_3)) )
     {
         max4 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(p2_5_p0_5)) )
     {
         max4 = fabs(p2_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(p2_6_p0_6)) )
     {
         max4 = fabs(p2_6_p0_6);
-    } 
+    }
     if( (max4 < fabs(p2_7_p0_7)) )
     {
         max4 = fabs(p2_7_p0_7);
-    } 
+    }
     if( (max3 < max4) )
     {
         max3 = max4;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max1;
@@ -12795,48 +12795,48 @@ inline int side2_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
+    }
     if( (lower_bound_1 < 1.26419510663115923609e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.87072209578355531992e+50) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.71140112255785451890e-13 * (((max1 * max4) * max4) * max3));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/side3.h *******/
@@ -12911,33 +12911,33 @@ inline int side3_2d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p2_1_p0_1)) )
     {
         max1 = fabs(p2_1_p0_1);
-    } 
+    }
     double max2 = fabs(q0_0_p0_0);
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q2_0_p0_0)) )
     {
         max2 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q2_1_p0_1)) )
     {
         max2 = fabs(q2_1_p0_1);
-    } 
+    }
     double max3 = fabs(p1_0_p0_0);
     if( (max3 < fabs(p1_1_p0_1)) )
     {
         max3 = fabs(p1_1_p0_1);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -12947,101 +12947,101 @@ inline int side3_2d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.79532528033945620759e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 2.59614842926741294957e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (3.64430756537603111258e-14 * (((max3 * max2) * max1) * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4 = max2;
     if( (max4 < max1) )
     {
         max4 = max1;
-    } 
+    }
     if( (max4 < max3) )
     {
         max4 = max3;
-    } 
+    }
     double max5 = max2;
     if( (max5 < max3) )
     {
         max5 = max3;
-    } 
+    }
     double max6 = max2;
     if( (max6 < max3) )
     {
         max6 = max3;
-    } 
+    }
     if( (max5 < max6) )
     {
         max5 = max6;
-    } 
+    }
     double max7 = max3;
     if( (max7 < fabs(p3_1_p0_1)) )
     {
         max7 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max7 < fabs(p3_0_p0_0)) )
     {
         max7 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max5 < max7) )
     {
         max5 = max7;
-    } 
+    }
     if( (max4 < max5) )
     {
         max4 = max5;
-    } 
+    }
     if( (max4 < max6) )
     {
         max4 = max6;
-    } 
+    }
     if( (max4 < max7) )
     {
         max4 = max7;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max2;
@@ -13049,60 +13049,60 @@ inline int side3_2d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
+    }
     if( (lower_bound_1 < 6.01986729486167248087e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 2.59614842926741294957e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.67544471613800658534e-13 * (((((max7 * max2) * max1) * max6) * max5) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side3_3d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* q0, const double* q1, const double* q2) {
@@ -13181,53 +13181,53 @@ inline int side3_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     double max2 = fabs(q0_2_p0_2);
     if( (max2 < fabs(q0_0_p0_0)) )
     {
         max2 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q0_1_p0_1)) )
     {
         max2 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_0_p0_0)) )
     {
         max2 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q1_1_p0_1)) )
     {
         max2 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q1_2_p0_2)) )
     {
         max2 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(q2_0_p0_0)) )
     {
         max2 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(q2_1_p0_1)) )
     {
         max2 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(q2_2_p0_2)) )
     {
         max2 = fabs(q2_2_p0_2);
-    } 
+    }
     double max3 = fabs(p2_2_p0_2);
     if( (max3 < fabs(p2_0_p0_0)) )
     {
         max3 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(p2_1_p0_1)) )
     {
         max3 = fabs(p2_1_p0_1);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -13237,105 +13237,105 @@ inline int side3_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.22985945097100191780e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 2.59614842926741294957e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.99983341597279045654e-14 * (((max1 * max2) * max3) * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4 = max1;
     if( (max4 < max2) )
     {
         max4 = max2;
-    } 
+    }
     if( (max4 < max3) )
     {
         max4 = max3;
-    } 
+    }
     double max5 = max1;
     if( (max5 < max2) )
     {
         max5 = max2;
-    } 
+    }
     double max6 = max1;
     if( (max6 < fabs(p3_0_p0_0)) )
     {
         max6 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(p3_1_p0_1)) )
     {
         max6 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(p3_2_p0_2)) )
     {
         max6 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max5 < max6) )
     {
         max5 = max6;
-    } 
+    }
     double max7 = max1;
     if( (max7 < max2) )
     {
         max7 = max2;
-    } 
+    }
     if( (max5 < max7) )
     {
         max5 = max7;
-    } 
+    }
     if( (max4 < max5) )
     {
         max4 = max5;
-    } 
+    }
     if( (max4 < max6) )
     {
         max4 = max6;
-    } 
+    }
     if( (max4 < max7) )
     {
         max4 = max7;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max2;
@@ -13343,60 +13343,60 @@ inline int side3_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
+    }
     if( (lower_bound_1 < 4.84416636653081796592e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 2.59614842926741294957e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.72198804259438718181e-12 * (((((max6 * max2) * max3) * max7) * max5) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side3_4d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* q0, const double* q1, const double* q2) {
@@ -13481,73 +13481,73 @@ inline int side3_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     double max2 = fabs(p2_3_p0_3);
     if( (max2 < fabs(p2_2_p0_2)) )
     {
         max2 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p2_0_p0_0)) )
     {
         max2 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(p2_1_p0_1)) )
     {
         max2 = fabs(p2_1_p0_1);
-    } 
+    }
     double max3 = fabs(q0_1_p0_1);
     if( (max3 < fabs(q0_0_p0_0)) )
     {
         max3 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q0_2_p0_2)) )
     {
         max3 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q0_3_p0_3)) )
     {
         max3 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q1_0_p0_0)) )
     {
         max3 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q1_1_p0_1)) )
     {
         max3 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q1_2_p0_2)) )
     {
         max3 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q1_3_p0_3)) )
     {
         max3 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q2_0_p0_0)) )
     {
         max3 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q2_1_p0_1)) )
     {
         max3 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q2_2_p0_2)) )
     {
         max3 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q2_3_p0_3)) )
     {
         max3 = fabs(q2_3_p0_3);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -13557,52 +13557,52 @@ inline int side3_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.89528395402941802921e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.72443682410931985179e-13 * (((max1 * max3) * max2) * max3));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4 = max1;
     double max5 = max1;
@@ -13610,56 +13610,56 @@ inline int side3_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max6 < fabs(p3_0_p0_0)) )
     {
         max6 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(p3_3_p0_3)) )
     {
         max6 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(p3_2_p0_2)) )
     {
         max6 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(p3_1_p0_1)) )
     {
         max6 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max5 < max6) )
     {
         max5 = max6;
-    } 
+    }
     if( (max5 < max3) )
     {
         max5 = max3;
-    } 
+    }
     double max7 = max1;
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     if( (max5 < max7) )
     {
         max5 = max7;
-    } 
+    }
     if( (max4 < max5) )
     {
         max4 = max5;
-    } 
+    }
     if( (max4 < max6) )
     {
         max4 = max6;
-    } 
+    }
     if( (max4 < max2) )
     {
         max4 = max2;
-    } 
+    }
     if( (max4 < max3) )
     {
         max4 = max3;
-    } 
+    }
     if( (max4 < max7) )
     {
         max4 = max7;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max5;
@@ -13667,60 +13667,60 @@ inline int side3_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
+    }
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
+    }
     if( (lower_bound_1 < 4.14607644401726239868e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.38046888801178809320e-12 * (((((max6 * max3) * max2) * max7) * max5) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side3_6d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* q0, const double* q1, const double* q2) {
@@ -13817,113 +13817,113 @@ inline int side3_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     double max2 = fabs(p2_0_p0_0);
     if( (max2 < fabs(p2_1_p0_1)) )
     {
         max2 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p2_2_p0_2)) )
     {
         max2 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p2_3_p0_3)) )
     {
         max2 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p2_4_p0_4)) )
     {
         max2 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(p2_5_p0_5)) )
     {
         max2 = fabs(p2_5_p0_5);
-    } 
+    }
     double max3 = fabs(q0_0_p0_0);
     if( (max3 < fabs(q0_1_p0_1)) )
     {
         max3 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q0_2_p0_2)) )
     {
         max3 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q0_3_p0_3)) )
     {
         max3 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q0_4_p0_4)) )
     {
         max3 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q0_5_p0_5)) )
     {
         max3 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q1_0_p0_0)) )
     {
         max3 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q1_1_p0_1)) )
     {
         max3 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q1_2_p0_2)) )
     {
         max3 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q1_3_p0_3)) )
     {
         max3 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q1_4_p0_4)) )
     {
         max3 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q1_5_p0_5)) )
     {
         max3 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q2_0_p0_0)) )
     {
         max3 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q2_1_p0_1)) )
     {
         max3 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q2_2_p0_2)) )
     {
         max3 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q2_3_p0_3)) )
     {
         max3 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q2_4_p0_4)) )
     {
         max3 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q2_5_p0_5)) )
     {
         max3 = fabs(q2_5_p0_5);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -13933,117 +13933,117 @@ inline int side3_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.49958502193059513986e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.40007476026583916019e-13 * (((max1 * max3) * max2) * max3));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4 = max1;
     if( (max4 < max2) )
     {
         max4 = max2;
-    } 
+    }
     if( (max4 < max3) )
     {
         max4 = max3;
-    } 
+    }
     double max5 = max1;
     if( (max5 < fabs(p3_1_p0_1)) )
     {
         max5 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(p3_2_p0_2)) )
     {
         max5 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(p3_0_p0_0)) )
     {
         max5 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(p3_3_p0_3)) )
     {
         max5 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(p3_4_p0_4)) )
     {
         max5 = fabs(p3_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(p3_5_p0_5)) )
     {
         max5 = fabs(p3_5_p0_5);
-    } 
+    }
     if( (max4 < max5) )
     {
         max4 = max5;
-    } 
+    }
     double max6 = max1;
     if( (max6 < max3) )
     {
         max6 = max3;
-    } 
+    }
     if( (max6 < max5) )
     {
         max6 = max5;
-    } 
+    }
     double max7 = max1;
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     if( (max6 < max7) )
     {
         max6 = max7;
-    } 
+    }
     if( (max4 < max6) )
     {
         max4 = max6;
-    } 
+    }
     if( (max4 < max7) )
     {
         max4 = max7;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max2;
@@ -14051,60 +14051,60 @@ inline int side3_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
+    }
     if( (lower_bound_1 < 3.31864264949884013629e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.66564133587113197628e-11 * (((((max5 * max3) * max2) * max7) * max6) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side3_7d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* q0, const double* q1, const double* q2) {
@@ -14207,133 +14207,133 @@ inline int side3_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_6_p0_6)) )
     {
         max1 = fabs(p1_6_p0_6);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     double max2 = fabs(p2_0_p0_0);
     if( (max2 < fabs(p2_1_p0_1)) )
     {
         max2 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p2_2_p0_2)) )
     {
         max2 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p2_3_p0_3)) )
     {
         max2 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p2_4_p0_4)) )
     {
         max2 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(p2_5_p0_5)) )
     {
         max2 = fabs(p2_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(p2_6_p0_6)) )
     {
         max2 = fabs(p2_6_p0_6);
-    } 
+    }
     double max3 = fabs(q0_0_p0_0);
     if( (max3 < fabs(q0_1_p0_1)) )
     {
         max3 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q0_2_p0_2)) )
     {
         max3 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q0_3_p0_3)) )
     {
         max3 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q0_4_p0_4)) )
     {
         max3 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q0_5_p0_5)) )
     {
         max3 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q0_6_p0_6)) )
     {
         max3 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(q1_0_p0_0)) )
     {
         max3 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q1_1_p0_1)) )
     {
         max3 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q1_2_p0_2)) )
     {
         max3 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q1_3_p0_3)) )
     {
         max3 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q1_4_p0_4)) )
     {
         max3 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q1_5_p0_5)) )
     {
         max3 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q1_6_p0_6)) )
     {
         max3 = fabs(q1_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(q2_0_p0_0)) )
     {
         max3 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q2_1_p0_1)) )
     {
         max3 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q2_2_p0_2)) )
     {
         max3 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q2_3_p0_3)) )
     {
         max3 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q2_4_p0_4)) )
     {
         max3 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q2_5_p0_5)) )
     {
         max3 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q2_6_p0_6)) )
     {
         max3 = fabs(q2_6_p0_6);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -14343,122 +14343,122 @@ inline int side3_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.36918881183883509035e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (6.33127335329798996022e-13 * (((max1 * max3) * max2) * max3));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4;
     double max7 = max1;
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     max4 = max7;
     if( (max4 < max2) )
     {
         max4 = max2;
-    } 
+    }
     double max5 = max1;
     if( (max5 < fabs(p3_0_p0_0)) )
     {
         max5 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(p3_1_p0_1)) )
     {
         max5 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(p3_2_p0_2)) )
     {
         max5 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(p3_3_p0_3)) )
     {
         max5 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(p3_4_p0_4)) )
     {
         max5 = fabs(p3_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(p3_5_p0_5)) )
     {
         max5 = fabs(p3_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(p3_6_p0_6)) )
     {
         max5 = fabs(p3_6_p0_6);
-    } 
+    }
     if( (max4 < max5) )
     {
         max4 = max5;
-    } 
+    }
     if( (max4 < max1) )
     {
         max4 = max1;
-    } 
+    }
     if( (max4 < max3) )
     {
         max4 = max3;
-    } 
+    }
     double max6 = max7;
     if( (max6 < max5) )
     {
         max6 = max5;
-    } 
+    }
     if( (max6 < max1) )
     {
         max6 = max1;
-    } 
+    }
     if( (max6 < max3) )
     {
         max6 = max3;
-    } 
+    }
     if( (max4 < max6) )
     {
         max4 = max6;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max7;
@@ -14466,60 +14466,60 @@ inline int side3_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
+    }
     if( (lower_bound_1 < 3.04548303565602498901e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (2.78873548804336160566e-11 * (((((max5 * max3) * max2) * max7) * max6) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 inline int side3_8d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* q0, const double* q1, const double* q2) {
@@ -14628,153 +14628,153 @@ inline int side3_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p2_0_p0_0)) )
     {
         max1 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p2_3_p0_3)) )
     {
         max1 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p2_2_p0_2)) )
     {
         max1 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p2_4_p0_4)) )
     {
         max1 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p2_7_p0_7)) )
     {
         max1 = fabs(p2_7_p0_7);
-    } 
+    }
     if( (max1 < fabs(p2_5_p0_5)) )
     {
         max1 = fabs(p2_5_p0_5);
-    } 
+    }
     if( (max1 < fabs(p2_6_p0_6)) )
     {
         max1 = fabs(p2_6_p0_6);
-    } 
+    }
     double max2 = fabs(p1_4_p0_4);
     if( (max2 < fabs(p1_1_p0_1)) )
     {
         max2 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p1_0_p0_0)) )
     {
         max2 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(p1_3_p0_3)) )
     {
         max2 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p1_2_p0_2)) )
     {
         max2 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p1_5_p0_5)) )
     {
         max2 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(p1_6_p0_6)) )
     {
         max2 = fabs(p1_6_p0_6);
-    } 
+    }
     if( (max2 < fabs(p1_7_p0_7)) )
     {
         max2 = fabs(p1_7_p0_7);
-    } 
+    }
     double max3 = fabs(q0_0_p0_0);
     if( (max3 < fabs(q0_1_p0_1)) )
     {
         max3 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q0_2_p0_2)) )
     {
         max3 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q0_3_p0_3)) )
     {
         max3 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q0_4_p0_4)) )
     {
         max3 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q0_5_p0_5)) )
     {
         max3 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q0_6_p0_6)) )
     {
         max3 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(q0_7_p0_7)) )
     {
         max3 = fabs(q0_7_p0_7);
-    } 
+    }
     if( (max3 < fabs(q1_0_p0_0)) )
     {
         max3 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q1_1_p0_1)) )
     {
         max3 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q1_2_p0_2)) )
     {
         max3 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q1_3_p0_3)) )
     {
         max3 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q1_4_p0_4)) )
     {
         max3 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q1_5_p0_5)) )
     {
         max3 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q1_6_p0_6)) )
     {
         max3 = fabs(q1_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(q1_7_p0_7)) )
     {
         max3 = fabs(q1_7_p0_7);
-    } 
+    }
     if( (max3 < fabs(q2_0_p0_0)) )
     {
         max3 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(q2_1_p0_1)) )
     {
         max3 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(q2_2_p0_2)) )
     {
         max3 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(q2_3_p0_3)) )
     {
         max3 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(q2_4_p0_4)) )
     {
         max3 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(q2_5_p0_5)) )
     {
         max3 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(q2_6_p0_6)) )
     {
         max3 = fabs(q2_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(q2_7_p0_7)) )
     {
         max3 = fabs(q2_7_p0_7);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -14784,125 +14784,125 @@ inline int side3_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.26419510663115923609e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.71140112255785451890e-13 * (((max2 * max3) * max1) * max3));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4 = max1;
     if( (max4 < max2) )
     {
         max4 = max2;
-    } 
+    }
     if( (max4 < max3) )
     {
         max4 = max3;
-    } 
+    }
     double max5 = max2;
     if( (max5 < fabs(p3_0_p0_0)) )
     {
         max5 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(p3_1_p0_1)) )
     {
         max5 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(p3_2_p0_2)) )
     {
         max5 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(p3_3_p0_3)) )
     {
         max5 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(p3_4_p0_4)) )
     {
         max5 = fabs(p3_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(p3_5_p0_5)) )
     {
         max5 = fabs(p3_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(p3_6_p0_6)) )
     {
         max5 = fabs(p3_6_p0_6);
-    } 
+    }
     if( (max5 < fabs(p3_7_p0_7)) )
     {
         max5 = fabs(p3_7_p0_7);
-    } 
+    }
     if( (max4 < max5) )
     {
         max4 = max5;
-    } 
+    }
     double max6 = max2;
     if( (max6 < max3) )
     {
         max6 = max3;
-    } 
+    }
     if( (max6 < max5) )
     {
         max6 = max5;
-    } 
+    }
     double max7 = max2;
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     if( (max6 < max7) )
     {
         max6 = max7;
-    } 
+    }
     if( (max4 < max6) )
     {
         max4 = max6;
-    } 
+    }
     if( (max4 < max7) )
     {
         max4 = max7;
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max1;
@@ -14910,60 +14910,60 @@ inline int side3_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
+    }
     if( (lower_bound_1 < 2.82528483194754087282e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.29807421463370647479e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.37492894694731169807e-11 * (((((max5 * max3) * max1) * max7) * max6) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/side3h.h *******/
@@ -15044,53 +15044,53 @@ inline int side3h_3d_filter( const double* p0, const double* p1, const double* p
     if( (max1 < fabs(q0_0_p0_0)) )
     {
         max1 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(q0_1_p0_1)) )
     {
         max1 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(q0_2_p0_2)) )
     {
         max1 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(q1_0_p0_0)) )
     {
         max1 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(q1_1_p0_1)) )
     {
         max1 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(q1_2_p0_2)) )
     {
         max1 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(q2_0_p0_0)) )
     {
         max1 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(q2_1_p0_1)) )
     {
         max1 = fabs(q2_1_p0_1);
-    } 
+    }
     double max2 = fabs(p2_0_p0_0);
     if( (max2 < fabs(p2_1_p0_1)) )
     {
         max2 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p2_2_p0_2)) )
     {
         max2 = fabs(p2_2_p0_2);
-    } 
+    }
     double max3 = fabs(p1_0_p0_0);
     if( (max3 < fabs(p1_1_p0_1)) )
     {
         max3 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(p1_2_p0_2)) )
     {
         max3 = fabs(p1_2_p0_2);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -15100,109 +15100,109 @@ inline int side3h_3d_filter( const double* p0, const double* p1, const double* p
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.22985945097100191780e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 2.59614842926741294957e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.99983341597279045654e-14 * (((max3 * max1) * max2) * max1));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     double max4 = max2;
     if( (max4 < fabs(l1)) )
     {
         max4 = fabs(l1);
-    } 
+    }
     if( (max4 < fabs(l2)) )
     {
         max4 = fabs(l2);
-    } 
+    }
     double max5 = max2;
     if( (max5 < max3) )
     {
         max5 = max3;
-    } 
+    }
     if( (max5 < fabs(l3)) )
     {
         max5 = fabs(l3);
-    } 
+    }
     double max6 = max2;
     if( (max6 < fabs(q2_2_p0_2)) )
     {
         max6 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q0_0_p0_0)) )
     {
         max6 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(q0_1_p0_1)) )
     {
         max6 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q0_2_p0_2)) )
     {
         max6 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q2_0_p0_0)) )
     {
         max6 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(q2_1_p0_1)) )
     {
         max6 = fabs(q2_1_p0_1);
-    } 
+    }
     double max7 = max3;
     if( (max7 < fabs(p3_0_p0_0)) )
     {
         max7 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max7 < fabs(p3_1_p0_1)) )
     {
         max7 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max7 < fabs(p3_2_p0_2)) )
     {
         max7 = fabs(p3_2_p0_2);
-    } 
+    }
     int r_sign;
     int int_tmp_result_FFWKCAA;
     lower_bound_1 = max6;
@@ -15210,77 +15210,77 @@ inline int side3h_3d_filter( const double* p0, const double* p1, const double* p
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
-    else 
+    }
+    else
     {
         if( (max7 > upper_bound_1) )
         {
             upper_bound_1 = max7;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 5.53478725478149652989e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 2.59614842926741294957e+33) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (7.73996217364502738018e-13 * (((((max7 * max1) * max6) * max1) * max5) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     r_sign = int_tmp_result_FFWKCAA;
     return (Delta_sign * r_sign);
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/side3_2dlifted.h *******/
@@ -15317,12 +15317,12 @@ inline int side3_2dlifted_2d_filter( const double* p0, const double* p1, const d
     if( (max1 < fabs(a12)) )
     {
         max1 = fabs(a12);
-    } 
+    }
     double max2 = fabs(a21);
     if( (max2 < fabs(a22)) )
     {
         max2 = fabs(a22);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta3_sign;
@@ -15332,119 +15332,119 @@ inline int side3_2dlifted_2d_filter( const double* p0, const double* p1, const d
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 5.00368081960964635413e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.88720573725927976811e-16 * (max1 * max2));
         if( (Delta3 > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta3 < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta3_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max3 = max1;
     if( (max3 < max2) )
     {
         max3 = max2;
-    } 
+    }
     double max4 = fabs(a13);
     if( (max4 < fabs(a23)) )
     {
         max4 = fabs(a23);
-    } 
+    }
     if( (max4 < fabs(a33)) )
     {
         max4 = fabs(a33);
-    } 
+    }
     double max5 = max2;
     if( (max5 < fabs(a31)) )
     {
         max5 = fabs(a31);
-    } 
+    }
     if( (max5 < fabs(a32)) )
     {
         max5 = fabs(a32);
-    } 
+    }
     lower_bound_1 = max3;
     upper_bound_1 = max3;
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.63288018496748314939e-98) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 5.59936185544450928309e+101) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (5.11071278299732992696e-15 * ((max3 * max5) * max4));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta3_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 /******* extracted from ../numerics/predicates/side4.h *******/
 
@@ -15508,37 +15508,37 @@ inline int side4_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(a21)) )
     {
         max1 = fabs(a21);
-    } 
+    }
     if( (max1 < fabs(a31)) )
     {
         max1 = fabs(a31);
-    } 
+    }
     double max2 = fabs(a12);
     if( (max2 < fabs(a13)) )
     {
         max2 = fabs(a13);
-    } 
+    }
     if( (max2 < fabs(a22)) )
     {
         max2 = fabs(a22);
-    } 
+    }
     if( (max2 < fabs(a23)) )
     {
         max2 = fabs(a23);
-    } 
+    }
     double max3 = fabs(a22);
     if( (max3 < fabs(a23)) )
     {
         max3 = fabs(a23);
-    } 
+    }
     if( (max3 < fabs(a32)) )
     {
         max3 = fabs(a32);
-    } 
+    }
     if( (max3 < fabs(a33)) )
     {
         max3 = fabs(a33);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta4_sign;
@@ -15548,182 +15548,182 @@ inline int side4_3d_filter( const double* p0, const double* p1, const double* p2
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.63288018496748314939e-98) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 3.21387608851797948065e+60) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (5.11071278299732992696e-15 * ((max2 * max3) * max1));
         if( (Delta4 > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta4 < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta4_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max4 = max1;
     if( (max4 < fabs(a41)) )
     {
         max4 = fabs(a41);
-    } 
+    }
     double max5 = max3;
     if( (max5 < max2) )
     {
         max5 = max2;
-    } 
+    }
     double max6 = max3;
     if( (max6 < fabs(a42)) )
     {
         max6 = fabs(a42);
-    } 
+    }
     if( (max6 < fabs(a43)) )
     {
         max6 = fabs(a43);
-    } 
+    }
     double max7 = fabs(p1_0_p0_0);
     if( (max7 < fabs(p1_1_p0_1)) )
     {
         max7 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max7 < fabs(p1_2_p0_2)) )
     {
         max7 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max7 < fabs(p2_0_p0_0)) )
     {
         max7 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max7 < fabs(p2_2_p0_2)) )
     {
         max7 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max7 < fabs(p2_1_p0_1)) )
     {
         max7 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max7 < fabs(p3_0_p0_0)) )
     {
         max7 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max7 < fabs(p3_1_p0_1)) )
     {
         max7 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max7 < fabs(p3_2_p0_2)) )
     {
         max7 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max7 < fabs(p4_0_p0_0)) )
     {
         max7 = fabs(p4_0_p0_0);
-    } 
+    }
     if( (max7 < fabs(p4_1_p0_1)) )
     {
         max7 = fabs(p4_1_p0_1);
-    } 
+    }
     if( (max7 < fabs(p4_2_p0_2)) )
     {
         max7 = fabs(p4_2_p0_2);
-    } 
+    }
     lower_bound_1 = max7;
     upper_bound_1 = max7;
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
-    else 
+    }
+    else
     {
         if( (max6 > upper_bound_1) )
         {
             upper_bound_1 = max6;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.12285198342304832993e-59) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 3.21387608851797948065e+60) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.24661365310273025710e-13 * ((((max5 * max6) * max4) * max7) * max7));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta4_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 
 inline int side4_4d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* p4, const double* q0, const double* q1, const double* q2, const double* q3) {
@@ -15848,128 +15848,128 @@ inline int side4_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_0_p0_0)) )
     {
         max1 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     double max2 = fabs(p2_2_p0_2);
     if( (max2 < fabs(p2_1_p0_1)) )
     {
         max2 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p2_3_p0_3)) )
     {
         max2 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p2_0_p0_0)) )
     {
         max2 = fabs(p2_0_p0_0);
-    } 
+    }
     double max3 = fabs(p3_0_p0_0);
     if( (max3 < fabs(p3_1_p0_1)) )
     {
         max3 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(p3_3_p0_3)) )
     {
         max3 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(p3_2_p0_2)) )
     {
         max3 = fabs(p3_2_p0_2);
-    } 
+    }
     double max4 = fabs(q0_3_p0_3);
     if( (max4 < fabs(q0_0_p0_0)) )
     {
         max4 = fabs(q0_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(q0_1_p0_1)) )
     {
         max4 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q0_2_p0_2)) )
     {
         max4 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q1_0_p0_0)) )
     {
         max4 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(q1_1_p0_1)) )
     {
         max4 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q1_2_p0_2)) )
     {
         max4 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q1_3_p0_3)) )
     {
         max4 = fabs(q1_3_p0_3);
-    } 
+    }
     double max5 = fabs(q1_0_p0_0);
     if( (max5 < fabs(q1_1_p0_1)) )
     {
         max5 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q1_2_p0_2)) )
     {
         max5 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q1_3_p0_3)) )
     {
         max5 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q2_0_p0_0)) )
     {
         max5 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(q2_1_p0_1)) )
     {
         max5 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q2_2_p0_2)) )
     {
         max5 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q2_3_p0_3)) )
     {
         max5 = fabs(q2_3_p0_3);
-    } 
+    }
     double max6 = fabs(q2_0_p0_0);
     if( (max6 < fabs(q2_1_p0_1)) )
     {
         max6 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q2_2_p0_2)) )
     {
         max6 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q2_3_p0_3)) )
     {
         max6 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q3_0_p0_0)) )
     {
         max6 = fabs(q3_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(q3_1_p0_1)) )
     {
         max6 = fabs(q3_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q3_2_p0_2)) )
     {
         max6 = fabs(q3_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q3_3_p0_3)) )
     {
         max6 = fabs(q3_3_p0_3);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -15979,229 +15979,229 @@ inline int side4_4d_filter( const double* p0, const double* p1, const double* p2
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
-    else 
+    }
+    else
     {
         if( (max6 > upper_bound_1) )
         {
             upper_bound_1 = max6;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 4.14607644401726239868e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.38046888801178809320e-12 * (((((max1 * max4) * max2) * max5) * max3) * max6));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max7 = max1;
     if( (max7 < max2) )
     {
         max7 = max2;
-    } 
+    }
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     if( (max7 < max6) )
     {
         max7 = max6;
-    } 
+    }
     double max8 = max1;
     if( (max8 < fabs(p4_1_p0_1)) )
     {
         max8 = fabs(p4_1_p0_1);
-    } 
+    }
     if( (max8 < fabs(p4_2_p0_2)) )
     {
         max8 = fabs(p4_2_p0_2);
-    } 
+    }
     if( (max8 < fabs(p4_0_p0_0)) )
     {
         max8 = fabs(p4_0_p0_0);
-    } 
+    }
     if( (max8 < fabs(p4_3_p0_3)) )
     {
         max8 = fabs(p4_3_p0_3);
-    } 
+    }
     if( (max7 < max8) )
     {
         max7 = max8;
-    } 
+    }
     double max9 = max1;
     if( (max9 < max5) )
     {
         max9 = max5;
-    } 
+    }
     if( (max9 < max8) )
     {
         max9 = max8;
-    } 
+    }
     double max10;
     double max11 = max4;
     if( (max11 < max5) )
     {
         max11 = max5;
-    } 
+    }
     max10 = max11;
     if( (max10 < max1) )
     {
         max10 = max1;
-    } 
+    }
     if( (max10 < max4) )
     {
         max10 = max4;
-    } 
+    }
     if( (max10 < max5) )
     {
         max10 = max5;
-    } 
+    }
     if( (max10 < max6) )
     {
         max10 = max6;
-    } 
+    }
     lower_bound_1 = max10;
     upper_bound_1 = max10;
     if( (max11 < lower_bound_1) )
     {
         lower_bound_1 = max11;
-    } 
-    else 
+    }
+    else
     {
         if( (max11 > upper_bound_1) )
         {
             upper_bound_1 = max11;
-        } 
-    } 
+        }
+    }
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
-    else 
+    }
+    else
     {
         if( (max7 > upper_bound_1) )
         {
             upper_bound_1 = max7;
-        } 
-    } 
+        }
+    }
     if( (max8 < lower_bound_1) )
     {
         lower_bound_1 = max8;
-    } 
+    }
     if( (max9 < lower_bound_1) )
     {
         lower_bound_1 = max9;
-    } 
-    else 
+    }
+    else
     {
         if( (max9 > upper_bound_1) )
         {
             upper_bound_1 = max9;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 6.06263132863556750071e-38) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.21914442286604163181e-10 * (((((((max8 * max11) * max2) * max10) * max3) * max10) * max9) * max7));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 
 inline int side4_6d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* p4, const double* q0, const double* q1, const double* q2, const double* q3) {
@@ -16342,200 +16342,200 @@ inline int side4_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p3_0_p0_0)) )
     {
         max1 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p3_3_p0_3)) )
     {
         max1 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p3_4_p0_4)) )
     {
         max1 = fabs(p3_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p3_1_p0_1)) )
     {
         max1 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p3_5_p0_5)) )
     {
         max1 = fabs(p3_5_p0_5);
-    } 
+    }
     double max2 = fabs(p2_1_p0_1);
     if( (max2 < fabs(p2_4_p0_4)) )
     {
         max2 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(p2_2_p0_2)) )
     {
         max2 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p2_0_p0_0)) )
     {
         max2 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(p2_3_p0_3)) )
     {
         max2 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p2_5_p0_5)) )
     {
         max2 = fabs(p2_5_p0_5);
-    } 
+    }
     double max3 = fabs(p1_0_p0_0);
     if( (max3 < fabs(p1_1_p0_1)) )
     {
         max3 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(p1_2_p0_2)) )
     {
         max3 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(p1_3_p0_3)) )
     {
         max3 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(p1_4_p0_4)) )
     {
         max3 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(p1_5_p0_5)) )
     {
         max3 = fabs(p1_5_p0_5);
-    } 
+    }
     double max4 = fabs(q0_0_p0_0);
     if( (max4 < fabs(q0_1_p0_1)) )
     {
         max4 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q0_2_p0_2)) )
     {
         max4 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q0_3_p0_3)) )
     {
         max4 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(q0_4_p0_4)) )
     {
         max4 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(q0_5_p0_5)) )
     {
         max4 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(q1_0_p0_0)) )
     {
         max4 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(q1_1_p0_1)) )
     {
         max4 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q1_2_p0_2)) )
     {
         max4 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q1_3_p0_3)) )
     {
         max4 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(q1_4_p0_4)) )
     {
         max4 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(q1_5_p0_5)) )
     {
         max4 = fabs(q1_5_p0_5);
-    } 
+    }
     double max5 = fabs(q1_0_p0_0);
     if( (max5 < fabs(q1_1_p0_1)) )
     {
         max5 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q1_2_p0_2)) )
     {
         max5 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q1_3_p0_3)) )
     {
         max5 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q1_4_p0_4)) )
     {
         max5 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(q1_5_p0_5)) )
     {
         max5 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(q2_0_p0_0)) )
     {
         max5 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(q2_1_p0_1)) )
     {
         max5 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q2_2_p0_2)) )
     {
         max5 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q2_3_p0_3)) )
     {
         max5 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q2_4_p0_4)) )
     {
         max5 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(q2_5_p0_5)) )
     {
         max5 = fabs(q2_5_p0_5);
-    } 
+    }
     double max6 = fabs(q2_0_p0_0);
     if( (max6 < fabs(q2_1_p0_1)) )
     {
         max6 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q2_2_p0_2)) )
     {
         max6 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q2_3_p0_3)) )
     {
         max6 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q2_4_p0_4)) )
     {
         max6 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max6 < fabs(q2_5_p0_5)) )
     {
         max6 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max6 < fabs(q3_0_p0_0)) )
     {
         max6 = fabs(q3_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(q3_1_p0_1)) )
     {
         max6 = fabs(q3_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q3_2_p0_2)) )
     {
         max6 = fabs(q3_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q3_3_p0_3)) )
     {
         max6 = fabs(q3_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q3_4_p0_4)) )
     {
         max6 = fabs(q3_4_p0_4);
-    } 
+    }
     if( (max6 < fabs(q3_5_p0_5)) )
     {
         max6 = fabs(q3_5_p0_5);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -16545,243 +16545,243 @@ inline int side4_6d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
-    else 
+    }
+    else
     {
         if( (max6 > upper_bound_1) )
         {
             upper_bound_1 = max6;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 3.31864264949884013629e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.66564133587113165316e-11 * (((((max3 * max4) * max2) * max5) * max1) * max6));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max7 = max1;
     if( (max7 < max2) )
     {
         max7 = max2;
-    } 
+    }
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     double max8 = max3;
     if( (max8 < fabs(p4_5_p0_5)) )
     {
         max8 = fabs(p4_5_p0_5);
-    } 
+    }
     if( (max8 < fabs(p4_0_p0_0)) )
     {
         max8 = fabs(p4_0_p0_0);
-    } 
+    }
     if( (max8 < fabs(p4_1_p0_1)) )
     {
         max8 = fabs(p4_1_p0_1);
-    } 
+    }
     if( (max8 < fabs(p4_2_p0_2)) )
     {
         max8 = fabs(p4_2_p0_2);
-    } 
+    }
     if( (max8 < fabs(p4_3_p0_3)) )
     {
         max8 = fabs(p4_3_p0_3);
-    } 
+    }
     if( (max8 < fabs(p4_4_p0_4)) )
     {
         max8 = fabs(p4_4_p0_4);
-    } 
+    }
     if( (max7 < max8) )
     {
         max7 = max8;
-    } 
+    }
     if( (max7 < max6) )
     {
         max7 = max6;
-    } 
+    }
     double max9 = max3;
     if( (max9 < max8) )
     {
         max9 = max8;
-    } 
+    }
     if( (max9 < max5) )
     {
         max9 = max5;
-    } 
+    }
     double max10 = max4;
     if( (max10 < max3) )
     {
         max10 = max3;
-    } 
+    }
     if( (max10 < max5) )
     {
         max10 = max5;
-    } 
+    }
     double max11 = max4;
     if( (max11 < max5) )
     {
         max11 = max5;
-    } 
+    }
     if( (max10 < max11) )
     {
         max10 = max11;
-    } 
+    }
     if( (max10 < max6) )
     {
         max10 = max6;
-    } 
+    }
     lower_bound_1 = max1;
     upper_bound_1 = max1;
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
-    else 
+    }
+    else
     {
         if( (max7 > upper_bound_1) )
         {
             upper_bound_1 = max7;
-        } 
-    } 
+        }
+    }
     if( (max8 < lower_bound_1) )
     {
         lower_bound_1 = max8;
-    } 
+    }
     if( (max9 < lower_bound_1) )
     {
         lower_bound_1 = max9;
-    } 
-    else 
+    }
+    else
     {
         if( (max9 > upper_bound_1) )
         {
             upper_bound_1 = max9;
-        } 
-    } 
+        }
+    }
     if( (max10 < lower_bound_1) )
     {
         lower_bound_1 = max10;
-    } 
-    else 
+    }
+    else
     {
         if( (max10 > upper_bound_1) )
         {
             upper_bound_1 = max10;
-        } 
-    } 
+        }
+    }
     if( (max11 < lower_bound_1) )
     {
         lower_bound_1 = max11;
-    } 
-    else 
+    }
+    else
     {
         if( (max11 > upper_bound_1) )
         {
             upper_bound_1 = max11;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 4.87975611107819181771e-38) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (6.92085098542795335117e-10 * (((((((max8 * max11) * max2) * max10) * max1) * max10) * max9) * max7));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 
 inline int side4_7d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* p4, const double* q0, const double* q1, const double* q2, const double* q3) {
@@ -16930,236 +16930,236 @@ inline int side4_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p1_1_p0_1)) )
     {
         max1 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p1_2_p0_2)) )
     {
         max1 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p1_3_p0_3)) )
     {
         max1 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p1_4_p0_4)) )
     {
         max1 = fabs(p1_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p1_5_p0_5)) )
     {
         max1 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max1 < fabs(p1_6_p0_6)) )
     {
         max1 = fabs(p1_6_p0_6);
-    } 
+    }
     double max2 = fabs(p3_0_p0_0);
     if( (max2 < fabs(p3_4_p0_4)) )
     {
         max2 = fabs(p3_4_p0_4);
-    } 
+    }
     if( (max2 < fabs(p3_2_p0_2)) )
     {
         max2 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p3_1_p0_1)) )
     {
         max2 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p3_3_p0_3)) )
     {
         max2 = fabs(p3_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p3_5_p0_5)) )
     {
         max2 = fabs(p3_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(p3_6_p0_6)) )
     {
         max2 = fabs(p3_6_p0_6);
-    } 
+    }
     double max3 = fabs(p2_5_p0_5);
     if( (max3 < fabs(p2_2_p0_2)) )
     {
         max3 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(p2_3_p0_3)) )
     {
         max3 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max3 < fabs(p2_0_p0_0)) )
     {
         max3 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(p2_1_p0_1)) )
     {
         max3 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(p2_6_p0_6)) )
     {
         max3 = fabs(p2_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(p2_4_p0_4)) )
     {
         max3 = fabs(p2_4_p0_4);
-    } 
+    }
     double max4 = fabs(q0_0_p0_0);
     if( (max4 < fabs(q0_1_p0_1)) )
     {
         max4 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q0_2_p0_2)) )
     {
         max4 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q0_3_p0_3)) )
     {
         max4 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(q0_4_p0_4)) )
     {
         max4 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(q0_5_p0_5)) )
     {
         max4 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(q0_6_p0_6)) )
     {
         max4 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max4 < fabs(q1_0_p0_0)) )
     {
         max4 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(q1_1_p0_1)) )
     {
         max4 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q1_2_p0_2)) )
     {
         max4 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q1_3_p0_3)) )
     {
         max4 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(q1_4_p0_4)) )
     {
         max4 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(q1_5_p0_5)) )
     {
         max4 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(q1_6_p0_6)) )
     {
         max4 = fabs(q1_6_p0_6);
-    } 
+    }
     double max5 = fabs(q1_0_p0_0);
     if( (max5 < fabs(q1_1_p0_1)) )
     {
         max5 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q1_2_p0_2)) )
     {
         max5 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q1_3_p0_3)) )
     {
         max5 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q1_4_p0_4)) )
     {
         max5 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(q1_5_p0_5)) )
     {
         max5 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(q1_6_p0_6)) )
     {
         max5 = fabs(q1_6_p0_6);
-    } 
+    }
     if( (max5 < fabs(q2_0_p0_0)) )
     {
         max5 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(q2_1_p0_1)) )
     {
         max5 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q2_2_p0_2)) )
     {
         max5 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q2_3_p0_3)) )
     {
         max5 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q2_4_p0_4)) )
     {
         max5 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(q2_5_p0_5)) )
     {
         max5 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(q2_6_p0_6)) )
     {
         max5 = fabs(q2_6_p0_6);
-    } 
+    }
     double max6 = fabs(q2_0_p0_0);
     if( (max6 < fabs(q2_1_p0_1)) )
     {
         max6 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q2_2_p0_2)) )
     {
         max6 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q2_3_p0_3)) )
     {
         max6 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q2_4_p0_4)) )
     {
         max6 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max6 < fabs(q2_5_p0_5)) )
     {
         max6 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max6 < fabs(q2_6_p0_6)) )
     {
         max6 = fabs(q2_6_p0_6);
-    } 
+    }
     if( (max6 < fabs(q3_0_p0_0)) )
     {
         max6 = fabs(q3_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(q3_1_p0_1)) )
     {
         max6 = fabs(q3_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q3_2_p0_2)) )
     {
         max6 = fabs(q3_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q3_3_p0_3)) )
     {
         max6 = fabs(q3_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q3_4_p0_4)) )
     {
         max6 = fabs(q3_4_p0_4);
-    } 
+    }
     if( (max6 < fabs(q3_5_p0_5)) )
     {
         max6 = fabs(q3_5_p0_5);
-    } 
+    }
     if( (max6 < fabs(q3_6_p0_6)) )
     {
         max6 = fabs(q3_6_p0_6);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -17169,247 +17169,247 @@ inline int side4_7d_filter( const double* p0, const double* p1, const double* p2
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
-    else 
+    }
+    else
     {
         if( (max6 > upper_bound_1) )
         {
             upper_bound_1 = max6;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 3.04548303565602498901e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (2.78873548804336160566e-11 * (((((max1 * max4) * max3) * max5) * max2) * max6));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max7 = max3;
     if( (max7 < max1) )
     {
         max7 = max1;
-    } 
+    }
     if( (max7 < max2) )
     {
         max7 = max2;
-    } 
+    }
     if( (max7 < max6) )
     {
         max7 = max6;
-    } 
+    }
     double max8 = max1;
     if( (max8 < fabs(p4_4_p0_4)) )
     {
         max8 = fabs(p4_4_p0_4);
-    } 
+    }
     if( (max8 < fabs(p4_1_p0_1)) )
     {
         max8 = fabs(p4_1_p0_1);
-    } 
+    }
     if( (max8 < fabs(p4_5_p0_5)) )
     {
         max8 = fabs(p4_5_p0_5);
-    } 
+    }
     if( (max8 < fabs(p4_0_p0_0)) )
     {
         max8 = fabs(p4_0_p0_0);
-    } 
+    }
     if( (max8 < fabs(p4_2_p0_2)) )
     {
         max8 = fabs(p4_2_p0_2);
-    } 
+    }
     if( (max8 < fabs(p4_3_p0_3)) )
     {
         max8 = fabs(p4_3_p0_3);
-    } 
+    }
     if( (max8 < fabs(p4_6_p0_6)) )
     {
         max8 = fabs(p4_6_p0_6);
-    } 
+    }
     if( (max7 < max8) )
     {
         max7 = max8;
-    } 
+    }
     double max9 = max1;
     if( (max9 < max5) )
     {
         max9 = max5;
-    } 
+    }
     if( (max9 < max8) )
     {
         max9 = max8;
-    } 
+    }
     double max10 = max4;
     if( (max10 < max1) )
     {
         max10 = max1;
-    } 
+    }
     if( (max10 < max5) )
     {
         max10 = max5;
-    } 
+    }
     if( (max10 < max6) )
     {
         max10 = max6;
-    } 
+    }
     double max11 = max4;
     if( (max11 < max5) )
     {
         max11 = max5;
-    } 
+    }
     if( (max10 < max11) )
     {
         max10 = max11;
-    } 
+    }
     lower_bound_1 = max3;
     upper_bound_1 = max3;
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
-    else 
+    }
+    else
     {
         if( (max7 > upper_bound_1) )
         {
             upper_bound_1 = max7;
-        } 
-    } 
+        }
+    }
     if( (max8 < lower_bound_1) )
     {
         lower_bound_1 = max8;
-    } 
+    }
     if( (max9 < lower_bound_1) )
     {
         lower_bound_1 = max9;
-    } 
-    else 
+    }
+    else
     {
         if( (max9 > upper_bound_1) )
         {
             upper_bound_1 = max9;
-        } 
-    } 
+        }
+    }
     if( (max10 < lower_bound_1) )
     {
         lower_bound_1 = max10;
-    } 
-    else 
+    }
+    else
     {
         if( (max10 > upper_bound_1) )
         {
             upper_bound_1 = max10;
-        } 
-    } 
+        }
+    }
     if( (max11 < lower_bound_1) )
     {
         lower_bound_1 = max11;
-    } 
-    else 
+    }
+    else
     {
         if( (max11 > upper_bound_1) )
         {
             upper_bound_1 = max11;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 4.48906690519700369396e-38) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.34926049830188433875e-09 * (((((((max8 * max11) * max3) * max10) * max2) * max10) * max9) * max7));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 
 inline int side4_8d_filter( const double* p0, const double* p1, const double* p2, const double* p3, const double* p4, const double* q0, const double* q1, const double* q2, const double* q3) {
@@ -17566,272 +17566,272 @@ inline int side4_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < fabs(p2_3_p0_3)) )
     {
         max1 = fabs(p2_3_p0_3);
-    } 
+    }
     if( (max1 < fabs(p2_0_p0_0)) )
     {
         max1 = fabs(p2_0_p0_0);
-    } 
+    }
     if( (max1 < fabs(p2_1_p0_1)) )
     {
         max1 = fabs(p2_1_p0_1);
-    } 
+    }
     if( (max1 < fabs(p2_6_p0_6)) )
     {
         max1 = fabs(p2_6_p0_6);
-    } 
+    }
     if( (max1 < fabs(p2_2_p0_2)) )
     {
         max1 = fabs(p2_2_p0_2);
-    } 
+    }
     if( (max1 < fabs(p2_4_p0_4)) )
     {
         max1 = fabs(p2_4_p0_4);
-    } 
+    }
     if( (max1 < fabs(p2_7_p0_7)) )
     {
         max1 = fabs(p2_7_p0_7);
-    } 
+    }
     double max2 = fabs(p1_4_p0_4);
     if( (max2 < fabs(p1_3_p0_3)) )
     {
         max2 = fabs(p1_3_p0_3);
-    } 
+    }
     if( (max2 < fabs(p1_7_p0_7)) )
     {
         max2 = fabs(p1_7_p0_7);
-    } 
+    }
     if( (max2 < fabs(p1_0_p0_0)) )
     {
         max2 = fabs(p1_0_p0_0);
-    } 
+    }
     if( (max2 < fabs(p1_2_p0_2)) )
     {
         max2 = fabs(p1_2_p0_2);
-    } 
+    }
     if( (max2 < fabs(p1_5_p0_5)) )
     {
         max2 = fabs(p1_5_p0_5);
-    } 
+    }
     if( (max2 < fabs(p1_1_p0_1)) )
     {
         max2 = fabs(p1_1_p0_1);
-    } 
+    }
     if( (max2 < fabs(p1_6_p0_6)) )
     {
         max2 = fabs(p1_6_p0_6);
-    } 
+    }
     double max3 = fabs(p3_3_p0_3);
     if( (max3 < fabs(p3_0_p0_0)) )
     {
         max3 = fabs(p3_0_p0_0);
-    } 
+    }
     if( (max3 < fabs(p3_1_p0_1)) )
     {
         max3 = fabs(p3_1_p0_1);
-    } 
+    }
     if( (max3 < fabs(p3_2_p0_2)) )
     {
         max3 = fabs(p3_2_p0_2);
-    } 
+    }
     if( (max3 < fabs(p3_4_p0_4)) )
     {
         max3 = fabs(p3_4_p0_4);
-    } 
+    }
     if( (max3 < fabs(p3_5_p0_5)) )
     {
         max3 = fabs(p3_5_p0_5);
-    } 
+    }
     if( (max3 < fabs(p3_6_p0_6)) )
     {
         max3 = fabs(p3_6_p0_6);
-    } 
+    }
     if( (max3 < fabs(p3_7_p0_7)) )
     {
         max3 = fabs(p3_7_p0_7);
-    } 
+    }
     double max4 = fabs(q0_0_p0_0);
     if( (max4 < fabs(q0_1_p0_1)) )
     {
         max4 = fabs(q0_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q0_2_p0_2)) )
     {
         max4 = fabs(q0_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q0_3_p0_3)) )
     {
         max4 = fabs(q0_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(q0_4_p0_4)) )
     {
         max4 = fabs(q0_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(q0_5_p0_5)) )
     {
         max4 = fabs(q0_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(q0_6_p0_6)) )
     {
         max4 = fabs(q0_6_p0_6);
-    } 
+    }
     if( (max4 < fabs(q0_7_p0_7)) )
     {
         max4 = fabs(q0_7_p0_7);
-    } 
+    }
     if( (max4 < fabs(q1_0_p0_0)) )
     {
         max4 = fabs(q1_0_p0_0);
-    } 
+    }
     if( (max4 < fabs(q1_1_p0_1)) )
     {
         max4 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max4 < fabs(q1_2_p0_2)) )
     {
         max4 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max4 < fabs(q1_3_p0_3)) )
     {
         max4 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max4 < fabs(q1_4_p0_4)) )
     {
         max4 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max4 < fabs(q1_5_p0_5)) )
     {
         max4 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max4 < fabs(q1_6_p0_6)) )
     {
         max4 = fabs(q1_6_p0_6);
-    } 
+    }
     if( (max4 < fabs(q1_7_p0_7)) )
     {
         max4 = fabs(q1_7_p0_7);
-    } 
+    }
     double max5 = fabs(q1_0_p0_0);
     if( (max5 < fabs(q1_1_p0_1)) )
     {
         max5 = fabs(q1_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q1_2_p0_2)) )
     {
         max5 = fabs(q1_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q1_3_p0_3)) )
     {
         max5 = fabs(q1_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q1_4_p0_4)) )
     {
         max5 = fabs(q1_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(q1_5_p0_5)) )
     {
         max5 = fabs(q1_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(q1_6_p0_6)) )
     {
         max5 = fabs(q1_6_p0_6);
-    } 
+    }
     if( (max5 < fabs(q1_7_p0_7)) )
     {
         max5 = fabs(q1_7_p0_7);
-    } 
+    }
     if( (max5 < fabs(q2_0_p0_0)) )
     {
         max5 = fabs(q2_0_p0_0);
-    } 
+    }
     if( (max5 < fabs(q2_1_p0_1)) )
     {
         max5 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max5 < fabs(q2_2_p0_2)) )
     {
         max5 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max5 < fabs(q2_3_p0_3)) )
     {
         max5 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max5 < fabs(q2_4_p0_4)) )
     {
         max5 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max5 < fabs(q2_5_p0_5)) )
     {
         max5 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max5 < fabs(q2_6_p0_6)) )
     {
         max5 = fabs(q2_6_p0_6);
-    } 
+    }
     if( (max5 < fabs(q2_7_p0_7)) )
     {
         max5 = fabs(q2_7_p0_7);
-    } 
+    }
     double max6 = fabs(q2_0_p0_0);
     if( (max6 < fabs(q2_1_p0_1)) )
     {
         max6 = fabs(q2_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q2_2_p0_2)) )
     {
         max6 = fabs(q2_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q2_3_p0_3)) )
     {
         max6 = fabs(q2_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q2_4_p0_4)) )
     {
         max6 = fabs(q2_4_p0_4);
-    } 
+    }
     if( (max6 < fabs(q2_5_p0_5)) )
     {
         max6 = fabs(q2_5_p0_5);
-    } 
+    }
     if( (max6 < fabs(q2_6_p0_6)) )
     {
         max6 = fabs(q2_6_p0_6);
-    } 
+    }
     if( (max6 < fabs(q2_7_p0_7)) )
     {
         max6 = fabs(q2_7_p0_7);
-    } 
+    }
     if( (max6 < fabs(q3_0_p0_0)) )
     {
         max6 = fabs(q3_0_p0_0);
-    } 
+    }
     if( (max6 < fabs(q3_1_p0_1)) )
     {
         max6 = fabs(q3_1_p0_1);
-    } 
+    }
     if( (max6 < fabs(q3_2_p0_2)) )
     {
         max6 = fabs(q3_2_p0_2);
-    } 
+    }
     if( (max6 < fabs(q3_3_p0_3)) )
     {
         max6 = fabs(q3_3_p0_3);
-    } 
+    }
     if( (max6 < fabs(q3_4_p0_4)) )
     {
         max6 = fabs(q3_4_p0_4);
-    } 
+    }
     if( (max6 < fabs(q3_5_p0_5)) )
     {
         max6 = fabs(q3_5_p0_5);
-    } 
+    }
     if( (max6 < fabs(q3_6_p0_6)) )
     {
         max6 = fabs(q3_6_p0_6);
-    } 
+    }
     if( (max6 < fabs(q3_7_p0_7)) )
     {
         max6 = fabs(q3_7_p0_7);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta_sign;
@@ -17841,244 +17841,244 @@ inline int side4_8d_filter( const double* p0, const double* p1, const double* p2
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
-    else 
+    }
+    else
     {
         if( (max1 > upper_bound_1) )
         {
             upper_bound_1 = max1;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
-    else 
+    }
+    else
     {
         if( (max6 > upper_bound_1) )
         {
             upper_bound_1 = max6;
-        } 
-    } 
+        }
+    }
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.82528483194754087282e-50) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (4.37492894694731040560e-11 * (((((max2 * max4) * max1) * max5) * max3) * max6));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max7 = max1;
     if( (max7 < max3) )
     {
         max7 = max3;
-    } 
+    }
     double max8 = max2;
     if( (max8 < fabs(p4_3_p0_3)) )
     {
         max8 = fabs(p4_3_p0_3);
-    } 
+    }
     if( (max8 < fabs(p4_1_p0_1)) )
     {
         max8 = fabs(p4_1_p0_1);
-    } 
+    }
     if( (max8 < fabs(p4_4_p0_4)) )
     {
         max8 = fabs(p4_4_p0_4);
-    } 
+    }
     if( (max8 < fabs(p4_0_p0_0)) )
     {
         max8 = fabs(p4_0_p0_0);
-    } 
+    }
     if( (max8 < fabs(p4_2_p0_2)) )
     {
         max8 = fabs(p4_2_p0_2);
-    } 
+    }
     if( (max8 < fabs(p4_5_p0_5)) )
     {
         max8 = fabs(p4_5_p0_5);
-    } 
+    }
     if( (max8 < fabs(p4_6_p0_6)) )
     {
         max8 = fabs(p4_6_p0_6);
-    } 
+    }
     if( (max8 < fabs(p4_7_p0_7)) )
     {
         max8 = fabs(p4_7_p0_7);
-    } 
+    }
     if( (max7 < max8) )
     {
         max7 = max8;
-    } 
+    }
     if( (max7 < max2) )
     {
         max7 = max2;
-    } 
+    }
     if( (max7 < max6) )
     {
         max7 = max6;
-    } 
+    }
     double max9 = max8;
     if( (max9 < max2) )
     {
         max9 = max2;
-    } 
+    }
     if( (max9 < max5) )
     {
         max9 = max5;
-    } 
+    }
     double max10 = max4;
     double max11 = max4;
     if( (max11 < max5) )
     {
         max11 = max5;
-    } 
+    }
     if( (max10 < max11) )
     {
         max10 = max11;
-    } 
+    }
     if( (max10 < max2) )
     {
         max10 = max2;
-    } 
+    }
     if( (max10 < max6) )
     {
         max10 = max6;
-    } 
+    }
     if( (max10 < max5) )
     {
         max10 = max5;
-    } 
+    }
     lower_bound_1 = max11;
     upper_bound_1 = max11;
     if( (max9 < lower_bound_1) )
     {
         lower_bound_1 = max9;
-    } 
-    else 
+    }
+    else
     {
         if( (max9 > upper_bound_1) )
         {
             upper_bound_1 = max9;
-        } 
-    } 
+        }
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
-    else 
+    }
+    else
     {
         if( (max7 > upper_bound_1) )
         {
             upper_bound_1 = max7;
-        } 
-    } 
+        }
+    }
     if( (max1 < lower_bound_1) )
     {
         lower_bound_1 = max1;
-    } 
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
+    }
     if( (max8 < lower_bound_1) )
     {
         lower_bound_1 = max8;
-    } 
+    }
     if( (max10 < lower_bound_1) )
     {
         lower_bound_1 = max10;
-    } 
-    else 
+    }
+    else
     {
         if( (max10 > upper_bound_1) )
         {
             upper_bound_1 = max10;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 4.17402518597284772324e-38) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 4.83570327845851562508e+24) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (2.41492645607254025015e-09 * (((((((max8 * max11) * max1) * max10) * max3) * max10) * max9) * max7));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/side4h.h *******/
@@ -18131,37 +18131,37 @@ inline int side4h_3d_filter( const double* p0, const double* p1, const double* p
     if( (max1 < fabs(a21)) )
     {
         max1 = fabs(a21);
-    } 
+    }
     if( (max1 < fabs(a31)) )
     {
         max1 = fabs(a31);
-    } 
+    }
     double max2 = fabs(a12);
     if( (max2 < fabs(a13)) )
     {
         max2 = fabs(a13);
-    } 
+    }
     if( (max2 < fabs(a22)) )
     {
         max2 = fabs(a22);
-    } 
+    }
     if( (max2 < fabs(a23)) )
     {
         max2 = fabs(a23);
-    } 
+    }
     double max3 = fabs(a22);
     if( (max3 < fabs(a23)) )
     {
         max3 = fabs(a23);
-    } 
+    }
     if( (max3 < fabs(a32)) )
     {
         max3 = fabs(a32);
-    } 
+    }
     if( (max3 < fabs(a33)) )
     {
         max3 = fabs(a33);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     int Delta4_sign;
@@ -18171,150 +18171,150 @@ inline int side4h_3d_filter( const double* p0, const double* p1, const double* p
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.63288018496748314939e-98) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 7.23700557733225980357e+75) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (5.11071278299732992696e-15 * ((max2 * max3) * max1));
         if( (Delta4 > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta4 < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     Delta4_sign = int_tmp_result;
     int int_tmp_result_FFWKCAA;
     double max4 = max1;
     if( (max4 < fabs(a41)) )
     {
         max4 = fabs(a41);
-    } 
+    }
     double max5 = max2;
     if( (max5 < max3) )
     {
         max5 = max3;
-    } 
+    }
     double max6 = fabs(a14);
     if( (max6 < fabs(a24)) )
     {
         max6 = fabs(a24);
-    } 
+    }
     if( (max6 < fabs(a34)) )
     {
         max6 = fabs(a34);
-    } 
+    }
     if( (max6 < fabs(a44)) )
     {
         max6 = fabs(a44);
-    } 
+    }
     double max7 = max3;
     if( (max7 < fabs(a42)) )
     {
         max7 = fabs(a42);
-    } 
+    }
     if( (max7 < fabs(a43)) )
     {
         max7 = fabs(a43);
-    } 
+    }
     lower_bound_1 = max4;
     upper_bound_1 = max4;
     if( (max5 < lower_bound_1) )
     {
         lower_bound_1 = max5;
-    } 
-    else 
+    }
+    else
     {
         if( (max5 > upper_bound_1) )
         {
             upper_bound_1 = max5;
-        } 
-    } 
+        }
+    }
     if( (max6 < lower_bound_1) )
     {
         lower_bound_1 = max6;
-    } 
-    else 
+    }
+    else
     {
         if( (max6 > upper_bound_1) )
         {
             upper_bound_1 = max6;
-        } 
-    } 
+        }
+    }
     if( (max7 < lower_bound_1) )
     {
         lower_bound_1 = max7;
-    } 
-    else 
+    }
+    else
     {
         if( (max7 > upper_bound_1) )
         {
             upper_bound_1 = max7;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 2.89273249588395194294e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 7.23700557733225980357e+75) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (3.17768858673611390687e-14 * (((max5 * max7) * max4) * max6));
         if( (r > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (r < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return (Delta4_sign * int_tmp_result_FFWKCAA);
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/orient2d.h *******/
@@ -18336,12 +18336,12 @@ inline int orient_2d_filter( const double* p0, const double* p1, const double* p
     if( (max1 < fabs(a12)) )
     {
         max1 = fabs(a12);
-    } 
+    }
     double max2 = fabs(a21);
     if( (max2 < fabs(a22)) )
     {
         max2 = fabs(a22);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -18349,43 +18349,43 @@ inline int orient_2d_filter( const double* p0, const double* p1, const double* p
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 5.00368081960964635413e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.67597599124282407923e+153) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.88720573725927976811e-16 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/orient3d.h *******/
@@ -18528,20 +18528,20 @@ inline int dot_3d_filter( const double* p0, const double* p1, const double* p2) 
     if( (max1 < fabs(a12)) )
     {
         max1 = fabs(a12);
-    } 
+    }
     if( (max1 < fabs(a13)) )
     {
         max1 = fabs(a13);
-    } 
+    }
     double max2 = fabs(a21);
     if( (max2 < fabs(a22)) )
     {
         max2 = fabs(a22);
-    } 
+    }
     if( (max2 < fabs(a23)) )
     {
         max2 = fabs(a23);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -18549,43 +18549,43 @@ inline int dot_3d_filter( const double* p0, const double* p1, const double* p2) 
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 3.78232824369468524638e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.67597599124282407923e+153) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (1.55534235888797977480e-15 * (max1 * max2));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 /******* extracted from ../numerics/predicates/det3d.h *******/
 
@@ -18598,37 +18598,37 @@ inline int det_3d_filter( const double* p0, const double* p1, const double* p2) 
     if( (max1 < fabs(p1[0])) )
     {
         max1 = fabs(p1[0]);
-    } 
+    }
     if( (max1 < fabs(p2[0])) )
     {
         max1 = fabs(p2[0]);
-    } 
+    }
     double max2 = fabs(p0[1]);
     if( (max2 < fabs(p0[2])) )
     {
         max2 = fabs(p0[2]);
-    } 
+    }
     if( (max2 < fabs(p1[1])) )
     {
         max2 = fabs(p1[1]);
-    } 
+    }
     if( (max2 < fabs(p1[2])) )
     {
         max2 = fabs(p1[2]);
-    } 
+    }
     double max3 = fabs(p1[1]);
     if( (max3 < fabs(p1[2])) )
     {
         max3 = fabs(p1[2]);
-    } 
+    }
     if( (max3 < fabs(p2[1])) )
     {
         max3 = fabs(p2[1]);
-    } 
+    }
     if( (max3 < fabs(p2[2])) )
     {
         max3 = fabs(p2[2]);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -18636,54 +18636,54 @@ inline int det_3d_filter( const double* p0, const double* p1, const double* p2) 
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 1.92663387981871579179e-98) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.11987237108890185662e+102) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (3.11133555671680765034e-15 * ((max2 * max3) * max1));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 /******* extracted from ../numerics/predicates/det4d.h *******/
 
@@ -18716,54 +18716,54 @@ inline int det_4d_filter( const double* p0, const double* p1, const double* p2, 
     if( (max1 < fabs(p1[0])) )
     {
         max1 = fabs(p1[0]);
-    } 
+    }
     if( (max1 < fabs(p2[0])) )
     {
         max1 = fabs(p2[0]);
-    } 
+    }
     if( (max1 < fabs(p3[0])) )
     {
         max1 = fabs(p3[0]);
-    } 
+    }
     double max2 = fabs(p0[1]);
     if( (max2 < fabs(p1[1])) )
     {
         max2 = fabs(p1[1]);
-    } 
+    }
     if( (max2 < fabs(p2[1])) )
     {
         max2 = fabs(p2[1]);
-    } 
+    }
     if( (max2 < fabs(p3[1])) )
     {
         max2 = fabs(p3[1]);
-    } 
+    }
     double max3 = fabs(p0[2]);
     if( (max3 < fabs(p1[2])) )
     {
         max3 = fabs(p1[2]);
-    } 
+    }
     if( (max3 < fabs(p2[2])) )
     {
         max3 = fabs(p2[2]);
-    } 
+    }
     if( (max3 < fabs(p3[2])) )
     {
         max3 = fabs(p3[2]);
-    } 
+    }
     double max4 = fabs(p0[3]);
     if( (max4 < fabs(p1[3])) )
     {
         max4 = fabs(p1[3]);
-    } 
+    }
     if( (max4 < fabs(p2[3])) )
     {
         max4 = fabs(p2[3]);
-    } 
+    }
     if( (max4 < fabs(p3[3])) )
     {
         max4 = fabs(p3[3]);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -18771,65 +18771,65 @@ inline int det_4d_filter( const double* p0, const double* p1, const double* p2, 
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 3.20402459074399025456e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.44740111546645196071e+76) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (2.11135406605316806158e-14 * (((max1 * max2) * max3) * max4));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/aligned3d.h *******/
@@ -18861,12 +18861,12 @@ inline int aligned_3d_filter( const double* p0, const double* p1, const double* 
     if( (max1 < fabs(a22)) )
     {
         max1 = fabs(a22);
-    } 
+    }
     double max2 = fabs(a13);
     if( (max2 < fabs(a23)) )
     {
         max2 = fabs(a23);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -18874,128 +18874,128 @@ inline int aligned_3d_filter( const double* p0, const double* p1, const double* 
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 5.00368081960964635413e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.67597599124282407923e+153) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.88720573725927976811e-16 * (max1 * max2));
         if( (delta1 > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (delta1 < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     double max3 = fabs(a11);
     if( (max3 < fabs(a21)) )
     {
         max3 = fabs(a21);
-    } 
+    }
     lower_bound_1 = max3;
     upper_bound_1 = max3;
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 5.00368081960964635413e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.67597599124282407923e+153) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.88720573725927976811e-16 * (max2 * max3));
         if( (delta2 > eps) )
         {
             int_tmp_result_FFWKCAA = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (delta2 < -eps) )
             {
                 int_tmp_result_FFWKCAA = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     lower_bound_1 = max1;
     upper_bound_1 = max1;
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 5.00368081960964635413e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.67597599124282407923e+153) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (8.88720573725927976811e-16 * (max3 * max1));
         if( (delta3 > eps) )
         {
             int_tmp_result_k60Ocge = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (delta3 < -eps) )
             {
                 int_tmp_result_k60Ocge = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return ((((int_tmp_result == 0) && (int_tmp_result_FFWKCAA == 0)) && (int_tmp_result_k60Ocge == 0)) ? 0 : 1);
-} 
+}
 
 /******* extracted from ../numerics/predicates/dot_compare_3d.h *******/
 
@@ -19012,32 +19012,32 @@ inline int dot_compare_3d_filter( const double* p0, const double* p1, const doub
     if( (max1 < fabs(p0[1])) )
     {
         max1 = fabs(p0[1]);
-    } 
+    }
     if( (max1 < fabs(p0[2])) )
     {
         max1 = fabs(p0[2]);
-    } 
+    }
     double max2 = fabs(p1[0]);
     if( (max2 < fabs(p1[1])) )
     {
         max2 = fabs(p1[1]);
-    } 
+    }
     if( (max2 < fabs(p1[2])) )
     {
         max2 = fabs(p1[2]);
-    } 
+    }
     if( (max2 < fabs(p2[0])) )
     {
         max2 = fabs(p2[0]);
-    } 
+    }
     if( (max2 < fabs(p2[1])) )
     {
         max2 = fabs(p2[1]);
-    } 
+    }
     if( (max2 < fabs(p2[2])) )
     {
         max2 = fabs(p2[2]);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -19045,43 +19045,43 @@ inline int dot_compare_3d_filter( const double* p0, const double* p1, const doub
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 3.01698158319050667656e-147) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.67597599124282407923e+153) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (2.44455106181954323552e-15 * (max1 * max2));
         if( (double_tmp_result > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (double_tmp_result < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 /******* extracted from ../numerics/predicates/det_compare_4d.h *******/
@@ -19123,54 +19123,54 @@ inline int det_compare_4d_filter( const double* p0, const double* p1, const doub
     if( (max1 < fabs(p1[0])) )
     {
         max1 = fabs(p1[0]);
-    } 
+    }
     if( (max1 < fabs(p2[0])) )
     {
         max1 = fabs(p2[0]);
-    } 
+    }
     if( (max1 < fabs(a3_0)) )
     {
         max1 = fabs(a3_0);
-    } 
+    }
     double max2 = fabs(p0[1]);
     if( (max2 < fabs(p1[1])) )
     {
         max2 = fabs(p1[1]);
-    } 
+    }
     if( (max2 < fabs(p2[1])) )
     {
         max2 = fabs(p2[1]);
-    } 
+    }
     if( (max2 < fabs(a3_1)) )
     {
         max2 = fabs(a3_1);
-    } 
+    }
     double max3 = fabs(p0[2]);
     if( (max3 < fabs(p1[2])) )
     {
         max3 = fabs(p1[2]);
-    } 
+    }
     if( (max3 < fabs(p2[2])) )
     {
         max3 = fabs(p2[2]);
-    } 
+    }
     if( (max3 < fabs(a3_2)) )
     {
         max3 = fabs(a3_2);
-    } 
+    }
     double max4 = fabs(p0[3]);
     if( (max4 < fabs(p1[3])) )
     {
         max4 = fabs(p1[3]);
-    } 
+    }
     if( (max4 < fabs(p2[3])) )
     {
         max4 = fabs(p2[3]);
-    } 
+    }
     if( (max4 < fabs(a3_3)) )
     {
         max4 = fabs(a3_3);
-    } 
+    }
     double lower_bound_1;
     double upper_bound_1;
     lower_bound_1 = max1;
@@ -19178,65 +19178,65 @@ inline int det_compare_4d_filter( const double* p0, const double* p1, const doub
     if( (max2 < lower_bound_1) )
     {
         lower_bound_1 = max2;
-    } 
-    else 
+    }
+    else
     {
         if( (max2 > upper_bound_1) )
         {
             upper_bound_1 = max2;
-        } 
-    } 
+        }
+    }
     if( (max3 < lower_bound_1) )
     {
         lower_bound_1 = max3;
-    } 
-    else 
+    }
+    else
     {
         if( (max3 > upper_bound_1) )
         {
             upper_bound_1 = max3;
-        } 
-    } 
+        }
+    }
     if( (max4 < lower_bound_1) )
     {
         lower_bound_1 = max4;
-    } 
-    else 
+    }
+    else
     {
         if( (max4 > upper_bound_1) )
         {
             upper_bound_1 = max4;
-        } 
-    } 
+        }
+    }
     if( (lower_bound_1 < 3.11018333467425326847e-74) )
     {
         return FPG_UNCERTAIN_VALUE;
-    } 
-    else 
+    }
+    else
     {
         if( (upper_bound_1 > 1.44740111546645196071e+76) )
         {
             return FPG_UNCERTAIN_VALUE;
-        } 
+        }
         eps = (2.37793769622390420735e-14 * (((max1 * max2) * max3) * max4));
         if( (Delta > eps) )
         {
             int_tmp_result = 1;
-        } 
-        else 
+        }
+        else
         {
             if( (Delta < -eps) )
             {
                 int_tmp_result = -1;
-            } 
-            else 
+            }
+            else
             {
                 return FPG_UNCERTAIN_VALUE;
-            } 
-        } 
-    } 
+            }
+        }
+    }
     return int_tmp_result;
-} 
+}
 
 
 /******* extracted from ../numerics/predicates.cpp *******/
@@ -19254,15 +19254,15 @@ inline int det_compare_4d_filter( const double* p0, const double* p1, const doub
 #define FPG_UNCERTAIN_VALUE 0
 
 
-#ifdef __SSE2__ 
+#ifdef __SSE2__
 #include <emmintrin.h>
 #endif
 
 namespace {
 
     using namespace GEO;
-    
-    GEO::PCK::SOSMode SOS_mode_ = GEO::PCK::SOS_ADDRESS; 
+
+    GEO::PCK::SOSMode SOS_mode_ = GEO::PCK::SOS_ADDRESS;
 
     class LexicoCompare {
     public:
@@ -19325,9 +19325,9 @@ namespace {
 	X1 = _mm_max_sd(X1,X3);
 	_mm_store_sd(&result, X1);
 	return result;
-#else	
+#else
 	return std::max(std::max(x1,x2),std::max(x3,x4));
-#endif	
+#endif
     }
 
 
@@ -19344,14 +19344,14 @@ namespace {
 	X3 = _mm_max_sd(MAX12, X3);
 	_mm_store_sd(&m, X1);
 	_mm_store_sd(&M, X3);
-#else	
+#else
 	m = std::min(std::min(x1,x2), x3);
 	M = std::max(std::max(x1,x2), x3);
-#endif	
+#endif
     }
 
     inline int in_sphere_3d_filter_optim(
-        const double* p, const double* q, 
+        const double* p, const double* q,
         const double* r, const double* s, const double* t
     ) {
         double ptx = p[0] - t[0];
@@ -19378,15 +19378,15 @@ namespace {
         double maxx = ::fabs(ptx);
         double maxy = ::fabs(pty);
         double maxz = ::fabs(ptz);
-        
+
         double aqtx = ::fabs(qtx);
         double artx = ::fabs(rtx);
         double astx = ::fabs(stx);
-        
+
         double aqty = ::fabs(qty);
         double arty = ::fabs(rty);
         double asty = ::fabs(sty);
-        
+
         double aqtz = ::fabs(qtz);
         double artz = ::fabs(rtz);
         double astz = ::fabs(stz);
@@ -19394,7 +19394,7 @@ namespace {
 	maxx = max4(maxx, aqtx, artx, astx);
 	maxy = max4(maxy, aqty, arty, asty);
 	maxz = max4(maxz, aqtz, artz, astz);
-	
+
         double eps = 1.2466136531027298e-13 * maxx * maxy * maxz;
 
 	double min_max;
@@ -19453,7 +19453,7 @@ namespace {
     index_t len_side3h_num = 0;
     index_t len_side3h_denom = 0;
     index_t len_side3h_SOS = 0;
-    
+
     index_t cnt_side4_total = 0;
     index_t cnt_side4_exact = 0;
     index_t cnt_side4_SOS = 0;
@@ -19484,7 +19484,7 @@ namespace {
     index_t cnt_det3d_total = 0;
     index_t cnt_det3d_exact = 0;
     index_t len_det3d = 0;
-  
+
     // ================= side1 =========================================
 
     Sign side1_exact_SOS(
@@ -19555,7 +19555,7 @@ namespace {
         }
         return result;
     }
-    
+
     // ================= side2 =========================================
 
     Sign side2_exact_SOS(
@@ -19607,9 +19607,9 @@ namespace {
             p_sort[0] = p0;
             p_sort[1] = p1;
             p_sort[2] = p2;
-	    
+
             SOS_sort(p_sort, p_sort + 3, dim);
-	    
+
             for(index_t i = 0; i < 3; ++i) {
                 if(p_sort[i] == p0) {
                     const expansion& z1 = expansion_diff(Delta, a21);
@@ -19692,7 +19692,7 @@ namespace {
         }
         return result;
     }
-    
+
     // ================= side3 =========================================
 
     Sign side3_exact_SOS(
@@ -19943,7 +19943,7 @@ namespace {
         return Sign(Delta_sign * r_sign);
     }
 
-    
+
     Sign side3_3d_SOS(
         const double* p0, const double* p1, const double* p2, const double* p3,
         const double* q0, const double* q1, const double* q2
@@ -19955,7 +19955,7 @@ namespace {
         return result;
     }
 
-    
+
     Sign side3_4d_SOS(
         const double* p0, const double* p1, const double* p2, const double* p3,
         const double* q0, const double* q1, const double* q2
@@ -19999,7 +19999,7 @@ namespace {
         }
         return result;
     }
-    
+
     // ================= side4 =========================================
 
     Sign side4_3d_exact_SOS(
@@ -20029,7 +20029,7 @@ namespace {
         const expansion& a44 = expansion_sq_dist(p4, p0, 3).negate();
 
         // This commented-out version does not reuse
-        // the 2x2 minors. 
+        // the 2x2 minors.
 /*
         const expansion& Delta1 = expansion_det3x3(
             a21, a22, a23,
@@ -20367,7 +20367,7 @@ namespace {
         }
         return result;
     }
-    
+
     // ============ orient2d ==============================================
 
     Sign orient_2d_exact(
@@ -20543,7 +20543,7 @@ namespace {
 
     Sign side3h_2d_exact_SOS(
         const double* p0, const double* p1,
-	const double* p2, const double* p3, 
+	const double* p2, const double* p3,
         double h0, double h1, double h2, double h3,
         bool sos = true
     ) {
@@ -20561,7 +20561,7 @@ namespace {
         const expansion& a33 = expansion_diff(h0,h3);
 
         const expansion& Delta1 = expansion_det2x2(
-            a21, a22, 
+            a21, a22,
             a31, a32
         );
         const expansion& Delta2 = expansion_det2x2(
@@ -20611,43 +20611,43 @@ namespace {
                     }
                 } else if(p_sort[i] == p3) {
 		    return NEGATIVE;
-                } 
+                }
             }
         }
         return Sign(Delta3_sign * r_sign);
     }
 
-    
+
     // ================================ det and dot =======================
 
     Sign det_3d_exact(
 	const double* p0, const double* p1, const double* p2
     ) {
         cnt_det3d_exact++;
-	
+
 	const expansion& p0_0 = expansion_create(p0[0]);
 	const expansion& p0_1 = expansion_create(p0[1]);
 	const expansion& p0_2 = expansion_create(p0[2]);
-	
+
 	const expansion& p1_0 = expansion_create(p1[0]);
 	const expansion& p1_1 = expansion_create(p1[1]);
 	const expansion& p1_2 = expansion_create(p1[2]);
 
 	const expansion& p2_0 = expansion_create(p2[0]);
 	const expansion& p2_1 = expansion_create(p2[1]);
-	const expansion& p2_2 = expansion_create(p2[2]);	
-	
+	const expansion& p2_2 = expansion_create(p2[2]);
+
 	const expansion& Delta = expansion_det3x3(
 	    p0_0, p0_1, p0_2,
 	    p1_0, p1_1, p1_2,
 	    p2_0, p2_1, p2_2
 	);
-	
+
         len_det3d = std::max(len_det3d, Delta.length());
-	
+
 	return Delta.sign();
     }
-    
+
 
     bool aligned_3d_exact(
 	const double* p0, const double* p1, const double* p2
@@ -20655,7 +20655,7 @@ namespace {
 	const expansion& U_0 = expansion_diff(p1[0],p0[0]);
 	const expansion& U_1 = expansion_diff(p1[1],p0[1]);
 	const expansion& U_2 = expansion_diff(p1[2],p0[2]);
-	
+
 	const expansion& V_0 = expansion_diff(p2[0],p0[0]);
 	const expansion& V_1 = expansion_diff(p2[1],p0[1]);
 	const expansion& V_2 = expansion_diff(p2[2],p0[2]);
@@ -20670,14 +20670,14 @@ namespace {
 	    N_2.sign() == 0
 	);
     }
-    
+
     Sign dot_3d_exact(
 	const double* p0, const double* p1, const double* p2
     ) {
 	const expansion& U_0 = expansion_diff(p1[0],p0[0]);
 	const expansion& U_1 = expansion_diff(p1[1],p0[1]);
 	const expansion& U_2 = expansion_diff(p1[2],p0[2]);
-	
+
 	const expansion& V_0 = expansion_diff(p2[0],p0[0]);
 	const expansion& V_1 = expansion_diff(p2[1],p0[1]);
 	const expansion& V_2 = expansion_diff(p2[2],p0[2]);
@@ -20699,7 +20699,7 @@ namespace {
 	const expansion& d01_2 = expansion_product(v0[2], v1[2]);
 	const expansion& d01_12 = expansion_sum(d01_1, d01_2);
 	const expansion& d01 = expansion_sum(d01_0, d01_12);
-	
+
 	const expansion& d02_0 = expansion_product(v0[0], v2[0]);
 	const expansion& d02_1 = expansion_product(v0[1], v2[1]);
 	const expansion& d02_2 = expansion_product(v0[2], v2[2]);
@@ -20707,10 +20707,10 @@ namespace {
 	const expansion& d02 = expansion_sum(d02_0, d02_12);
 
 	const expansion& result = expansion_diff(d01, d02);
-	
+
 	return result.sign();
     }
-    
+
     // ================================ statistics ========================
 
     inline double percent(index_t a, index_t b) {
@@ -20788,7 +20788,7 @@ namespace GEO {
 	    return SOS_mode_;
 	}
 
-	
+
         Sign side1_SOS(
             const double* p0, const double* p1,
             const double* q0,
@@ -20855,9 +20855,9 @@ namespace GEO {
 
 
         Sign side3_3dlifted_SOS(
-            const double* p0, const double* p1, 
+            const double* p0, const double* p1,
             const double* p2, const double* p3,
-            double h0, double h1, double h2, double h3,            
+            double h0, double h1, double h2, double h3,
             const double* q0, const double* q1, const double* q2,
 	    bool SOS
         ) {
@@ -20871,7 +20871,7 @@ namespace GEO {
             }
             return result;
         }
-        
+
         Sign side4_SOS(
             const double* p0,
             const double* p1, const double* p2,
@@ -20920,7 +20920,7 @@ namespace GEO {
         }
 
         Sign side4_3d_SOS(
-            const double* p0, const double* p1, 
+            const double* p0, const double* p1,
             const double* p2, const double* p3,
             const double* p4
         ) {
@@ -20934,7 +20934,7 @@ namespace GEO {
 
 
         Sign in_sphere_3d_SOS(
-            const double* p0, const double* p1, 
+            const double* p0, const double* p1,
             const double* p2, const double* p3,
             const double* p4
         ) {
@@ -20952,7 +20952,7 @@ namespace GEO {
             // in_sphere_3d(p0,p1,p2,p3,p4) = -side4_3d(p0,p1,p2,p3,p4)
 
             cnt_side4_total++;
-            
+
             // This specialized filter supposes that orient_3d(p0,p1,p2,p3) > 0
 
             Sign result = Sign(in_sphere_3d_filter_optim(p0, p1, p2, p3, p4));
@@ -21023,7 +21023,7 @@ namespace GEO {
 	    );
         }
 
-        
+
         Sign orient_2d(
             const double* p0, const double* p1, const double* p2
         ) {
@@ -21038,7 +21038,7 @@ namespace GEO {
 
         Sign orient_2dlifted_SOS(
             const double* p0, const double* p1,
-            const double* p2, const double* p3, 
+            const double* p2, const double* p3,
             double h0, double h1, double h2, double h3
 	) {
             Sign result = Sign(
@@ -21056,7 +21056,7 @@ namespace GEO {
 	    return result;
 	}
 
-	
+
         Sign orient_3d(
             const double* p0, const double* p1,
             const double* p2, const double* p3
@@ -21116,7 +21116,7 @@ namespace GEO {
 	Sign det_3d(
 	    const double* p0, const double* p1, const double* p2
 	) {
-            cnt_det3d_total++;	  
+            cnt_det3d_total++;
 	    Sign result = Sign(
 		det_3d_filter(p0, p1, p2)
 	    );
@@ -21131,24 +21131,24 @@ namespace GEO {
 	    const double* p0, const double* p1,
 	    const double* p2, const double* p3
 	) {
-            cnt_det4d_total++;	  	  
+            cnt_det4d_total++;
 	    Sign result = Sign(
 		det_4d_filter(p0, p1, p2, p3)
 	    );
-	    
+
 	    if(result == 0) {
 	        cnt_det4d_exact++;
-		
+
 		const expansion& p0_0 = expansion_create(p0[0]);
 		const expansion& p0_1 = expansion_create(p0[1]);
 		const expansion& p0_2 = expansion_create(p0[2]);
-		const expansion& p0_3 = expansion_create(p0[3]);		
-		
+		const expansion& p0_3 = expansion_create(p0[3]);
+
 		const expansion& p1_0 = expansion_create(p1[0]);
 		const expansion& p1_1 = expansion_create(p1[1]);
 		const expansion& p1_2 = expansion_create(p1[2]);
-		const expansion& p1_3 = expansion_create(p1[3]);		
-		
+		const expansion& p1_3 = expansion_create(p1[3]);
+
 		const expansion& p2_0 = expansion_create(p2[0]);
 		const expansion& p2_1 = expansion_create(p2[1]);
 		const expansion& p2_2 = expansion_create(p2[2]);
@@ -21157,13 +21157,13 @@ namespace GEO {
 		const expansion& p3_0 = expansion_create(p3[0]);
 		const expansion& p3_1 = expansion_create(p3[1]);
 		const expansion& p3_2 = expansion_create(p3[2]);
-		const expansion& p3_3 = expansion_create(p3[3]);	
+		const expansion& p3_3 = expansion_create(p3[3]);
 
 		result = sign_of_expansion_determinant(
 		    p0_0, p0_1, p0_2, p0_3,
 		    p1_0, p1_1, p1_2, p1_3,
 		    p2_0, p2_1, p2_2, p2_3,
-		    p3_0, p3_1, p3_2, p3_3		    
+		    p3_0, p3_1, p3_2, p3_3
 		);
 	    }
 	    return result;
@@ -21182,13 +21182,13 @@ namespace GEO {
 		const expansion& p0_0 = expansion_create(p0[0]);
 		const expansion& p0_1 = expansion_create(p0[1]);
 		const expansion& p0_2 = expansion_create(p0[2]);
-		const expansion& p0_3 = expansion_create(p0[3]);		
-		
+		const expansion& p0_3 = expansion_create(p0[3]);
+
 		const expansion& p1_0 = expansion_create(p1[0]);
 		const expansion& p1_1 = expansion_create(p1[1]);
 		const expansion& p1_2 = expansion_create(p1[2]);
-		const expansion& p1_3 = expansion_create(p1[3]);		
-		
+		const expansion& p1_3 = expansion_create(p1[3]);
+
 		const expansion& p2_0 = expansion_create(p2[0]);
 		const expansion& p2_1 = expansion_create(p2[1]);
 		const expansion& p2_2 = expansion_create(p2[2]);
@@ -21198,18 +21198,18 @@ namespace GEO {
 		const expansion& a3_1 = expansion_diff(p4[1],p3[1]);
 		const expansion& a3_2 = expansion_diff(p4[2],p3[2]);
 		const expansion& a3_3 = expansion_diff(p4[3],p3[3]);
-		
+
 		result = sign_of_expansion_determinant(
 		    p0_0, p0_1, p0_2, p0_3,
 		    p1_0, p1_1, p1_2, p1_3,
 		    p2_0, p2_1, p2_2, p2_3,
-		    a3_0, a3_1, a3_2, a3_3		    
+		    a3_0, a3_1, a3_2, a3_3
 		);
 	    }
 	    return result;
 	}
-	
-	
+
+
 	bool aligned_3d(
 	    const double* p0, const double* p1, const double* p2
 	) {
@@ -21223,7 +21223,7 @@ namespace GEO {
 	    */
 	    return aligned_3d_exact(p0, p1, p2);
 	}
-	
+
 	Sign dot_3d(
 	    const double* p0, const double* p1, const double* p2
 	) {
@@ -21244,14 +21244,14 @@ namespace GEO {
 	    return result;
 	}
 
-	
+
 	bool points_are_identical_2d(
 	    const double* p1,
 	    const double* p2
 	) {
 	    return
 		(p1[0] == p2[0]) &&
-		(p1[1] == p2[1]) 
+		(p1[1] == p2[1])
 	    ;
 	}
 
@@ -21273,7 +21273,7 @@ namespace GEO {
 	) {
 	    // Colinearity is tested by using four coplanarity
 	    // tests with four points that are not coplanar.
-	    // TODO: use PCK::aligned_3d() instead (to be tested)	
+	    // TODO: use PCK::aligned_3d() instead (to be tested)
 	    static const double q000[3] = {0.0, 0.0, 0.0};
 	    static const double q001[3] = {0.0, 0.0, 1.0};
 	    static const double q010[3] = {0.0, 1.0, 0.0};
@@ -21285,7 +21285,7 @@ namespace GEO {
 		PCK::orient_3d(p1, p2, p3, q100) == ZERO
 	    ;
 	}
-	
+
         void initialize() {
             expansion::initialize();
         }
@@ -21379,15 +21379,15 @@ namespace GEO {
       public:
 
 	typedef Numeric::uint8 local_index_t;
-	
+
 	Cavity() {
 	    clear();
-#ifdef CAVITY_WITH_STATS	    
+#ifdef CAVITY_WITH_STATS
 	    Memory::clear(stats_set_, sizeof(stats_set_));
 	    Memory::clear(stats_get_, sizeof(stats_get_));
-#endif	    
+#endif
 	}
-	
+
 	void clear() {
 	    nb_f_ = 0;
 	    OK_ = true;
@@ -21395,17 +21395,17 @@ namespace GEO {
 	}
 
 	~Cavity() {
-#ifdef CAVITY_WITH_STATS	    
+#ifdef CAVITY_WITH_STATS
 	    for(index_t i=0; i<MAX_H; ++i) {
 		std::cerr << i << ": get=" << stats_get_[i] << "   set=" << stats_set_[i] << std::endl;
 	    }
-#endif	    
+#endif
 	}
-	
+
 	bool OK() const {
 	    return OK_;
 	}
-	
+
 	void new_facet(
 	    index_t tglobal, index_t boundary_f,
 	    signed_index_t v0, signed_index_t v1, signed_index_t v2
@@ -21413,26 +21413,26 @@ namespace GEO {
 	    if(!OK_) {
 		return;
 	    }
-	    
+
 	    geo_debug_assert(v0 != v1);
 	    geo_debug_assert(v1 != v2);
-	    geo_debug_assert(v2 != v0);	    
+	    geo_debug_assert(v2 != v0);
 
 	    local_index_t new_t = local_index_t(nb_f_);
-	    
+
 	    if(nb_f_ == MAX_F) {
 		OK_ = false;
 		return;
 	    }
-	    
+
 	    set_vv2t(v0, v1, new_t);
 	    set_vv2t(v1, v2, new_t);
 	    set_vv2t(v2, v0, new_t);
-	    
+
 	    if(!OK_) {
 		return;
 	    }
-	    
+
 	    ++nb_f_;
 	    tglobal_[new_t] = tglobal;
 	    boundary_f_[new_t] = boundary_f;
@@ -21471,14 +21471,14 @@ namespace GEO {
 	) const {
 	    signed_index_t v0 = f2v_[f][0];
 	    signed_index_t v1 = f2v_[f][1];
-	    signed_index_t v2 = f2v_[f][2];		
+	    signed_index_t v2 = f2v_[f][2];
 	    t0 = tglobal_[get_vv2t(v2,v1)];
 	    t1 = tglobal_[get_vv2t(v0,v2)];
 	    t2 = tglobal_[get_vv2t(v1,v0)];
 	}
-	
+
       private:
-	static const index_t        MAX_H = 1024; 
+	static const index_t        MAX_H = 1024;
 	static const local_index_t  END_OF_LIST = 255;
 	static const index_t        MAX_F = 128;
 
@@ -21495,12 +21495,12 @@ namespace GEO {
 	    do {
 		if(h2t_[cur] == END_OF_LIST) {
 		    h2t_[cur] = f;
-#ifdef GARGANTUA		    
+#ifdef GARGANTUA
 		    h2v_[cur][0] = v1;
 		    h2v_[cur][1] = v2;
-#else		    
+#else
 		    h2v_[cur] = (Numeric::uint64(v1+1) << 32) | Numeric::uint64(v2+1);
-#endif		    
+#endif
 		    CAVITY_STATS(++stats_set_[cnt];)
 		    return;
 		}
@@ -21511,9 +21511,9 @@ namespace GEO {
 	}
 
 	local_index_t get_vv2t(signed_index_t v1, signed_index_t v2) const {
-#ifndef GARGANTUA	    
+#ifndef GARGANTUA
 	    Numeric::uint64 K = (Numeric::uint64(v1+1) << 32) | Numeric::uint64(v2+1);
-#endif	    
+#endif
 	    CAVITY_STATS(index_t cnt = 0;)
 	    index_t h = hash(v1,v2);
 	    index_t cur = h;
@@ -21522,7 +21522,7 @@ namespace GEO {
 		if((h2v_[cur][0] == v1) && (h2v_[cur][1] == v2)) {
 #else
 		if(h2v_[cur] == K) {
-#endif		
+#endif
 	            CAVITY_STATS(++stats_get_[cnt];)
 		    return h2t_[cur];
 		}
@@ -21532,29 +21532,29 @@ namespace GEO {
 	    geo_assert_not_reached;
 	}
 
-	
+
 	local_index_t  h2t_[MAX_H];
 
-	
-#ifdef GARGANTUA	
+
+#ifdef GARGANTUA
 	signed_index_t h2v_[MAX_H][2];
-#else	
+#else
 	Numeric::uint64 h2v_[MAX_H];
 #endif
-	
-	
+
+
 	index_t nb_f_;
-	
-	
+
+
 	index_t tglobal_[MAX_F];
 
-	
+
 	index_t boundary_f_[MAX_F];
 
-	
+
 	signed_index_t f2v_[MAX_F][3];
-	
-	
+
+
 	bool OK_;
 
 	CAVITY_STATS(mutable index_t stats_set_[MAX_H];)
@@ -21601,7 +21601,7 @@ namespace GEO {
             bool thread_safe = false,
             Sign* orient = nullptr
          ) const;
-         
+
          index_t locate_inexact(
              const double* p, index_t hint, index_t max_iter
          ) const;
@@ -21609,12 +21609,12 @@ namespace GEO {
          index_t insert(index_t v, index_t hint = NO_TETRAHEDRON);
 
          void find_conflict_zone(
-             index_t v, 
+             index_t v,
              index_t t, const Sign* orient,
              index_t& t_bndry, index_t& f_bndry,
              index_t& first, index_t& last
          );
-         
+
          void find_conflict_zone_iterative(
              const double* p, index_t t,
              index_t& t_bndry, index_t& f_bndry,
@@ -21622,14 +21622,14 @@ namespace GEO {
          );
 
 	 index_t stellate_cavity(index_t v);
-	 
-         
+
+
          index_t stellate_conflict_zone_iterative(
-             index_t v, 
-             index_t t_bndry, index_t f_bndry, 
+             index_t v,
+             index_t t_bndry, index_t f_bndry,
              index_t prev_f=index_t(-1)
          );
-         
+
          bool get_neighbor_along_conflict_zone_border(
              index_t t1,
              index_t t1fborder,
@@ -21638,22 +21638,22 @@ namespace GEO {
              index_t& t2fborder,
              index_t& t2ft1
          ) const {
-             
+
              // Note: this function is a bit long for an inline function,
              // but I observed a (modest) performance gain doing so.
-             
+
              //   Find two vertices that are both on facets new_f and f1
              //  (the edge around which we are turning)
              //  This uses duality as follows:
-             //  Primal form (not used here): 
+             //  Primal form (not used here):
              //    halfedge_facet_[v1][v2] returns a facet that is incident
              //    to both v1 and v2.
              //  Dual form (used here):
-             //    halfedge_facet_[f1][f2] returns a vertex that both 
+             //    halfedge_facet_[f1][f2] returns a vertex that both
              //    f1 and f2 are incident to.
-             signed_index_t ev1 = 
+             signed_index_t ev1 =
                  tet_vertex(t1, index_t(halfedge_facet_[t1ft2][t1fborder]));
-             signed_index_t ev2 = 
+             signed_index_t ev2 =
                  tet_vertex(t1, index_t(halfedge_facet_[t1fborder][t1ft2]));
 
              //   Turn around edge [ev1,ev2] inside the conflict zone
@@ -21669,7 +21669,7 @@ namespace GEO {
                  cur_f = get_facet_by_halfedge(cur_t,ev1,ev2);
                  next_t = index_t(tet_adjacent(cur_t, cur_f));
              }
-             
+
              //  At this point, cur_t is in conflict zone and
              // next_t is outside the conflict zone.
              index_t f12,f21;
@@ -21678,13 +21678,13 @@ namespace GEO {
              signed_index_t v_neigh_opposite = tet_vertex(next_t,f12);
              t2ft1 = find_tet_vertex(t2, v_neigh_opposite);
              t2fborder = cur_f;
-        
+
              //  Test whether the found neighboring tet was created
              //  (then return true) or is an old tet in conflict
              //  (then return false).
              return(t2 != cur_t);
          }
-         
+
          // _________ Combinatorics - new and delete _________________________
 
         index_t max_t() const {
@@ -21732,13 +21732,13 @@ namespace GEO {
         static const signed_index_t VERTEX_AT_INFINITY = -1;
 
         bool tet_is_finite(index_t t) const {
-            return 
+            return
                 cell_to_v_store_[4 * t]     >= 0 &&
                 cell_to_v_store_[4 * t + 1] >= 0 &&
                 cell_to_v_store_[4 * t + 2] >= 0 &&
                 cell_to_v_store_[4 * t + 3] >= 0;
         }
-        
+
         bool tet_is_real(index_t t) const {
             return !tet_is_free(t) && tet_is_finite(t);
         }
@@ -21781,7 +21781,7 @@ namespace GEO {
         }
 
         index_t new_tetrahedron(
-            signed_index_t v1, signed_index_t v2, 
+            signed_index_t v1, signed_index_t v2,
             signed_index_t v3, signed_index_t v4
         ) {
             index_t result = new_tetrahedron();
@@ -21852,7 +21852,7 @@ namespace GEO {
             geo_debug_assert(lf1 < 4);
             cell_to_cell_store_[4 * t1 + lf1] = signed_index_t(t2);
         }
-        
+
         index_t find_tet_adjacent(
             index_t t1, index_t t2_in
         ) const {
@@ -21922,10 +21922,10 @@ namespace GEO {
             // Thank to Laurent Alonso for this idea.
             const signed_index_t* T = &(cell_to_v_store_[4 * t]);
 
-            signed_index_t lv1 = 
+            signed_index_t lv1 =
                 (T[1] == v1) | ((T[2] == v1) * 2) | ((T[3] == v1) * 3);
 
-            signed_index_t lv2 = 
+            signed_index_t lv2 =
                 (T[1] == v2) | ((T[2] == v2) * 2) | ((T[3] == v2) * 3);
 
             geo_debug_assert(lv1 != 0 || T[0] == v1);
@@ -22026,9 +22026,9 @@ namespace GEO {
 
         static index_t find_4(const signed_index_t* T, signed_index_t v) {
             // The following expression is 10% faster than using
-            // if() statements. This uses the C++ norm, that 
-            // ensures that the 'true' boolean value converted to 
-            // an int is always 1. With most compilers, this avoids 
+            // if() statements. This uses the C++ norm, that
+            // ensures that the 'true' boolean value converted to
+            // an int is always 1. With most compilers, this avoids
             // generating branching instructions.
             // Thank to Laurent Alonso for this idea.
             // Note: Laurent also has this version:
@@ -22041,7 +22041,7 @@ namespace GEO {
             // Sanity check, important if it was T[0], not explicitly
             // tested (detects input that does not meet the precondition).
             geo_debug_assert(T[result] == v);
-            return result; 
+            return result;
         }
 
         virtual ~Delaunay3d();
@@ -22115,24 +22115,24 @@ namespace GEO {
                 t1ft2 = index_t(top().t1ft2);
                 t2ft1 = index_t(top().t2ft1);
             }
-            
+
             void pop() {
                 geo_debug_assert(!empty());
                 store_.pop_back();
             }
-            
+
             bool empty() const {
                 return store_.empty();
             }
-            
+
         private:
 
             struct Frame {
                 // Parameters
                 index_t t1;
-                index_t new_t;                
+                index_t new_t;
                 Numeric::uint8 t1fbord ;
-                
+
                 // Local variables
                 Numeric::uint8 t1fprev ;
                 Numeric::uint8 t1ft2   ;
@@ -22148,7 +22148,7 @@ namespace GEO {
                 geo_debug_assert(!empty());
                 return *store_.rbegin();
             }
-            
+
             std::vector<Frame> store_;
         };
 
@@ -22157,7 +22157,7 @@ namespace GEO {
 	Cavity cavity_;
     };
 
-    
+
 
     class GEOGRAM_API RegularWeightedDelaunay3d : public Delaunay3d {
     public:
@@ -22183,7 +22183,7 @@ namespace GEO {
 namespace GEO {
 
      typedef Numeric::uint8 thread_index_t;
-     
+
     class GEOGRAM_API ParallelDelaunay3d : public Delaunay {
     public:
         ParallelDelaunay3d(coord_index_t dimension = 3);
@@ -22203,7 +22203,7 @@ namespace GEO {
         vector<thread_index_t> cell_thread_;
         ThreadGroup threads_;
         bool weighted_; // true for regular triangulation.
-        vector<double> heights_; // only used in weighted mode.        
+        vector<double> heights_; // only used in weighted mode.
         vector<index_t> reorder_;
         vector<index_t> levels_;
 
@@ -22212,11 +22212,11 @@ namespace GEO {
          bool verbose_debug_mode_;
 
         bool benchmark_mode_;
-        
-        
+
+
         friend class Delaunay3dThread;
     };
-    
+
 
 }
 
@@ -22284,15 +22284,15 @@ namespace GEO {
         error_code(rhs.error_code),
         invalid_facets(rhs.invalid_facets) {
     }
-    
+
     Delaunay::InvalidInput::~InvalidInput() GEO_NOEXCEPT {
     }
-    
+
     const char* Delaunay::InvalidInput::what() const GEO_NOEXCEPT {
         return std::logic_error::what();
     }
-    
-    
+
+
 
     void Delaunay::initialize() {
 
@@ -22303,7 +22303,7 @@ namespace GEO {
 #ifdef GEOGRAM_WITH_TRIANGLE
         geo_register_Delaunay_creator(DelaunayTriangle, "triangle");
 #endif
-        
+
         geo_register_Delaunay_creator(Delaunay3d, "BDEL");
 
 #ifdef GEOGRAM_WITH_PDEL
@@ -22314,9 +22314,9 @@ namespace GEO {
 	geo_register_Delaunay_creator(Delaunay2d, "BDEL2d");
 	geo_register_Delaunay_creator(RegularWeightedDelaunay2d, "BPOW2d");
 
-#ifndef GEOGRAM_PSM       
+#ifndef GEOGRAM_PSM
         geo_register_Delaunay_creator(Delaunay_NearestNeighbors, "NN");
-#endif       
+#endif
     }
 
     Delaunay* Delaunay::create(
@@ -22347,13 +22347,13 @@ namespace GEO {
             << "Could not create Delaunay triangulation"
             << std::endl;
        return nullptr;
-#else       
+#else
         Logger::warn("Delaunay")
             << "Falling back to NN mode"
             << std::endl;
 
         return new Delaunay_NearestNeighbors(dim);
-#endif       
+#endif
     }
 
     Delaunay::Delaunay(coord_index_t dimension) {
@@ -22497,8 +22497,8 @@ namespace GEO {
 
 	// Note: if keeps_infinite is set, then infinite vertex
 	// tet chaining is at t2v_[nb_vertices].
-	
-	if(keeps_infinite()) {	
+
+	if(keeps_infinite()) {
 	    v_to_cell_.assign(nb_vertices()+1, -1);
 	    for(index_t c = 0; c < nb_cells(); c++) {
 		for(index_t lv = 0; lv < cell_size(); lv++) {
@@ -22510,7 +22510,7 @@ namespace GEO {
 		}
 	    }
 	} else {
-	    v_to_cell_.assign(nb_vertices(), -1);	    
+	    v_to_cell_.assign(nb_vertices(), -1);
 	    for(index_t c = 0; c < nb_cells(); c++) {
 		for(index_t lv = 0; lv < cell_size(); lv++) {
 		    v_to_cell_[cell_vertex(c, lv)] = signed_index_t(c);
@@ -22532,7 +22532,7 @@ namespace GEO {
 		set_next_around_vertex(index_t(t), lv, index_t(t));
 	    }
 	}
-	
+
 	if(keeps_infinite()) {
 
 	    {
@@ -22557,8 +22557,8 @@ namespace GEO {
 		    }
 		}
 	    }
-	    
-	    
+
+
 	} else {
 	    for(index_t t = 0; t < nb_cells(); ++t) {
 		for(index_t lv = 0; lv < cell_size(); ++lv) {
@@ -22573,7 +22573,7 @@ namespace GEO {
 		}
 	    }
 	}
-	
+
         is_locked_ = false;
     }
 
@@ -22627,10 +22627,10 @@ namespace {
     ) {
         double a11 = p1[0] - p0[0] ;
         double a12 = p1[1] - p0[1] ;
-        
+
         double a21 = p2[0] - p0[0] ;
         double a22 = p2[1] - p0[1] ;
-        
+
         double Delta = det2x2(
             a11,a12,
             a21,a22
@@ -22694,7 +22694,7 @@ namespace GEO {
 	    "Analysis of the different versions of the line walk algorithm "
 	    " used by \\verb|locate()|."
 	);
-	
+
         if(dimension != 2 && dimension != 3) {
             throw InvalidDimension(dimension, "Delaunay2d", "2 or 3");
         }
@@ -22737,7 +22737,7 @@ namespace GEO {
                 double w = -geo_sqr(vertices[3 * i + 2]);
                 heights_[i] = -w +
                     geo_sqr(vertices[3 * i]) +
-                    geo_sqr(vertices[3 * i + 1]); 
+                    geo_sqr(vertices[3 * i + 1]);
             }
         }
 
@@ -22773,7 +22773,7 @@ namespace GEO {
             Logger::out("DelInternal1") << "BRIO sorting:"
                                        << sorting_time
                                        << std::endl;
-        } 
+        }
 
         // The indices of the vertices of the first tetrahedron.
         index_t v0, v1, v2;
@@ -22813,16 +22813,16 @@ namespace GEO {
         //   Since cell_next_ is not used at this point,
         // we reuse it for storing the conversion array that
         // maps old tet indices to new tet indices
-        // Note: tet_is_real() uses the previous value of 
+        // Note: tet_is_real() uses the previous value of
         // cell_next(), but we are processing indices
         // in increasing order and since old2new[t] is always
         // smaller or equal to t, we never overwrite a value
         // before needing it.
-        
+
         vector<index_t>& old2new = cell_next_;
         index_t nb_triangles = 0;
         index_t nb_triangles_to_delete = 0;
-        
+
         {
             for(index_t t = 0; t < max_t(); ++t) {
                 if(
@@ -22865,7 +22865,7 @@ namespace GEO {
         // In "keep_infinite" mode, we reorder the cells in such
         // a way that finite cells have indices [0..nb_finite_cells_-1]
         // and infinite cells have indices [nb_finite_cells_ .. nb_cells_-1]
-        
+
         if(keep_infinite_) {
             nb_finite_cells_ = 0;
             index_t finite_ptr = 0;
@@ -22912,16 +22912,16 @@ namespace GEO {
 
         if(benchmark_mode_) {
             if(keep_infinite_) {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_triangles_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_triangles_to_delete
                     << " triangles (free list)" << std::endl;
             } else {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_triangles_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_triangles_to_delete
                     << " triangles (free list and infinite)" << std::endl;
             }
         }
-        
+
         set_arrays(
             nb_triangles,
             cell_to_v_store_.data(), cell_to_cell_store_.data()
@@ -22984,7 +22984,7 @@ namespace GEO {
 
 	geo_debug_assert(!triangle_is_free(hint));
 	geo_debug_assert(!triangle_is_in_list(hint));
-	
+
         //  Always start from a real tet. If the tet is virtual,
         // find its real neighbor (always opposite to the
         // infinite vertex)
@@ -23007,14 +23007,14 @@ namespace GEO {
             pv[0] = vertex_ptr(finite_triangle_vertex(t,0));
             pv[1] = vertex_ptr(finite_triangle_vertex(t,1));
             pv[2] = vertex_ptr(finite_triangle_vertex(t,2));
-            
+
             for(index_t le = 0; le < 3; ++le) {
-                
+
                 signed_index_t s_t_next = triangle_adjacent(t,le);
 
                 //  If the opposite tet is -1, then it means that
                 // we are trying to locate() (e.g. called from
-                // nearest_vertex) within a tetrahedralization 
+                // nearest_vertex) within a tetrahedralization
                 // from which the infinite tets were removed.
                 if(s_t_next == -1) {
                     return NO_TRIANGLE;
@@ -23028,7 +23028,7 @@ namespace GEO {
                 // the next candidate (or exit the loop if they
                 // are exhausted).
                 if(t_next == t_pred) {
-                    continue ; 
+                    continue ;
                 }
 
                 //   To test the orientation of p w.r.t. the facet f of
@@ -23063,11 +23063,11 @@ namespace GEO {
                     goto still_walking;
                 }
             }
-        } 
+        }
 
         //   If we reach this point, we did not find a valid successor
-        // for walking (a face for which p has negative orientation), 
-        // thus we reached the tet for which p has all positive 
+        // for walking (a face for which p has negative orientation),
+        // thus we reached the tet for which p has all positive
         // face orientations (i.e. the tet that contains p).
 
         return t;
@@ -23079,12 +23079,12 @@ namespace GEO {
         Sign* orient
     ) const {
 
-        //   Try improving the hint by using the 
+        //   Try improving the hint by using the
         // inexact locate function. This gains
-        // (a little bit) performance (a few 
+        // (a little bit) performance (a few
         // percent in total Delaunay computation
         // time), but it is better than nothing...
-        //   Note: there is a maximum number of tets 
+        //   Note: there is a maximum number of tets
         // traversed by locate_inexact()  (2500)
         // since there exists configurations in which
         // locate_inexact() loops forever !
@@ -23111,7 +23111,7 @@ namespace GEO {
 
 	geo_debug_assert(!triangle_is_free(hint));
 	geo_debug_assert(!triangle_is_in_list(hint));
-	
+
         //  Always start from a real tet. If the tet is virtual,
         // find its real neighbor (always opposite to the
         // infinite vertex)
@@ -23127,8 +23127,8 @@ namespace GEO {
 
 	geo_debug_assert(!triangle_is_free(hint));
 	geo_debug_assert(!triangle_is_in_list(hint));
-	geo_debug_assert(!triangle_is_virtual(hint));	
-	
+	geo_debug_assert(!triangle_is_virtual(hint));
+
         index_t t = hint;
         index_t t_pred = NO_TRIANGLE;
         Sign orient_local[3];
@@ -23143,17 +23143,17 @@ namespace GEO {
             pv[0] = vertex_ptr(finite_triangle_vertex(t,0));
             pv[1] = vertex_ptr(finite_triangle_vertex(t,1));
             pv[2] = vertex_ptr(finite_triangle_vertex(t,2));
-            
+
             // Start from a random facet
             index_t e0 = index_t(Numeric::random_int32()) % 3;
             for(index_t de = 0; de < 3; ++de) {
                 index_t le = (e0 + de) % 3;
-                
+
                 signed_index_t s_t_next = triangle_adjacent(t,le);
 
                 //  If the opposite triangle is -1, then it means that
                 // we are trying to locate() (e.g. called from
-                // nearest_vertex) within a tetrahedralization 
+                // nearest_vertex) within a tetrahedralization
                 // from which the infinite tets were removed.
                 if(s_t_next == -1) {
                     if(thread_safe) {
@@ -23167,7 +23167,7 @@ namespace GEO {
 		geo_debug_assert(!triangle_is_free(t_next));
 		geo_debug_assert(!triangle_is_in_list(t_next));
 
-		
+
                 //   If the candidate next tetrahedron is the
                 // one we came from, then we know already that
                 // the orientation is positive, thus we examine
@@ -23175,7 +23175,7 @@ namespace GEO {
                 // are exhausted).
                 if(t_next == t_pred) {
                     orient[le] = POSITIVE ;
-                    continue ; 
+                    continue ;
                 }
 
                 //   To test the orientation of p w.r.t. the facet f of
@@ -23216,11 +23216,11 @@ namespace GEO {
                 t = t_next;
                 goto still_walking;
             }
-        } 
+        }
 
         //   If we reach this point, we did not find a valid successor
-        // for walking (a face for which p has negative orientation), 
-        // thus we reached the tet for which p has all positive 
+        // for walking (a face for which p has negative orientation),
+        // thus we reached the tet for which p has all positive
         // face orientations (i.e. the tet that contains p).
 
         if(thread_safe) {
@@ -23230,8 +23230,8 @@ namespace GEO {
     }
 
     void Delaunay2d::find_conflict_zone(
-        index_t v, 
-        index_t t, const Sign* orient, 
+        index_t v,
+        index_t t, const Sign* orient,
         index_t& t_bndry, index_t& e_bndry,
         index_t& first, index_t& last
     ) {
@@ -23250,18 +23250,18 @@ namespace GEO {
         // the triangulation. The point already exists
         // if it's located on three faces of the
         // tetrahedron returned by locate().
-        int nb_zero = 
+        int nb_zero =
             (orient[0] == ZERO) +
             (orient[1] == ZERO) +
             (orient[2] == ZERO) ;
 
         if(nb_zero >= 2) {
-            return; 
+            return;
         }
 
         //  Weighted triangulations can have dangling
         // vertices. Such vertices p are characterized by
-        // the fact that p is not in conflict with the 
+        // the fact that p is not in conflict with the
         // tetrahedron returned by locate().
         if(weighted_ && !triangle_is_conflict(t, p)) {
             return;
@@ -23280,7 +23280,7 @@ namespace GEO {
         // is on some faces of the located triangle, insert
         // the neighbors accros those edges in the conflict list.
         // It saves a couple of calls to the predicates in this
-        // specific case (combinatorics are in general less 
+        // specific case (combinatorics are in general less
         // expensive than the predicates).
         if(!weighted_ && nb_zero != 0) {
             for(index_t le = 0; le < 3; ++le) {
@@ -23302,7 +23302,7 @@ namespace GEO {
         // Determine the conflict list by greedy propagation from t.
         find_conflict_zone_iterative(p,t,t_bndry,e_bndry,first,last);
     }
-    
+
     void Delaunay2d::find_conflict_zone_iterative(
         const double* p, index_t t_in,
         index_t& t_bndry, index_t& e_bndry,
@@ -23315,7 +23315,7 @@ namespace GEO {
 
             index_t t = S_.top();
             S_.pop();
-            
+
             for(index_t le = 0; le < 3; ++le) {
                 index_t t2 = index_t(triangle_adjacent(t, le));
 
@@ -23331,10 +23331,10 @@ namespace GEO {
                     add_triangle_to_list(t2, first, last);
                     S_.push(t2);
                     continue;
-                } 
-                
-                //   At this point, t is in conflict 
-                // and t2 is not in conflict. 
+                }
+
+                //   At this point, t is in conflict
+                // and t2 is not in conflict.
                 // We keep a reference to a tet on the boundary
                 t_bndry = t;
                 e_bndry = le;
@@ -23353,18 +23353,18 @@ namespace GEO {
 	index_t t_adj = index_t(triangle_adjacent(t,e));
 
 	geo_debug_assert(t_adj != index_t(-1));
-	
+
 	geo_debug_assert(triangle_is_in_list(t));
 	geo_debug_assert(!triangle_is_in_list(t_adj));
-	
+
 
 	index_t new_t_first = index_t(-1);
 	index_t new_t_prev  = index_t(-1);
-	
+
 	do {
 
 	    signed_index_t v1 = triangle_vertex(t, (e+1)%3);
-	    signed_index_t v2 = triangle_vertex(t, (e+2)%3);	    
+	    signed_index_t v2 = triangle_vertex(t, (e+2)%3);
 
 	    // Create new triangle
 	    index_t new_t = new_triangle(signed_index_t(v_in), v1, v2);
@@ -23374,16 +23374,16 @@ namespace GEO {
 	    set_triangle_adjacent(new_t, 0, t_adj);
 	    index_t adj_e = find_triangle_adjacent(t_adj, t);
 	    set_triangle_adjacent(t_adj, adj_e, new_t);
-	    
-	    
+
+
 	    // Move to next triangle
 	    e = (e + 1)%3;
 	    t_adj = index_t(triangle_adjacent(t,e));
 	    while(triangle_is_in_list(t_adj)) {
 		t = t_adj;
-		e = (find_triangle_vertex(t,v2) + 2)%3;		
+		e = (find_triangle_vertex(t,v2) + 2)%3;
 		t_adj = index_t(triangle_adjacent(t,e));
-		geo_debug_assert(t_adj != index_t(-1));		
+		geo_debug_assert(t_adj != index_t(-1));
 	    }
 
 	    if(new_t_prev == index_t(-1)) {
@@ -23394,13 +23394,13 @@ namespace GEO {
 	    }
 
 	    new_t_prev = new_t;
-	    
+
 	} while((t != t1) || (e != t1ebord));
 
 	// Connect last triangle to first triangle
 	set_triangle_adjacent(new_t_prev, 1, new_t_first);
 	set_triangle_adjacent(new_t_first, 2, new_t_prev);
-	
+
 	return new_t_prev;
     }
 
@@ -23417,7 +23417,7 @@ namespace GEO {
        find_conflict_zone(
            v,t,orient,t_bndry,e_bndry,first_conflict,last_conflict
        );
-       
+
        // The conflict list can be empty if:
        //  - Vertex v already exists in the triangulation
        //  - The triangulation is weighted and v is not visible
@@ -23426,11 +23426,11 @@ namespace GEO {
        }
 
        index_t new_triangle = stellate_conflict_zone(v,t_bndry,e_bndry);
-       
+
        // Recycle the tetrahedra of the conflict zone.
        cell_next_[last_conflict] = first_free_;
        first_free_ = first_conflict;
-       
+
        // Return one of the newly created triangles
        return new_triangle;
     }
@@ -23460,7 +23460,7 @@ namespace GEO {
         iv2 = iv1 + 1;
 	Sign s = ZERO;
         while(
-            iv2 < nb_vertices() &&  
+            iv2 < nb_vertices() &&
 	    (s = PCK::orient_2d(vertex_ptr(iv0), vertex_ptr(iv1), vertex_ptr(iv2))) == ZERO
 	) {
             ++iv2;
@@ -23471,11 +23471,11 @@ namespace GEO {
 	if(s == NEGATIVE) {
 	    std::swap(iv1,iv2);
 	}
-	    
+
         // Create the first triangle
         index_t t0 = new_triangle(
-            signed_index_t(iv0), 
-            signed_index_t(iv1), 
+            signed_index_t(iv0),
+            signed_index_t(iv1),
             signed_index_t(iv2)
         );
 
@@ -23507,7 +23507,7 @@ namespace GEO {
         return true;
     }
 
-    
+
 
     void Delaunay2d::show_triangle(index_t t) const {
         std::cerr << "tri"
@@ -23667,7 +23667,7 @@ namespace GEO {
         std::cerr << std::endl << "Delaunay Geo OK" << std::endl;
     }
 
-    
+
 
     RegularWeightedDelaunay2d::RegularWeightedDelaunay2d(
         coord_index_t dimension
@@ -23754,7 +23754,7 @@ namespace GEO {
 	    "Analysis of the different versions of the line walk algorithm "
 	    " used by \\verb|locate()|."
 	);
-	
+
         if(dimension != 3 && dimension != 4) {
             throw InvalidDimension(dimension, "Delaunay3d", "3 or 4");
         }
@@ -23834,7 +23834,7 @@ namespace GEO {
             Logger::out("DelInternal1") << "BRIO sorting:"
                                        << sorting_time
                                        << std::endl;
-        } 
+        }
 
         // The indices of the vertices of the first tetrahedron.
         index_t v0, v1, v2, v3;
@@ -23874,16 +23874,16 @@ namespace GEO {
         //   Since cell_next_ is not used at this point,
         // we reuse it for storing the conversion array that
         // maps old tet indices to new tet indices
-        // Note: tet_is_real() uses the previous value of 
+        // Note: tet_is_real() uses the previous value of
         // cell_next(), but we are processing indices
         // in increasing order and since old2new[t] is always
         // smaller or equal to t, we never overwrite a value
         // before needing it.
-        
+
         vector<index_t>& old2new = cell_next_;
         index_t nb_tets = 0;
         index_t nb_tets_to_delete = 0;
-        
+
         {
             for(index_t t = 0; t < max_t(); ++t) {
                 if(
@@ -23926,7 +23926,7 @@ namespace GEO {
         // In "keep_infinite" mode, we reorder the cells in such
         // a way that finite cells have indices [0..nb_finite_cells_-1]
         // and infinite cells have indices [nb_finite_cells_ .. nb_cells_-1]
-        
+
         if(keep_infinite_) {
             nb_finite_cells_ = 0;
             index_t finite_ptr = 0;
@@ -23973,16 +23973,16 @@ namespace GEO {
 
         if(benchmark_mode_) {
             if(keep_infinite_) {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_tets_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_tets_to_delete
                     << " tets (free list)" << std::endl;
             } else {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_tets_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_tets_to_delete
                     << " tets (free list and infinite)" << std::endl;
             }
         }
-        
+
         set_arrays(
             nb_tets,
             cell_to_v_store_.data(), cell_to_cell_store_.data()
@@ -24066,14 +24066,14 @@ namespace GEO {
             pv[1] = vertex_ptr(finite_tet_vertex(t,1));
             pv[2] = vertex_ptr(finite_tet_vertex(t,2));
             pv[3] = vertex_ptr(finite_tet_vertex(t,3));
-            
+
             for(index_t f = 0; f < 4; ++f) {
-                
+
                 signed_index_t s_t_next = tet_adjacent(t,f);
 
                 //  If the opposite tet is -1, then it means that
                 // we are trying to locate() (e.g. called from
-                // nearest_vertex) within a tetrahedralization 
+                // nearest_vertex) within a tetrahedralization
                 // from which the infinite tets were removed.
                 if(s_t_next == -1) {
                     return NO_TETRAHEDRON;
@@ -24087,7 +24087,7 @@ namespace GEO {
                 // the next candidate (or exit the loop if they
                 // are exhausted).
                 if(t_next == t_pred) {
-                    continue ; 
+                    continue ;
                 }
 
                 //   To test the orientation of p w.r.t. the facet f of
@@ -24122,11 +24122,11 @@ namespace GEO {
                     goto still_walking;
                 }
             }
-        } 
+        }
 
         //   If we reach this point, we did not find a valid successor
-        // for walking (a face for which p has negative orientation), 
-        // thus we reached the tet for which p has all positive 
+        // for walking (a face for which p has negative orientation),
+        // thus we reached the tet for which p has all positive
         // face orientations (i.e. the tet that contains p).
 
         return t;
@@ -24138,12 +24138,12 @@ namespace GEO {
         Sign* orient
     ) const {
 
-        //   Try improving the hint by using the 
+        //   Try improving the hint by using the
         // inexact locate function. This gains
-        // (a little bit) performance (a few 
+        // (a little bit) performance (a few
         // percent in total Delaunay computation
         // time), but it is better than nothing...
-        //   Note: there is a maximum number of tets 
+        //   Note: there is a maximum number of tets
         // traversed by locate_inexact()  (2500)
         // since there exists configurations in which
         // locate_inexact() loops forever !
@@ -24195,17 +24195,17 @@ namespace GEO {
             pv[1] = vertex_ptr(finite_tet_vertex(t,1));
             pv[2] = vertex_ptr(finite_tet_vertex(t,2));
             pv[3] = vertex_ptr(finite_tet_vertex(t,3));
-            
+
             // Start from a random facet
             index_t f0 = index_t(Numeric::random_int32()) % 4;
             for(index_t df = 0; df < 4; ++df) {
                 index_t f = (f0 + df) % 4;
-                
+
                 signed_index_t s_t_next = tet_adjacent(t,f);
 
                 //  If the opposite tet is -1, then it means that
                 // we are trying to locate() (e.g. called from
-                // nearest_vertex) within a tetrahedralization 
+                // nearest_vertex) within a tetrahedralization
                 // from which the infinite tets were removed.
                 if(s_t_next == -1) {
                     if(thread_safe) {
@@ -24223,7 +24223,7 @@ namespace GEO {
                 // are exhausted).
                 if(t_next == t_pred) {
                     orient[f] = POSITIVE ;
-                    continue ; 
+                    continue ;
                 }
 
                 //   To test the orientation of p w.r.t. the facet f of
@@ -24264,11 +24264,11 @@ namespace GEO {
                 t = t_next;
                 goto still_walking;
             }
-        } 
+        }
 
         //   If we reach this point, we did not find a valid successor
-        // for walking (a face for which p has negative orientation), 
-        // thus we reached the tet for which p has all positive 
+        // for walking (a face for which p has negative orientation),
+        // thus we reached the tet for which p has all positive
         // face orientations (i.e. the tet that contains p).
 
         if(thread_safe) {
@@ -24278,13 +24278,13 @@ namespace GEO {
     }
 
     void Delaunay3d::find_conflict_zone(
-        index_t v, 
-        index_t t, const Sign* orient, 
+        index_t v,
+        index_t t, const Sign* orient,
         index_t& t_bndry, index_t& f_bndry,
         index_t& first, index_t& last
     ) {
-	cavity_.clear(); 
-	
+	cavity_.clear();
+
         first = last = END_OF_LIST;
 
         //  Generate a unique stamp from current vertex index,
@@ -24300,19 +24300,19 @@ namespace GEO {
         // the triangulation. The point already exists
         // if it's located on three faces of the
         // tetrahedron returned by locate().
-        int nb_zero = 
+        int nb_zero =
             (orient[0] == ZERO) +
             (orient[1] == ZERO) +
             (orient[2] == ZERO) +
             (orient[3] == ZERO) ;
 
         if(nb_zero >= 3) {
-            return; 
+            return;
         }
 
         //  Weighted triangulations can have dangling
         // vertices. Such vertices p are characterized by
-        // the fact that p is not in conflict with the 
+        // the fact that p is not in conflict with the
         // tetrahedron returned by locate().
         if(weighted_ && !tet_is_conflict(t, p)) {
             return;
@@ -24331,7 +24331,7 @@ namespace GEO {
         // is on some faces of the located tetrahedron, insert
         // the neighbors accros those faces in the conflict list.
         // It saves a couple of calls to the predicates in this
-        // specific case (combinatorics are in general less 
+        // specific case (combinatorics are in general less
         // expensive than the predicates).
         if(!weighted_ && nb_zero != 0) {
             for(index_t lf = 0; lf < 4; ++lf) {
@@ -24353,7 +24353,7 @@ namespace GEO {
         // Determine the conflict list by greedy propagation from t.
         find_conflict_zone_iterative(p,t,t_bndry,f_bndry,first,last);
     }
-    
+
     void Delaunay3d::find_conflict_zone_iterative(
         const double* p, index_t t_in,
         index_t& t_bndry, index_t& f_bndry,
@@ -24367,7 +24367,7 @@ namespace GEO {
 
             index_t t = S_.top();
             S_.pop();
-            
+
             for(index_t lf = 0; lf < 4; ++lf) {
                 index_t t2 = index_t(tet_adjacent(t, lf));
 
@@ -24388,17 +24388,17 @@ namespace GEO {
 		    );
                     continue;
                 }
-		
+
 
                 if(tet_is_conflict(t2, p)) {
                     // Chain t2 in conflict list
                     add_tet_to_list(t2, first, last);
                     S_.push(t2);
                     continue;
-                } 
-                
-                //   At this point, t is in conflict 
-                // and t2 is not in conflict. 
+                }
+
+                //   At this point, t is in conflict
+                // and t2 is not in conflict.
                 // We keep a reference to a tet on the boundary
                 t_bndry = t;
                 f_bndry = lf;
@@ -24411,7 +24411,7 @@ namespace GEO {
 		    tet_vertex(t, tet_facet_vertex(lf,1)),
 		    tet_vertex(t, tet_facet_vertex(lf,2))
 		);
-		
+
             }
         }
     }
@@ -24423,32 +24423,32 @@ namespace GEO {
         // inputs can cause stack overflow (system stack is limited to
         // a few megs). For instance, it can happen when a large number
         // of points are on the same sphere exactly.
-        
+
         //   To de-recursify, it uses class StellateConflictStack
         // that emulates system's stack for storing functions's
         // parameters and local variables in all the nested stack
-        // frames. 
-        
+        // frames.
+
         signed_index_t v = signed_index_t(v_in);
-        
+
         S2_.push(t1, t1fbord, t1fprev);
 
         index_t new_t;   // the newly created tetrahedron.
-        
+
         index_t t1ft2;   // traverses the 4 facets of t1.
-        
+
         index_t t2;      // the tetrahedron on the border of
                          // the conflict zone that shares an
                          // edge with t1 along t1ft2.
-        
+
         index_t t2fbord; // the facet of t2 on the border of
                          // the conflict zone.
-        
+
         index_t t2ft1;   // the facet of t2 that is incident to t1.
-        
+
     entry_point:
         S2_.get_parameters(t1, t1fbord, t1fprev);
-        
+
         geo_debug_assert(tet_is_in_list(t1));
         geo_debug_assert(tet_adjacent(t1,t1fbord)>=0);
         geo_debug_assert(!tet_is_in_list(index_t(tet_adjacent(t1,t1fbord))));
@@ -24470,11 +24470,11 @@ namespace GEO {
             set_tet_adjacent(new_t, t1fbord, tbord);
             set_tet_adjacent(tbord, find_tet_adjacent(tbord,t1), new_t);
         }
-            
+
         //  Lookup new_t's neighbors accros its three other
         // facets and connect them
         for(t1ft2=0; t1ft2<4; ++t1ft2) {
-            
+
             if(t1ft2 == t1fprev || tet_adjacent(new_t,t1ft2) != -1) {
                 continue;
             }
@@ -24494,15 +24494,15 @@ namespace GEO {
                 index_t result = new_t;
                 S2_.pop();
 
-                // Special case: we were in the outermost frame, 
+                // Special case: we were in the outermost frame,
                 // then we (truly) return from the function.
                 if(S2_.empty()) {
                     return result;
                 }
-                
+
                 S2_.get_parameters(t1, t1fbord, t1fprev);
-                S2_.get_locals(new_t, t1ft2, t2ft1); 
-                t2 = result; 
+                S2_.get_locals(new_t, t1ft2, t2ft1);
+                t2 = result;
             }
 
             set_tet_adjacent(t2, t2ft1, new_t);
@@ -24515,11 +24515,11 @@ namespace GEO {
         // (no need to push any return address).
         goto return_point;
     }
-                        
+
     index_t Delaunay3d::stellate_cavity(index_t v) {
-	
+
 	index_t new_tet = index_t(-1);
-	
+
 	for(index_t f=0; f<cavity_.nb_facets(); ++f) {
 	    index_t old_tet = cavity_.facet_tet(f);
 	    index_t lf = cavity_.facet_facet(f);
@@ -24532,19 +24532,19 @@ namespace GEO {
 	    set_tet_adjacent(t_neigh, find_tet_adjacent(t_neigh,old_tet), new_tet);
 	    cavity_.set_facet_tet(f, new_tet);
 	}
-	
+
 	for(index_t f=0; f<cavity_.nb_facets(); ++f) {
 	    new_tet = cavity_.facet_tet(f);
 	    index_t neigh1, neigh2, neigh3;
 	    cavity_.get_facet_neighbor_tets(f, neigh1, neigh2, neigh3);
 	    set_tet_adjacent(new_tet, 1, neigh1);
 	    set_tet_adjacent(new_tet, 2, neigh2);
-	    set_tet_adjacent(new_tet, 3, neigh3);		
+	    set_tet_adjacent(new_tet, 3, neigh3);
 	}
 
 	return new_tet;
     }
-    
+
     index_t Delaunay3d::insert(index_t v, index_t hint) {
        index_t t_bndry = NO_TETRAHEDRON;
        index_t f_bndry = index_t(-1);
@@ -24558,7 +24558,7 @@ namespace GEO {
        find_conflict_zone(
            v,t,orient,t_bndry,f_bndry,first_conflict,last_conflict
        );
-       
+
        // The conflict list can be empty if:
        //  - Vertex v already exists in the triangulation
        //  - The triangulation is weighted and v is not visible
@@ -24572,11 +24572,11 @@ namespace GEO {
        } else {
 	   new_tet = stellate_conflict_zone_iterative(v,t_bndry,f_bndry);
        }
-       
+
        // Recycle the tetrahedra of the conflict zone.
        cell_next_[last_conflict] = first_free_;
        first_free_ = first_conflict;
-       
+
        // Return one of the newly created tets
        return new_tet;
     }
@@ -24640,9 +24640,9 @@ namespace GEO {
 
         // Create the first tetrahedron
         index_t t0 = new_tetrahedron(
-            signed_index_t(iv0), 
-            signed_index_t(iv1), 
-            signed_index_t(iv2), 
+            signed_index_t(iv0),
+            signed_index_t(iv1),
+            signed_index_t(iv2),
             signed_index_t(iv3)
         );
 
@@ -24677,7 +24677,7 @@ namespace GEO {
         return true;
     }
 
-    
+
 
     void Delaunay3d::show_tet(index_t t) const {
         std::cerr << "tet"
@@ -24841,7 +24841,7 @@ namespace GEO {
         std::cerr << std::endl << "Delaunay Geo OK" << std::endl;
     }
 
-    
+
 
     RegularWeightedDelaunay3d::RegularWeightedDelaunay3d(
         coord_index_t dimension
@@ -24910,7 +24910,7 @@ namespace GEO {
             ParallelDelaunay3d* master,
             index_t pool_begin,
             index_t pool_end
-        ) : 
+        ) :
             master_(master),
             cell_to_v_store_(master_->cell_to_v_store_),
             cell_to_cell_store_(master_->cell_to_cell_store_),
@@ -24994,7 +24994,7 @@ namespace GEO {
         void set_work(index_t b, index_t e) {
             work_begin_ = signed_index_t(b);
             // e is one position past the last point index
-            // to insert. 
+            // to insert.
             work_end_ = signed_index_t(e)-1;
         }
 
@@ -25018,7 +25018,7 @@ namespace GEO {
         }
 
 	void run() override {
-            
+
             finished_ = false;
 
             if(work_begin_ == -1 || work_end_ == -1) {
@@ -25036,9 +25036,9 @@ namespace GEO {
             // If true, insert in b->e order,
             // else insert in e->b order
             direction_ = true;
-            
+
             while(work_end_ >= work_begin_ && !memory_overflow_) {
-                index_t v = direction_ ? 
+                index_t v = direction_ ?
                     index_t(work_begin_) : index_t(work_end_) ;
                 index_t& hint = direction_ ? b_hint_ : e_hint_;
 
@@ -25070,7 +25070,7 @@ namespace GEO {
                             wait_for_event(interfering_thread_);
                         } else {
                             // If this thread has a lower priority than
-                            // the interfering thread, try inserting 
+                            // the interfering thread, try inserting
                             // from the other end of the points sequence.
                             direction_ = !direction_;
                         }
@@ -25089,20 +25089,20 @@ namespace GEO {
         static const index_t NO_TETRAHEDRON = index_t(-1);
 
         static const signed_index_t VERTEX_AT_INFINITY = -1;
-        
+
 
         index_t max_t() const {
             return max_t_;
         }
 
         bool tet_is_finite(index_t t) const {
-            return 
+            return
                 cell_to_v_store_[4 * t]     >= 0 &&
                 cell_to_v_store_[4 * t + 1] >= 0 &&
                 cell_to_v_store_[4 * t + 2] >= 0 &&
                 cell_to_v_store_[4 * t + 3] >= 0;
         }
-        
+
         bool tet_is_real(index_t t) const {
             return !tet_is_free(t) && tet_is_finite(t);
         }
@@ -25110,10 +25110,10 @@ namespace GEO {
         bool tet_is_free(index_t t) const {
             return tet_is_in_list(t);
         }
-        
+
         bool tet_is_in_list(index_t t, index_t first) const {
             for(
-                index_t cur = first; cur != END_OF_LIST; 
+                index_t cur = first; cur != END_OF_LIST;
                 cur = tet_next(cur)
             ) {
                 if(cur == t) {
@@ -25131,7 +25131,7 @@ namespace GEO {
             }
 
             iv0 = 0;
-            
+
             iv1 = 1;
             while(
                 iv1 < nb_vertices() &&
@@ -25144,7 +25144,7 @@ namespace GEO {
             if(iv1 == nb_vertices()) {
                 return NO_TETRAHEDRON;
             }
-            
+
             iv2 = iv1 + 1;
             while(
                 iv2 < nb_vertices() &&
@@ -25175,16 +25175,16 @@ namespace GEO {
             }
 
             geo_debug_assert(s != ZERO);
-            
+
             if(s == NEGATIVE) {
                 std::swap(iv2, iv3);
             }
 
             // Create the first tetrahedron
             index_t t0 = new_tetrahedron(
-                signed_index_t(iv0), 
-                signed_index_t(iv1), 
-                signed_index_t(iv2), 
+                signed_index_t(iv0),
+                signed_index_t(iv1),
+                signed_index_t(iv2),
                 signed_index_t(iv3)
             );
 
@@ -25244,19 +25244,19 @@ namespace GEO {
 		);
 		cavity_.set_facet_tet(f, new_tet);
 	    }
-	
+
 	    for(index_t f=0; f<cavity_.nb_facets(); ++f) {
 		new_tet = cavity_.facet_tet(f);
 		index_t neigh1, neigh2, neigh3;
 		cavity_.get_facet_neighbor_tets(f, neigh1, neigh2, neigh3);
 		set_tet_adjacent(new_tet, 1, neigh1);
 		set_tet_adjacent(new_tet, 2, neigh2);
-		set_tet_adjacent(new_tet, 3, neigh3);		
+		set_tet_adjacent(new_tet, 3, neigh3);
 	    }
-	    
+
 	    return new_tet;
 	}
-	
+
         bool insert(index_t v, index_t& hint) {
 
             // If v is one of the vertices of the
@@ -25288,7 +25288,7 @@ namespace GEO {
             // the triangulation. The point already exists
             // if it's located on three faces of the
             // tetrahedron returned by locate().
-            int nb_zero = 
+            int nb_zero =
                 (orient[0] == ZERO) +
                 (orient[1] == ZERO) +
                 (orient[2] == ZERO) +
@@ -25306,7 +25306,7 @@ namespace GEO {
             index_t f_bndry = index_t(-1);
 
 	    cavity_.clear();
-	    
+
             bool ok = find_conflict_zone(v,t,t_bndry,f_bndry);
 
             // When in multithreading mode, we cannot allocate memory
@@ -25340,12 +25340,12 @@ namespace GEO {
 
 
             geo_debug_assert(
-                nb_acquired_tets_ == 
+                nb_acquired_tets_ ==
                 tets_to_delete_.size() + tets_to_release_.size()
             );
 
 #ifdef GEO_DEBUG
-            // Sanity check: make sure this threads owns all the tets 
+            // Sanity check: make sure this threads owns all the tets
             // in conflict and their neighbors.
             for(index_t i=0; i<tets_to_delete_.size(); ++i) {
                 index_t tdel = tets_to_delete_[i];
@@ -25375,7 +25375,7 @@ namespace GEO {
 		new_tet = stellate_conflict_zone_iterative(v,t_bndry,f_bndry);
 	    }
 
-       
+
             // Recycle the tetrahedra of the conflict zone.
             for(index_t i=0; i<tets_to_delete_.size()-1; ++i) {
                 cell_next_[tets_to_delete_[i]] = tets_to_delete_[i+1];
@@ -25395,7 +25395,7 @@ namespace GEO {
                 set_tet_vertex(tdel,3,-2);
             }
 #endif
-       
+
             // Return one of the newly created tets
             hint=new_tet;
 
@@ -25406,7 +25406,7 @@ namespace GEO {
         }
 
         bool find_conflict_zone(
-            index_t v, index_t t, 
+            index_t v, index_t t,
             index_t& t_bndry, index_t& f_bndry
         ) {
             nb_tets_to_create_ = 0;
@@ -25419,7 +25419,7 @@ namespace GEO {
 
             //  Weighted triangulations can have dangling
             // vertices. Such vertices p are characterized by
-            // the fact that p is not in conflict with the 
+            // the fact that p is not in conflict with the
             // tetrahedron returned by locate().
             if(weighted_ && !tet_is_in_conflict(t,p)) {
                 release_tet(t);
@@ -25462,15 +25462,15 @@ namespace GEO {
 
                 for(index_t lf = 0; lf < 4; ++lf) {
                     index_t t2 = index_t(tet_adjacent(t, lf));
-                
+
                     // If t2 is already owned by current thread, then
                     // its status was previously determined.
                     if(owns_tet(t2)) {
                         geo_debug_assert(
-                            tet_is_marked_as_conflict(t2) == 
+                            tet_is_marked_as_conflict(t2) ==
                             tet_is_in_conflict(t2,p)
                         );
-                    
+
                         // If t2 is not in conflict list, then t has a facet
                         // on the border of the conflict zone, and there is
                         // a tet to create.
@@ -25490,7 +25490,7 @@ namespace GEO {
                         S_.resize(0);
                         return false;
                     }
-                
+
                     geo_debug_assert(owns_tet(t2));
 
                     if(!tet_is_in_conflict(t2,p)) {
@@ -25506,8 +25506,8 @@ namespace GEO {
                         continue;
                     }
 
-                    //  At this point, t is in conflict 
-                    // and t2 is not in conflict. 
+                    //  At this point, t is in conflict
+                    // and t2 is not in conflict.
                     // We keep a reference to a tet on the boundary
                     t_boundary_ = t;
                     f_boundary_ = lf;
@@ -25533,8 +25533,8 @@ namespace GEO {
             );
             return heights_[pindex];
         }
-        
-        
+
+
         bool tet_is_in_conflict(index_t t, const double* p) const {
 
             // Lookup tetrahedron vertices
@@ -25577,14 +25577,14 @@ namespace GEO {
                     if(owns_tet(t2)) {
                         return tet_is_marked_as_conflict(t2);
                     }
-                    
+
                     //  If t2 was not already visited, then we need to
                     // switch to the in_circum_circle_3d() predicate.
 
                     const double* q0 = pv[(lf+1)%4];
                     const double* q1 = pv[(lf+2)%4];
                     const double* q2 = pv[(lf+3)%4];
-                    
+
                     if(weighted_) {
                         return (
                             PCK::in_circle_3dlifted_SOS(
@@ -25622,18 +25622,18 @@ namespace GEO {
 
             return (PCK::in_sphere_3d_SOS(pv[0], pv[1], pv[2], pv[3], p) > 0);
         }
-        
+
 
          index_t locate(
             const double* p, index_t hint = NO_TETRAHEDRON,
             Sign* orient = nullptr
          ) {
-             //   Try improving the hint by using the 
+             //   Try improving the hint by using the
              // inexact locate function. This gains
-             // (a little bit) performance (a few 
+             // (a little bit) performance (a few
              // percent in total Delaunay computation
              // time), but it is better than nothing...
-             //   Note: there is a maximum number of tets 
+             //   Note: there is a maximum number of tets
              // traversed by locate_inexact()  (2500)
              // since there exists configurations in which
              // locate_inexact() loops forever !
@@ -25669,7 +25669,7 @@ namespace GEO {
                      hint = thread_safe_random(max_used_t_);
                  }
                  if(
-                     tet_is_free(hint) || 
+                     tet_is_free(hint) ||
                      (!owns_tet(hint) && !acquire_tet(hint))
                  ) {
                      if(owns_tet(hint)) {
@@ -25681,7 +25681,7 @@ namespace GEO {
                          if(tet_vertex(hint,f) == VERTEX_AT_INFINITY) {
                              index_t new_hint = index_t(tet_adjacent(hint,f));
                              if(
-                                 tet_is_free(new_hint) || 
+                                 tet_is_free(new_hint) ||
                                  !acquire_tet(new_hint)
                              ) {
                                  new_hint = NO_TETRAHEDRON;
@@ -25727,25 +25727,25 @@ namespace GEO {
                  pv[1] = vertex_ptr(finite_tet_vertex(t,1));
                  pv[2] = vertex_ptr(finite_tet_vertex(t,2));
                  pv[3] = vertex_ptr(finite_tet_vertex(t,3));
-                 
+
                  // Start from a random facet
                  index_t f0 = thread_safe_random_4();
                  for(index_t df = 0; df < 4; ++df) {
                      index_t f = (f0 + df) % 4;
-                     
+
                      signed_index_t s_t_next = tet_adjacent(t,f);
-                     
+
                      //  If the opposite tet is -1, then it means that
                      // we are trying to locate() (e.g. called from
-                     // nearest_vertex) within a tetrahedralization 
+                     // nearest_vertex) within a tetrahedralization
                      // from which the infinite tets were removed.
                      if(s_t_next == -1) {
                          release_tet(t);
                          return NO_TETRAHEDRON;
                      }
-                     
+
                      index_t t_next = index_t(s_t_next);
-                     
+
                      //   If the candidate next tetrahedron is the
                      // one we came from, then we know already that
                      // the orientation is positive, thus we examine
@@ -25753,7 +25753,7 @@ namespace GEO {
                      // are exhausted).
                      if(t_next == t_pred) {
                          orient[f] = POSITIVE ;
-                         continue ; 
+                         continue ;
                      }
 
                      //   To test the orientation of p w.r.t. the facet f of
@@ -25764,7 +25764,7 @@ namespace GEO {
                      const double* pv_bkp = pv[f];
                      pv[f] = p;
                      orient[f] = PCK::orient_3d(pv[0], pv[1], pv[2], pv[3]);
-                     
+
                      //   If the orientation is not negative, then we cannot
                      // walk towards t_next, and examine the next candidate
                      // (or exit the loop if they are exhausted).
@@ -25788,18 +25788,18 @@ namespace GEO {
                          }
                          return t_next;
                      }
-                     
+
                      //   If we reach this point, then t_next is a valid
                      // successor, thus we are still walking.
                      t_pred = t;
                      t = t_next;
                      goto still_walking;
                  }
-             } 
+             }
 
              //   If we reach this point, we did not find a valid successor
-             // for walking (a face for which p has negative orientation), 
-             // thus we reached the tet for which p has all positive 
+             // for walking (a face for which p has negative orientation),
+             // thus we reached the tet for which p has all positive
              // face orientations (i.e. the tet that contains p).
 
 #ifdef GEO_DEBUG
@@ -25822,10 +25822,10 @@ namespace GEO {
 
              return t;
          }
-        
+
 
     protected:
-        
+
         bool tet_is_marked_as_conflict(index_t t) const {
             geo_debug_assert(owns_tet(t));
             return ((cell_thread_[t] & 1) != 0);
@@ -25852,14 +25852,14 @@ namespace GEO {
 
         void acquire_and_mark_tet_as_created(index_t t) {
             //  The tet was created in this thread's tet pool,
-            // therefore there is no need to use sync 
+            // therefore there is no need to use sync
             // primitives to acquire a lock on it.
             geo_debug_assert(cell_thread_[t] == NO_THREAD);
             cell_thread_[t] = thread_index_t(id() << 1);
 #ifdef GEO_DEBUG
             ++nb_acquired_tets_;
 #endif
-            tets_to_release_.push_back(t);            
+            tets_to_release_.push_back(t);
         }
 
 
@@ -25878,7 +25878,7 @@ namespace GEO {
             geo_debug_assert(t < max_t());
             geo_debug_assert(!owns_tet(t));
 
-#if defined(GEO_COMPILER_MSVC) 
+#if defined(GEO_COMPILER_MSVC)
            // Note: comparand and exchange parameter are swapped in Windows API
            // as compared to __sync_val_compare_and_swap !!
             interfering_thread_ =
@@ -25887,13 +25887,13 @@ namespace GEO {
                     (char)(id() << 1),
                     (char)(NO_THREAD)
                 ));
-#else            
-            interfering_thread_ = 
+#else
+            interfering_thread_ =
                 __sync_val_compare_and_swap(
                     &cell_thread_[t], NO_THREAD, thread_index_t(id() << 1)
                 );
 #endif
-            
+
             if(interfering_thread_ == NO_THREAD) {
                 geo_debug_assert(t == first_free_ || !tet_is_in_list(t));
 #ifdef GEO_DEBUG
@@ -25943,7 +25943,7 @@ namespace GEO {
                          if(hint == NO_TETRAHEDRON) {
                              return NO_TETRAHEDRON;
                          }
-                         
+
                          break;
                      }
                  }
@@ -25951,7 +25951,7 @@ namespace GEO {
 
              index_t t = hint;
              index_t t_pred = NO_TETRAHEDRON;
-             
+
          still_walking:
              {
 
@@ -25971,28 +25971,28 @@ namespace GEO {
                  }
 
                  for(index_t f = 0; f < 4; ++f) {
-                     
+
                      signed_index_t s_t_next = tet_adjacent(t,f);
-                     
+
                      //  If the opposite tet is -1, then it means that
                      // we are trying to locate() (e.g. called from
-                     // nearest_vertex) within a tetrahedralization 
+                     // nearest_vertex) within a tetrahedralization
                      // from which the infinite tets were removed.
                      if(s_t_next == -1) {
                          return NO_TETRAHEDRON;
                      }
 
                      index_t t_next = index_t(s_t_next);
-                     
+
                      //   If the candidate next tetrahedron is the
                      // one we came from, then we know already that
                      // the orientation is positive, thus we examine
                      // the next candidate (or exit the loop if they
                      // are exhausted).
                      if(t_next == t_pred) {
-                         continue ; 
+                         continue ;
                      }
-                     
+
                      //   To test the orientation of p w.r.t. the facet f of
                      // t, we replace vertex number f with p in t (same
                      // convention as in CGAL).
@@ -26001,7 +26001,7 @@ namespace GEO {
                      Sign ori = PCK::orient_3d_inexact(
 			 pv[0], pv[1], pv[2], pv[3]
 		     );
-                     
+
                      //   If the orientation is not negative, then we cannot
                      // walk towards t_next, and examine the next candidate
                      // (or exit the loop if they are exhausted).
@@ -26027,11 +26027,11 @@ namespace GEO {
                          goto still_walking;
                      }
                  }
-             } 
+             }
 
              //   If we reach this point, we did not find a valid successor
-             // for walking (a face for which p has negative orientation), 
-             // thus we reached the tet for which p has all positive 
+             // for walking (a face for which p has negative orientation),
+             // thus we reached the tet for which p has all positive
              // face orientations (i.e. the tet that contains p).
 
              return t;
@@ -26047,7 +26047,7 @@ namespace GEO {
                 cell_to_v_store_[4 * t + 3] == VERTEX_AT_INFINITY) ;
         }
 
-        
+
         static index_t tet_facet_vertex(index_t f, index_t v) {
             geo_debug_assert(f < 4);
             geo_debug_assert(v < 3);
@@ -26097,7 +26097,7 @@ namespace GEO {
             geo_debug_assert(owns_tet(t2));
             cell_to_cell_store_[4 * t1 + lf1] = signed_index_t(t2);
         }
-        
+
         index_t find_tet_adjacent(
             index_t t1, index_t t2_in
         ) const {
@@ -26132,7 +26132,7 @@ namespace GEO {
             geo_debug_assert(lv1 != lv2);
             return index_t(halfedge_facet_[lv1][lv2]);
         }
-        
+
 
         void get_facets_by_halfedge(
             index_t t, signed_index_t v1, signed_index_t v2,
@@ -26140,19 +26140,19 @@ namespace GEO {
         ) const {
             geo_debug_assert(t < max_t());
             geo_debug_assert(v1 != v2);
-        
+
             //   Find local index of v1 and v2 in tetrahedron t
             // The following expression is 10% faster than using
             // if() statements (multiply by boolean result of test).
             // Thank to Laurent Alonso for this idea.
             const signed_index_t* T = &(cell_to_v_store_[4 * t]);
 
-            signed_index_t lv1 = 
+            signed_index_t lv1 =
                 (T[1] == v1) | ((T[2] == v1) * 2) | ((T[3] == v1) * 3);
-            
-            signed_index_t lv2 = 
+
+            signed_index_t lv2 =
                 (T[1] == v2) | ((T[2] == v2) * 2) | ((T[3] == v2) * 3);
-            
+
             geo_debug_assert(lv1 != 0 || T[0] == v1);
             geo_debug_assert(lv2 != 0 || T[0] == v2);
             geo_debug_assert(lv1 >= 0);
@@ -26256,7 +26256,7 @@ namespace GEO {
         }
 
         index_t new_tetrahedron(
-            signed_index_t v1, signed_index_t v2, 
+            signed_index_t v1, signed_index_t v2,
             signed_index_t v3, signed_index_t v4
         ) {
             index_t result = new_tetrahedron();
@@ -26269,9 +26269,9 @@ namespace GEO {
 
         static index_t find_4(const signed_index_t* T, signed_index_t v) {
             // The following expression is 10% faster than using
-            // if() statements. This uses the C++ norm, that 
-            // ensures that the 'true' boolean value converted to 
-            // an int is always 1. With most compilers, this avoids 
+            // if() statements. This uses the C++ norm, that
+            // ensures that the 'true' boolean value converted to
+            // an int is always 1. With most compilers, this avoids
             // generating branching instructions.
             // Thank to Laurent Alonso for this idea.
             // Note: Laurent also has this version:
@@ -26284,25 +26284,25 @@ namespace GEO {
             // Sanity check, important if it was T[0], not explicitly
             // tested (detects input that does not meet the precondition).
             geo_debug_assert(T[result] == v);
-            return result; 
+            return result;
         }
 
         void send_event() {
             pthread_cond_broadcast(&cond_);
         }
-        
+
         void wait_for_event(index_t t) {
 	    // Fixed by Hiep Vu: enlarged critical section (contains
 	    // now the test (!thrd->finished)
             Delaunay3dThread* thrd = thread(t);
-	    pthread_mutex_lock(&(thrd->mutex_));	    
+	    pthread_mutex_lock(&(thrd->mutex_));
             if(!thrd->finished_) {
                 pthread_cond_wait(&(thrd->cond_), &(thrd->mutex_));
             }
-	    pthread_mutex_unlock(&(thrd->mutex_));	    
+	    pthread_mutex_unlock(&(thrd->mutex_));
         }
 
-                
+
 
         class StellateConflictStack {
         public:
@@ -26339,24 +26339,24 @@ namespace GEO {
                 t1ft2 = index_t(top().t1ft2);
                 t2ft1 = index_t(top().t2ft1);
             }
-            
+
             void pop() {
                 geo_debug_assert(!empty());
                 store_.pop_back();
             }
-            
+
             bool empty() const {
                 return store_.empty();
             }
-            
+
         private:
 
             struct Frame {
                 // Parameters
                 index_t t1;
-                index_t new_t;                
+                index_t new_t;
                 Numeric::uint8 t1fbord ;
-                
+
                 // Local variables
                 Numeric::uint8 t1fprev ;
                 Numeric::uint8 t1ft2   ;
@@ -26372,7 +26372,7 @@ namespace GEO {
                 geo_debug_assert(!empty());
                 return *store_.rbegin();
             }
-            
+
             std::vector<Frame> store_;
         };
 
@@ -26384,29 +26384,29 @@ namespace GEO {
             // inputs can cause stack overflow (system stack is limited to
             // a few megs). For instance, it can happen when a large number
             // of points are on the same sphere exactly.
-            
+
             //   To de-recursify, it uses class StellateConflictStack
             // that emulates system's stack for storing functions's
             // parameters and local variables in all the nested stack
-            // frames. 
-        
+            // frames.
+
             signed_index_t v = signed_index_t(v_in);
-            
+
             S2_.push(t1, t1fbord, t1fprev);
-            
+
             index_t new_t;   // the newly created tetrahedron.
-            
+
             index_t t1ft2;   // traverses the 4 facets of t1.
-            
+
             index_t t2;      // the tetrahedron on the border of
                              // the conflict zone that shares an
                              // edge with t1 along t1ft2.
-            
+
             index_t t2fbord; // the facet of t2 on the border of
                              // the conflict zone.
-        
+
             index_t t2ft1;   // the facet of t2 that is incident to t1.
-        
+
         entry_point:
             S2_.get_parameters(t1, t1fbord, t1fprev);
 
@@ -26429,22 +26429,22 @@ namespace GEO {
 
             // Replace in new_t the vertex opposite to t1fbord with v
             set_tet_vertex(new_t, t1fbord, v);
-            
+
             // Connect new_t with t1's neighbor accros t1fbord
             {
                 index_t tbord = index_t(tet_adjacent(t1,t1fbord));
                 set_tet_adjacent(new_t, t1fbord, tbord);
                 set_tet_adjacent(tbord, find_tet_adjacent(tbord,t1), new_t);
             }
-            
+
             //  Lookup new_t's neighbors accros its three other
             // facets and connect them
             for(t1ft2=0; t1ft2<4; ++t1ft2) {
-                
+
                 if(t1ft2 == t1fprev || tet_adjacent(new_t,t1ft2) != -1) {
                     continue;
                 }
-                
+
                 // Get t1's neighbor along the border of the conflict zone
                 if(!get_neighbor_along_conflict_zone_border(
                        t1,t1fbord,t1ft2, t2,t2fbord,t2ft1
@@ -26459,18 +26459,18 @@ namespace GEO {
                     // This is the return value of the called function.
                     index_t result = new_t;
                     S2_.pop();
-                    
-                    // Special case: we were in the outermost frame, 
+
+                    // Special case: we were in the outermost frame,
                     // then we (truly) return from the function.
                     if(S2_.empty()) {
                         return result;
                     }
-                    
+
                     S2_.get_parameters(t1, t1fbord, t1fprev);
-                    S2_.get_locals(new_t, t1ft2, t2ft1); 
-                    t2 = result; 
+                    S2_.get_locals(new_t, t1ft2, t2ft1);
+                    t2 = result;
                 }
-                
+
                 set_tet_adjacent(t2, t2ft1, new_t);
                 set_tet_adjacent(new_t, t1ft2, t2);
             }
@@ -26490,24 +26490,24 @@ namespace GEO {
             index_t& t2fborder,
             index_t& t2ft1
         ) const {
-            
+
             // Note: this function is a bit long for an inline function,
             // but I observed a (modest) performance gain doing so.
-            
+
             //   Find two vertices that are both on facets new_f and f1
             //  (the edge around which we are turning)
             //  This uses duality as follows:
-            //  Primal form (not used here): 
+            //  Primal form (not used here):
             //    halfedge_facet_[v1][v2] returns a facet that is incident
             //    to both v1 and v2.
             //  Dual form (used here):
-            //    halfedge_facet_[f1][f2] returns a vertex that both 
+            //    halfedge_facet_[f1][f2] returns a vertex that both
             //    f1 and f2 are incident to.
-            signed_index_t ev1 = 
+            signed_index_t ev1 =
                 tet_vertex(t1, index_t(halfedge_facet_[t1ft2][t1fborder]));
-            signed_index_t ev2 = 
+            signed_index_t ev2 =
                 tet_vertex(t1, index_t(halfedge_facet_[t1fborder][t1ft2]));
-            
+
             //   Turn around edge [ev1,ev2] inside the conflict zone
             // until we reach again the boundary of the conflict zone.
             // Traversing inside the conflict zone is faster (as compared
@@ -26515,13 +26515,13 @@ namespace GEO {
             index_t cur_t = t1;
             index_t cur_f = t1ft2;
             index_t next_t = index_t(tet_adjacent(cur_t,cur_f));
-            while(tet_is_marked_as_conflict(next_t)) {            
+            while(tet_is_marked_as_conflict(next_t)) {
                 geo_debug_assert(next_t != t1);
                 cur_t = next_t;
                 cur_f = get_facet_by_halfedge(cur_t,ev1,ev2);
                 next_t = index_t(tet_adjacent(cur_t, cur_f));
             }
-             
+
             //  At this point, cur_t is in conflict zone and
             // next_t is outside the conflict zone.
             index_t f12,f21;
@@ -26530,7 +26530,7 @@ namespace GEO {
             signed_index_t v_neigh_opposite = tet_vertex(next_t,f12);
             t2ft1 = find_tet_vertex(t2, v_neigh_opposite);
             t2fborder = cur_f;
-            
+
             //  Test whether the found neighboring tet was created
             //  (then return true) or is an old tet in conflict
             //  (then return false).
@@ -26538,8 +26538,8 @@ namespace GEO {
         }
 
         StellateConflictStack S2_;
-        
-        
+
+
 
         void show_tet_adjacent(index_t t, index_t lf) const {
             signed_index_t adj = tet_adjacent(t, lf);
@@ -26550,7 +26550,7 @@ namespace GEO {
             std::cerr << ' ';
         }
 
-        
+
         void show_tet(index_t t) const {
             std::cerr << "tet"
                       << (tet_is_in_list(t) ? '*' : ' ')
@@ -26569,7 +26569,7 @@ namespace GEO {
             show_tet_adjacent(t, 2);
             show_tet_adjacent(t, 3);
             std::cerr << "] ";
-            
+
             for(index_t f = 0; f < 4; ++f) {
                 std::cerr << 'f' << f << ':';
                 for(index_t v = 0; v < 3; ++v) {
@@ -26619,7 +26619,7 @@ namespace GEO {
                             }
                             if(!found) {
                                 std::cerr
-                                    << lf 
+                                    << lf
                                     << ":Adjacent link is not bidirectional"
                                     << std::endl;
                                 ok = false;
@@ -26680,7 +26680,7 @@ namespace GEO {
                                 std::cerr << "Tet " << t <<
                                     " is in conflict with vertex " << v
                                           << std::endl;
-                                
+
                                 std::cerr << "  offending tet: ";
                                 show_tet(t);
                             }
@@ -26708,7 +26708,7 @@ namespace GEO {
         vector<signed_index_t>& cell_to_cell_store_;
         vector<index_t>& cell_next_;
         vector<thread_index_t>& cell_thread_;
-        
+
         index_t first_free_;
         index_t nb_free_;
         bool memory_overflow_;
@@ -26717,7 +26717,7 @@ namespace GEO {
 
         vector<index_t> S_;
         index_t nb_tets_to_create_;
-        index_t t_boundary_; // index of a tet,facet on the bndry 
+        index_t t_boundary_; // index of a tet,facet on the bndry
         index_t f_boundary_; // of the conflict zone.
 
         bool direction_;
@@ -26744,7 +26744,7 @@ namespace GEO {
 
         pthread_cond_t cond_;
         pthread_mutex_t mutex_;
-        
+
         static char tet_facet_vertex_[4][3];
 
         static char halfedge_facet_[4][4];
@@ -26777,7 +26777,7 @@ namespace GEO {
     };
 
 
-    
+
 
     ParallelDelaunay3d::ParallelDelaunay3d(
         coord_index_t dimension
@@ -26821,7 +26821,7 @@ namespace GEO {
 	    "Analysis of the different versions of the line walk algorithm "
 	    " used by \\verb|locate()|."
 	);
-	
+
         weighted_ = (dimension == 4);
         // In weighted mode, vertices are 4d but combinatorics is 3d.
         if(weighted_) {
@@ -26863,7 +26863,7 @@ namespace GEO {
         Delaunay::set_vertices(nb_vertices, vertices);
 
         index_t expected_tetra = nb_vertices * 7;
-    
+
         // Allocate the tetrahedra
         cell_to_v_store_.assign(expected_tetra * 4,-1);
         cell_to_cell_store_.assign(expected_tetra * 4,-1);
@@ -26877,7 +26877,7 @@ namespace GEO {
 		3, dimension(),
                 64, 0.125,
                 &levels_
-            );        
+            );
         } else {
             reorder_.resize(nb_vertices);
             for(index_t i = 0; i < nb_vertices; ++i) {
@@ -26893,7 +26893,7 @@ namespace GEO {
             Logger::out("DelInternal1") << "BRIO sorting:"
                                        << sorting_time
                                        << std::endl;
-        } 
+        }
 
         // Create the threads
         index_t nb_threads = Process::maximum_concurrent_threads();
@@ -26901,7 +26901,7 @@ namespace GEO {
         index_t pool_begin = 0;
         threads_.clear();
         for(index_t t=0; t<nb_threads; ++t) {
-            index_t pool_end = 
+            index_t pool_end =
                 (t == nb_threads - 1) ? expected_tetra : pool_begin + pool_size;
             threads_.push_back(
                 new Delaunay3dThread(this, pool_begin, pool_end)
@@ -26910,7 +26910,7 @@ namespace GEO {
         }
 
 
-        // Create first tetrahedron and triangulate first set of points 
+        // Create first tetrahedron and triangulate first set of points
         // in sequential mode.
 
 
@@ -26922,12 +26922,12 @@ namespace GEO {
         if(benchmark_mode_) {
             Logger::out("PDEL")
                 << "Using " << levels_.size()-1 << " levels" << std::endl;
-            Logger::out("PDEL") 
-                << "Levels 0 - " << lvl-1 
+            Logger::out("PDEL")
+                << "Levels 0 - " << lvl-1
                 << ": bootstraping with first levels in sequential mode"
                 << std::endl;
         }
-        Delaunay3dThread* thread0 = 
+        Delaunay3dThread* thread0 =
                     static_cast<Delaunay3dThread*>(threads_[0].get());
         thread0->create_first_tetrahedron();
         thread0->set_work(levels_[0], levels_[lvl]);
@@ -26939,7 +26939,7 @@ namespace GEO {
         for(; lvl<levels_.size()-1; ++lvl) {
 
             if(benchmark_mode_) {
-                Logger::out("PDEL") << "Level " 
+                Logger::out("PDEL") << "Level "
                                     << lvl << " : start" << std::endl;
             }
 
@@ -26951,9 +26951,9 @@ namespace GEO {
             index_t b = lvl_b;
             for(index_t t=0; t<threads_.size(); ++t) {
                 index_t e = t == threads_.size()-1 ? lvl_e : b+work_size;
-                Delaunay3dThread* thread = 
+                Delaunay3dThread* thread =
                     static_cast<Delaunay3dThread*>(threads_[t].get());
-                
+
                 // Copy the indices of the first created tetrahedron
                 // and the maximum valid tetrahedron index max_t_
                 if(lvl == first_lvl && t!=0) {
@@ -26970,10 +26970,10 @@ namespace GEO {
             index_t tot_rollbacks = 0 ;
             index_t tot_failed_locate = 0 ;
             for(index_t t=0; t<threads_.size(); ++t) {
-                Delaunay3dThread* thread = 
+                Delaunay3dThread* thread =
                     static_cast<Delaunay3dThread*>(threads_[t].get());
-                Logger::out("PDEL") 
-                    << "thread " << t << " : " 
+                Logger::out("PDEL")
+                    << "thread " << t << " : "
                     << thread->nb_rollbacks() << " rollbacks  "
                     << thread->nb_failed_locate() << " failed locate"
                     << std::endl;
@@ -26981,7 +26981,7 @@ namespace GEO {
                 tot_failed_locate += thread->nb_failed_locate();
             }
             Logger::out("PDEL") << "------------------" << std::endl;
-            Logger::out("PDEL") << "total: " 
+            Logger::out("PDEL") << "total: "
                                 << tot_rollbacks << " rollbacks  "
                                 << tot_failed_locate << " failed locate"
                                 << std::endl;
@@ -26993,15 +26993,15 @@ namespace GEO {
 
         index_t nb_sequential_points = 0;
         for(index_t t=0; t<threads_.size(); ++t) {
-            Delaunay3dThread* t1 = 
+            Delaunay3dThread* t1 =
                 static_cast<Delaunay3dThread*>(threads_[t].get());
 
             nb_sequential_points += t1->work_size();
 
             if(t != 0) {
-                // We need to copy max_t_ from previous thread, 
+                // We need to copy max_t_ from previous thread,
                 // since the memory pool may have grown.
-                Delaunay3dThread* t2 = 
+                Delaunay3dThread* t2 =
                     static_cast<Delaunay3dThread*>(threads_[t-1].get());
                 t1->initialize_from(t2);
             }
@@ -27013,19 +27013,19 @@ namespace GEO {
         // the threads in increasing number, so we copy it from the
         // last thread into thread0 since we use thread0 afterwards
         // to do the "compaction" afterwards.
-        
+
         if(nb_sequential_points != 0) {
-            Delaunay3dThread* t0 = 
+            Delaunay3dThread* t0 =
                 static_cast<Delaunay3dThread*>(threads_[0].get());
-            Delaunay3dThread* tn = 
+            Delaunay3dThread* tn =
                 static_cast<Delaunay3dThread*>(
                     threads_[threads_.size()-1].get()
                 );
             t0->initialize_from(tn);
         }
-        
 
-        
+
+
         if(benchmark_mode_) {
             if(nb_sequential_points != 0) {
                 Logger::out("PDEL") << "Local thread memory overflow occurred:"
@@ -27034,7 +27034,7 @@ namespace GEO {
                                     << " points inserted in sequential mode"
                                     << std::endl;
             } else {
-                Logger::out("PDEL") 
+                Logger::out("PDEL")
                     << "All the points were inserted in parallel mode"
                     << std::endl;
             }
@@ -27053,7 +27053,7 @@ namespace GEO {
                     static_cast<Delaunay3dThread*>(threads_[i].get())
                     ->max_t() << std::endl;
             }
-            
+
             thread0->check_combinatorics(verbose_debug_mode_);
             thread0->check_geometry(verbose_debug_mode_);
         }
@@ -27067,12 +27067,12 @@ namespace GEO {
         //   Since cell_next_ is not used at this point,
         // we reuse it for storing the conversion array that
         // maps old tet indices to new tet indices
-        // Note: tet_is_real() uses the previous value of 
+        // Note: tet_is_real() uses the previous value of
         // cell_next(), but we are processing indices
         // in increasing order and since old2new[t] is always
         // smaller or equal to t, we never overwrite a value
         // before needing it.
-        
+
         vector<index_t>& old2new = cell_next_;
         index_t nb_tets = 0;
         index_t nb_tets_to_delete = 0;
@@ -27121,7 +27121,7 @@ namespace GEO {
         // In "keep_infinite" mode, we reorder the cells in such
         // a way that finite cells have indices [0..nb_finite_cells_-1]
         // and infinite cells have indices [nb_finite_cells_ .. nb_cells_-1]
-        
+
         if(keep_infinite_) {
             nb_finite_cells_ = 0;
             index_t finite_ptr = 0;
@@ -27165,16 +27165,16 @@ namespace GEO {
                 cell_to_cell_store_[i] = t;
             }
         }
-        
-        
+
+
         if(benchmark_mode_) {
             if(keep_infinite_) {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_tets_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_tets_to_delete
                     << " tets (free list)" << std::endl;
             } else {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_tets_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_tets_to_delete
                     << " tets (free list and infinite)" << std::endl;
             }
         }
@@ -27187,7 +27187,7 @@ namespace GEO {
             cell_to_cell_store_.data()
         );
     }
-    
+
     index_t ParallelDelaunay3d::nearest_vertex(const double* p) const {
         // TODO
         return Delaunay::nearest_vertex(p);
@@ -27196,7 +27196,7 @@ namespace GEO {
     void ParallelDelaunay3d::set_BRIO_levels(const vector<index_t>& levels) {
         levels_ = levels;
     }
-    
+
 }
 
 #endif
@@ -27258,7 +27258,7 @@ namespace {
 
 
 namespace VBW {
-    
+
     ConvexCell::ConvexCell(ConvexCellFlags flags) :
 	max_t_(64),
 	max_v_(32),
@@ -27268,7 +27268,7 @@ namespace VBW {
     {
 #ifndef STANDALONE_CONVEX_CELL
 	use_exact_predicates_ = true;
-#endif	
+#endif
 	nb_t_ = 0;
 	nb_v_ = 0;
 	first_free_ = END_OF_LIST;
@@ -27284,7 +27284,7 @@ namespace VBW {
 	}
     }
 
-    
+
 
     void ConvexCell::clear() {
 	nb_t_ = 0;
@@ -27309,8 +27309,8 @@ namespace VBW {
 	}*/
 #endif
     }
-    
-    
+
+
 
     void ConvexCell::init_with_box(
 	double xmin, double ymin, double zmin,
@@ -27324,14 +27324,14 @@ namespace VBW {
 	// Offset for the 6 bounding box plane equations.
 	// Here they come first (offset is zero).
 	index_t boff = 1;
-	
+
 	// The equations of the six faces of the bounding box.
 	plane_eqn_[boff  ] = make_vec4( 1.0, 0.0, 0.0, -xmin);
-	plane_eqn_[boff+1] = make_vec4(-1.0, 0.0, 0.0,  xmax);	
+	plane_eqn_[boff+1] = make_vec4(-1.0, 0.0, 0.0,  xmax);
 	plane_eqn_[boff+2] = make_vec4( 0.0, 1.0, 0.0, -ymin);
-	plane_eqn_[boff+3] = make_vec4( 0.0,-1.0, 0.0,  ymax);	
+	plane_eqn_[boff+3] = make_vec4( 0.0,-1.0, 0.0,  ymax);
 	plane_eqn_[boff+4] = make_vec4( 0.0, 0.0, 1.0, -zmin);
-	plane_eqn_[boff+5] = make_vec4( 0.0, 0.0,-1.0,  zmax);	
+	plane_eqn_[boff+5] = make_vec4( 0.0, 0.0,-1.0,  zmax);
 
         //   Create the 8 triangles that correspond to the
         // 8 vertices of the bounding box.
@@ -27353,7 +27353,7 @@ namespace VBW {
 
 	geometry_dirty_ = true;
     }
-    
+
 
     void ConvexCell::init_with_tet(
 	vec4 P0, vec4 P1, vec4 P2, vec4 P3
@@ -27376,7 +27376,7 @@ namespace VBW {
 	new_triangle(boff+3, boff+0, boff+2);
 	new_triangle(boff+3, boff+1, boff+0);
 	new_triangle(boff+2, boff+0, boff+1);
-	
+
 	// We already created 6 vertices (for the 6 bounding box
 	// plane equations) plus the vertex at infinity.
 	nb_v_ = 5;
@@ -27390,7 +27390,7 @@ namespace VBW {
 	global_index_t P0_global_index,
 	global_index_t P1_global_index,
 	global_index_t P2_global_index,
-	global_index_t P3_global_index	    
+	global_index_t P3_global_index
     ) {
 	geo_debug_assert(has_vglobal_);
 	init_with_tet(P0, P1, P2, P3);
@@ -27402,19 +27402,19 @@ namespace VBW {
 	vglobal_[boff  ] = P0_global_index;
 	vglobal_[boff+1] = P1_global_index;
 	vglobal_[boff+2] = P2_global_index;
-	vglobal_[boff+3] = P3_global_index;	
+	vglobal_[boff+3] = P3_global_index;
     }
-    
-    
-    
+
+
+
 
     void ConvexCell::save(const std::string& filename, double shrink) const {
-	std::cerr << "====> Saving " << filename << std::endl;	
+	std::cerr << "====> Saving " << filename << std::endl;
 	std::ofstream out(filename.c_str());
 	save(out, 1, shrink);
     }
-    
-    
+
+
     index_t ConvexCell::save(
 	std::ostream& out, global_index_t v_offset,
 	double shrink, bool borders_only
@@ -27425,14 +27425,14 @@ namespace VBW {
 	    const_cast<ConvexCell*>(this)->compute_geometry();
 	    g = barycenter();
 	}
-	
+
 	vector<index_t> v2t(nb_v(),index_t(-1));
 	vector<index_t> t_index(nb_t(),index_t(-1));
 	index_t nt=0;
 
 	{
 	    index_t t = first_valid_;
-	    while(t != END_OF_LIST) { 
+	    while(t != END_OF_LIST) {
 		TriangleWithFlags T = get_triangle_and_flags(t);
 		vec4 p;
 		if(geometry_dirty_) {
@@ -27462,7 +27462,7 @@ namespace VBW {
 		t = index_t(T.flags);
 	    }
 	}
-	
+
 	for(index_t v=1; v<nb_v(); ++v) {
 	    if(borders_only &&
 	       has_vglobal() &&
@@ -27477,7 +27477,7 @@ namespace VBW {
 		out << "f ";
 		do {
 		    out << (t_index[t]+v_offset) << " ";
-		    index_t lv = triangle_find_vertex(t,v);		   
+		    index_t lv = triangle_find_vertex(t,v);
 		    t = triangle_adjacent(t, (lv + 1)%3);
 		} while(t != v2t[v]);
 		out << std::endl;
@@ -27496,34 +27496,34 @@ namespace VBW {
 	    index_t t = index_t(v2t_[v]);
 	    do {
 		vertex(t);
-		index_t lv = triangle_find_vertex(t,v);		   
+		index_t lv = triangle_find_vertex(t,v);
 		t = triangle_adjacent(t, (lv + 1)%3);
 	    } while(t != v2t_[v]);
 	}
     }
-    
+
 #if !defined(STANDALONE_CONVEX_CELL) && !defined(GEOGRAM_PSM)
-    
+
     void ConvexCell::append_to_mesh(
 	GEO::Mesh* mesh, double shrink, bool borders_only,
 	GEO::Attribute<GEO::index_t>* facet_attr
     ) const {
 
 	global_index_t v_offset = mesh->vertices.nb();
-	
+
 	vec3 g = make_vec3(0.0, 0.0, 0.0);
 	if(shrink != 0.0) {
 	    const_cast<ConvexCell*>(this)->compute_geometry();
 	    g = barycenter();
 	}
-	
+
 	vector<index_t> v2t(nb_v(),index_t(-1));
 	vector<index_t> t_index(nb_t(),index_t(-1));
 	index_t nt=0;
 
 	{
 	    index_t t = first_valid_;
-	    while(t != END_OF_LIST) { 
+	    while(t != END_OF_LIST) {
 		TriangleWithFlags T = get_triangle_and_flags(t);
 		vec4 p = compute_triangle_point(T);
 		p.x /= p.w;
@@ -27544,7 +27544,7 @@ namespace VBW {
 		t = index_t(T.flags);
 	    }
 	}
-	
+
 	for(index_t v=1; v<nb_v(); ++v) {
 	    if(borders_only &&
 	       has_vglobal() &&
@@ -27559,7 +27559,7 @@ namespace VBW {
 		index_t t = v2t[v];
 		do {
 		    facet_vertices.push_back(t_index[t]+v_offset);
-		    index_t lv = triangle_find_vertex(t,v);		   
+		    index_t lv = triangle_find_vertex(t,v);
 		    t = triangle_adjacent(t, (lv + 1)%3);
 		} while(t != v2t[v]);
 	    }
@@ -27576,12 +27576,12 @@ namespace VBW {
 		(*facet_attr)[f] = v_global_index(v);
 	    }
 	}
-	
+
     }
 
 #endif
-    
-    
+
+
 
     bool ConvexCell::has_v_global_index(global_index_t v) const {
 	vbw_assert(has_vglobal_);
@@ -27599,18 +27599,18 @@ namespace VBW {
 	clip_by_plane(eqn);
 	vglobal_[nb_v()-1] = j;
     }
-	
+
     void ConvexCell::clip_by_plane(vec4 eqn) {
 	geometry_dirty_ = true;
 
-	index_t lv = nb_v_;	
+	index_t lv = nb_v_;
 	if(lv == max_v()) {
 	    grow_v();
 	}
 	plane_eqn_[lv] = eqn;
 	vbw_assert(lv < max_v());
 	++nb_v_;
-	
+
 	// Step 1: Find conflict zone and link conflicted triangles
 	// (to recycle them in free list).
 
@@ -27631,7 +27631,7 @@ namespace VBW {
 
         index_t t = first_valid_;
         first_valid_ = END_OF_LIST;
-        while(t != END_OF_LIST) { 
+        while(t != END_OF_LIST) {
 	    TriangleWithFlags T = get_triangle_and_flags(t);
 	    if(triangle_is_in_conflict(T,eqn)) {
 		set_triangle_flags(
@@ -27647,7 +27647,7 @@ namespace VBW {
 	    }
 	    t = index_t(T.flags);
 	}
-	
+
 	triangulate_conflict_zone(lv, conflict_head, conflict_tail);
     }
 
@@ -27665,7 +27665,7 @@ namespace VBW {
     ) {
 	geometry_dirty_ = true;
 
-	index_t lv = nb_v_;	
+	index_t lv = nb_v_;
 	if(lv == max_v()) {
 	    grow_v();
 	}
@@ -27682,7 +27682,7 @@ namespace VBW {
 	    vglobal_[nb_v()-1] = global_index;
 	}
 
-	
+
 	// Step 1: Find conflict zone and link conflicted triangles
 	// (to recycle them in free list).
 
@@ -27705,7 +27705,7 @@ namespace VBW {
 
         index_t t = first_valid_;
         first_valid_ = END_OF_LIST;
-        while(t != END_OF_LIST) { 
+        while(t != END_OF_LIST) {
 	    TriangleWithFlags T = get_triangle_and_flags(t);
 	    if(triangle_conflict_predicate(ushort(t), ushort(nb_v()-1))) {
 		set_triangle_flags(
@@ -27721,20 +27721,20 @@ namespace VBW {
 	    }
 	    t = index_t(T.flags);
 	}
-	
+
 	triangulate_conflict_zone(lv, conflict_head, conflict_tail);
     }
 
-    
+
     void ConvexCell::clip_by_plane_fast(vec4 P, global_index_t j) {
 	vbw_assert(has_vglobal_);
 	clip_by_plane_fast(P);
 	vglobal_[nb_v()-1] = j;
     }
-    
+
     void ConvexCell::clip_by_plane_fast(vec4 P) {
 	geometry_dirty_ = true;
-	index_t lv = nb_v_;	
+	index_t lv = nb_v_;
 	if(lv == max_v()) {
 	    grow_v();
 	}
@@ -27747,11 +27747,11 @@ namespace VBW {
 	// it is not a big problem (it will be just a
 	// bit slower), so we use inexact predicates
 	// here.
-	
+
 	index_t t_init = END_OF_LIST;
 
 	{
-	    index_t t_pred = END_OF_LIST;	
+	    index_t t_pred = END_OF_LIST;
 	    index_t t = first_valid_;
 	    if(t == END_OF_LIST) {
 		return;
@@ -27761,7 +27761,7 @@ namespace VBW {
 		  Triangle T = get_triangle(t_in);
 		  vbw_assert(T.i != VERTEX_AT_INFINITY);
 		  vbw_assert(T.j != VERTEX_AT_INFINITY);
-		  vbw_assert(T.k != VERTEX_AT_INFINITY);		  
+		  vbw_assert(T.k != VERTEX_AT_INFINITY);
 		  vec4 p1 = vertex_plane(T.i);
 		  vec4 p2 = vertex_plane(T.j);
 		  vec4 p3 = vertex_plane(T.k);
@@ -27772,10 +27772,10 @@ namespace VBW {
 		      p1.w, p2.w, p3.w, P_in.w
 		  );
 	    };
-	
+
 	    index_t count = 100;
 	    double  t_dist = triangle_distance(t,P);
-	    
+
 	  still_walking:
 	    for(index_t le=0; le<3; ++le) {
 		index_t t_next = triangle_adjacent(t, le);
@@ -27795,7 +27795,7 @@ namespace VBW {
 		}
 	    }
 	    t_init = t;
-	} 
+	}
 
 	// note: t_init is now one triangle, probably in conflict
 	// (but not always: there can be degenerate cases where count
@@ -27803,12 +27803,12 @@ namespace VBW {
 	//  not the "highest" triangle (as one expect in a Delaunay
 	//  triangulation code, but here it is different).
 
-	
+
 	// Step 2: mark all the triangles that have the same
 	// conflict status as t_init with CONFLICT_MASK
 	// (even if t_init was not in conflict, then we will
 	//  swap confict mask)
-	
+
 	bool t_init_is_in_conflict = triangle_is_in_conflict(
 	    get_triangle_and_flags(t_init), P
 	);
@@ -27887,12 +27887,12 @@ namespace VBW {
 		t = t_next;
 	    }
 	    first_valid_ = new_first_valid;
-	} 
+	}
 
 	triangulate_conflict_zone(lv, conflict_head, conflict_tail);
     }
-    
-    
+
+
 
     void ConvexCell::triangulate_conflict_zone(
 	index_t lv, index_t conflict_head, index_t conflict_tail
@@ -27904,39 +27904,39 @@ namespace VBW {
 
 	// Triangulate conflict zone
         index_t t = conflict_head;
-        while(t != END_OF_LIST) { 
+        while(t != END_OF_LIST) {
 	    TriangleWithFlags T = get_triangle_and_flags(t);
-	    
+
 	    index_t adj1 = vv2t(T.j,T.i);
 	    index_t adj2 = vv2t(T.k,T.j);
 	    index_t adj3 = vv2t(T.i,T.k);
-	    
+
 	    ushort flg1 = get_triangle_flags(adj1);
 	    ushort flg2 = get_triangle_flags(adj2);
 	    ushort flg3 = get_triangle_flags(adj3);
-	    
+
 	    if(	!(flg1 & ushort(CONFLICT_MASK)) ) {
 		new_triangle(lv, T.i, T.j);
 	    }
-	    
+
 	    if(	!(flg2 & ushort(CONFLICT_MASK)) ) {
-		new_triangle(lv, T.j, T.k);		
+		new_triangle(lv, T.j, T.k);
 	    }
-	    
+
 	    if(	!(flg3 & ushort(CONFLICT_MASK)) ) {
 		new_triangle(lv, T.k, T.i);
 	    }
-	    
+
 	    t = index_t(T.flags & ~ushort(CONFLICT_MASK));
-	} 
-	
+	}
+
 	// Recycle triangles in conflict zone
 	set_triangle_flags(conflict_tail, ushort(first_free_));
 	first_free_ = conflict_head;
     }
-    
-    
-    
+
+
+
 
     bool ConvexCell::triangle_is_in_conflict(
 	TriangleWithFlags T, const vec4& eqn
@@ -27951,38 +27951,38 @@ namespace VBW {
 	    }
 
 	    if(T.j == VERTEX_AT_INFINITY) {
-		vec3 E  = make_vec3(eqn.x, eqn.y, eqn.z);	    
+		vec3 E  = make_vec3(eqn.x, eqn.y, eqn.z);
 		vec3 n3 = vertex_plane_normal(T.k);
 		vec3 n1 = vertex_plane_normal(T.i);
 		return(GEO::PCK::det_3d(n1.data(), E.data(), n3.data()) <= 0);
 	    }
 
 	    if(T.k == VERTEX_AT_INFINITY) {
-		vec3 E  = make_vec3(eqn.x, eqn.y, eqn.z);	    	    
+		vec3 E  = make_vec3(eqn.x, eqn.y, eqn.z);
 		vec3 n1 = vertex_plane_normal(T.i);
 		vec3 n2 = vertex_plane_normal(T.j);
 		return(GEO::PCK::det_3d(n1.data(), n2.data(), E.data()) <= 0);
-	    } 
-	    
-	    //   The triangle is in conflict with eqn if the 
-	    // result of compute_triangle_point(t) injected in eqn 
+	    }
+
+	    //   The triangle is in conflict with eqn if the
+	    // result of compute_triangle_point(t) injected in eqn
 	    // has a negative sign.
 	    //   Examining the formula in compute_triangle_point(),
 	    // this corresponds to (minus) the 4x4 determinant of the
 	    // 4 plane equations developed w.r.t. the 4th column.
 	    // (see Edelsbrunner - Simulation of Simplicity for similar examples
 	    //  of computations).
-	
+
 	    vec4 p1 = vertex_plane(T.i);
 	    vec4 p2 = vertex_plane(T.j);
 	    vec4 p3 = vertex_plane(T.k);
-	    
+
 	    return(GEO::PCK::det_4d(
 		       p1.data(), p2.data(), p3.data(), eqn.data()) >= 0
 	    );
 	}
 #endif
-	
+
 	double det = 0.0;
 
 	// If one of the vertices of the triangle is the
@@ -27995,8 +27995,8 @@ namespace VBW {
 	    vec3 n2 = vertex_plane_normal(T.j);
 	    vec3 n3 = vertex_plane_normal(T.k);
 	    det = -det3x3(
-		eqn.x, n2.x, n3.x, 
-		eqn.y, n2.y, n3.y, 
+		eqn.x, n2.x, n3.x,
+		eqn.y, n2.y, n3.y,
 		eqn.z, n2.z, n3.z
 	    );
 	} else if(T.j == VERTEX_AT_INFINITY) {
@@ -28016,16 +28016,16 @@ namespace VBW {
 		n1.z, n2.z, eqn.z
 	    );
 	} else {
-	    
-	    //   The triangle is in conflict with eqn if the 
-	    // result of compute_triangle_point(t) injected in eqn 
+
+	    //   The triangle is in conflict with eqn if the
+	    // result of compute_triangle_point(t) injected in eqn
 	    // has a negative sign.
 	    //   Examining the formula in compute_triangle_point(),
 	    // this corresponds to (minus) the 4x4 determinant of the 4 plane
 	    // equations developed w.r.t. the 4th column.
 	    // (see Edelsbrunner - Simulation of Simplicity for similar examples
 	    //  of computations).
-	
+
 	    vec4 p1 = vertex_plane(T.i);
 	    vec4 p2 = vertex_plane(T.j);
 	    vec4 p3 = vertex_plane(T.k);
@@ -28038,11 +28038,11 @@ namespace VBW {
 	}
 	return (det > 0.0);
     }
-    
+
     vec4 ConvexCell::compute_triangle_point(TriangleWithFlags T) const {
 
 	double infinite_len = 16.0;
-	
+
 	// Special cases with one of the three vertices at infinity.
 	if(T.i == VERTEX_AT_INFINITY) {
 	    vec4 Pj = vertex_plane(T.j);
@@ -28090,7 +28090,7 @@ namespace VBW {
 	    result.z += result.w * Nij.z * infinite_len;
 	    return result;
 	}
-	
+
         // Get the plane equations associated with each vertex of t
 
 	vec4 pi1 = vertex_plane(T.i);
@@ -28099,32 +28099,32 @@ namespace VBW {
 
         // Find the intersection of the three planes using Cramer's formula.
 	// (see Edelsbrunner - Simulation of Simplicity for other examples).
-	// 
+	//
 	// Cramer's formula: each component of the solution is obtained as
 	//  the ratio of two determinants:
-	//   - the determinant of the system where the ith column is replaced 
+	//   - the determinant of the system where the ith column is replaced
 	//     with the rhs
 	//   divided by:
 	//   - the determinant of the system.
-	// 
+	//
 	// System of equations to be solved:
 	// pi1.x * x + pi1.y * y + pi1.z * z = -pi1.w
 	// pi2.x * x + pi2.y * y + pi2.z * z = -pi2.w
 	// pi3.x * x + pi3.y * y + pi3.z * z = -pi3.w
-	// 
+	//
 	// Expression of the solution given by Cramer's formula:
 	//     | -pi1.w   p1.y   pi1.z |   | pi1.x  pi1.y  pi1.z |
 	// x = | -pi2.w   p2.y   pi2.z | / | pi2.x  pi2.y  pi2.z |
 	//     | -pi3.w   p3.y   pi3.z |   | pi3.x  pi3.y  pi3.z |
-       	// 
+       	//
 	//     |  pi1.x  -p1.w   pi1.z |   | pi1.x  pi1.y  pi1.z |
 	// y = |  pi2.x  -p2.w   pi2.z | / | pi2.x  pi2.y  pi2.z |
 	//     |  pi3.x  -p3.w   pi3.z |   | pi3.x  pi3.y  pi3.z |
-	// 
+	//
 	//     |  pi1.x   p1.y  -pi1.w |   | pi1.x  pi1.y  pi1.z |
 	// z = |  pi2.x   p2.y  -pi2.w | / | pi2.x  pi2.y  pi2.z |
 	//     |  pi3.x   p3.y  -pi3.w |   | pi3.x  pi3.y  pi3.z |
-       
+
 	vec4 result;
 
 	result.x = -det3x3(
@@ -28138,13 +28138,13 @@ namespace VBW {
 	    pi2.x, pi2.w, pi2.z,
 	    pi3.x, pi3.w, pi3.z
 	);
-	
+
 	result.z = -det3x3(
 	    pi1.x, pi1.y, pi1.w,
 	    pi2.x, pi2.y, pi2.w,
 	    pi3.x, pi3.y, pi3.w
 	);
-	
+
 	result.w = det3x3(
 	    pi1.x, pi1.y, pi1.z,
 	    pi2.x, pi2.y, pi2.z,
@@ -28153,12 +28153,12 @@ namespace VBW {
 
 	return result;
     }
-    
-    
+
+
 
     void ConvexCell::grow_v() {
 	vector<ushort> vv2t_new((max_v_*2)*(max_v_*2));
-	for(index_t j=0; j<max_v_; ++j) {	
+	for(index_t j=0; j<max_v_; ++j) {
 	    for(index_t i=0; i<max_v_; ++i) {
 		vv2t_new[max_v_ * 2 * j + i] = vv2t_[max_v_ * j + i];
 	    }
@@ -28177,8 +28177,8 @@ namespace VBW {
 	}
     }
 
-    
-    
+
+
     void ConvexCell::kill_vertex(index_t v) {
 	for(index_t t=0; t<nb_t(); ++t) {
 	    Triangle T = get_triangle(t);
@@ -28196,19 +28196,19 @@ namespace VBW {
 	    set_vv2t(T.k, T.i, t);
 	    t_[t].i = T.i;
 	    t_[t].j = T.j;
-	    t_[t].k = T.k;	    
+	    t_[t].k = T.k;
 	}
     }
 
-    
-    
+
+
     void ConvexCell::compute_geometry() {
 	if(!geometry_dirty_) {
 	    return;
 	}
 
 	triangle_point_.resize(nb_t());
-	
+
 	// Yes, need to do that with two
 	// instructions: resize(nb_v(), END_OF_LIST)
 	// does not reset the existing items to
@@ -28218,7 +28218,7 @@ namespace VBW {
 	v2t_.assign(nb_v(),END_OF_LIST);
 
         index_t t = first_valid_;
-        while(t != END_OF_LIST) { 
+        while(t != END_OF_LIST) {
 	    TriangleWithFlags T = get_triangle_and_flags(t);
 	    vec4 p = compute_triangle_point(T);
 	    triangle_point_[t] = make_vec3(p.x/p.w, p.y/p.w, p.z/p.w);
@@ -28227,7 +28227,7 @@ namespace VBW {
 	    v2t_[T.k] = ushort(t);
 	    t = index_t(T.flags);
 	}
-	
+
 	geometry_dirty_ = false;
     }
 
@@ -28243,7 +28243,7 @@ namespace VBW {
 	double Wz = Ux * Vy - Uy * Vx;
 	return 0.5 * ::sqrt(Wx*Wx + Wy*Wy + Wz*Wz);
     }
-    
+
     double ConvexCell::facet_area(index_t v) const {
 	vbw_assert(v < nb_v());
 	vbw_assert(!geometry_dirty_);
@@ -28251,7 +28251,7 @@ namespace VBW {
 	ushort t1t2[2];
 	index_t cur=0;
 	double result = 0.0;
-	
+
 	if(v2t_[v] != END_OF_LIST) {
 	    index_t t = v2t_[v];
 	    index_t count = 0;
@@ -28267,13 +28267,13 @@ namespace VBW {
 		    t1t2[1] = ushort(t);
 		}
 		++cur;
-		index_t lv = triangle_find_vertex(t,v);		   
+		index_t lv = triangle_find_vertex(t,v);
 		t = triangle_adjacent(t, (lv + 1)%3);
 		++count;
 		geo_assert(count < 100000);
 	    } while(t != v2t_[v]);
 	}
-	
+
 	return result;
     }
 
@@ -28281,11 +28281,11 @@ namespace VBW {
 	double Ux = p2.x - p1.x;
 	double Uy = p2.y - p1.y;
 	double Uz = p2.z - p1.z;
-	
+
 	double Vx = p3.x - p1.x;
 	double Vy = p3.y - p1.y;
 	double Vz = p3.z - p1.z;
-	
+
 	double Wx = p4.x - p1.x;
 	double Wy = p4.y - p1.y;
 	double Wz = p4.z - p1.z;
@@ -28298,7 +28298,7 @@ namespace VBW {
 	    UVx * Wx + UVy * Wy + UVz * Wz
 	) / 6.0;
     }
-    
+
     double ConvexCell::volume() const {
 	vbw_assert(!geometry_dirty_);
 	double result = 0.0;
@@ -28330,7 +28330,7 @@ namespace VBW {
 		    t1t2[1] = ushort(t);
 		}
 		++cur;
-		index_t lv = triangle_find_vertex(t,v);		   
+		index_t lv = triangle_find_vertex(t,v);
 		t = triangle_adjacent(t, (lv + 1)%3);
 		++count;
 		geo_assert(count < 100000);
@@ -28350,7 +28350,7 @@ namespace VBW {
 	}
 	return result;
     }
-    
+
     void ConvexCell::compute_mg(double& m, vec3& result) const {
 	vbw_assert(!geometry_dirty_);
 	result = make_vec3(0.0, 0.0, 0.0);
@@ -28385,28 +28385,28 @@ namespace VBW {
 		    t1t2[1] = ushort(t);
 		}
 		++cur;
-		index_t lv = triangle_find_vertex(t,v);		   
+		index_t lv = triangle_find_vertex(t,v);
 		t = triangle_adjacent(t, (lv + 1)%3);
 		++count;
 		geo_assert(count < 100000);
 	    } while(t != v2t_[v]);
 	}
     }
-    
-    
 
-    
+
+
+
     double ConvexCell::squared_radius(vec3 center) const {
 	double result = 0.0;
         index_t t = first_valid_;
-        while(t != END_OF_LIST) { 
+        while(t != END_OF_LIST) {
 	    TriangleWithFlags T = get_triangle_and_flags(t);
 	    if(geometry_dirty_) {
 		vec4 p4 = compute_triangle_point(T);
 		vec3 p3 = make_vec3(
 		    p4.x/p4.w, p4.y/p4.w, p4.z/p4.w
 		);
-		result = std::max(result, squared_distance(center,p3));		
+		result = std::max(result, squared_distance(center,p3));
 	    } else {
 		vec3 p = triangle_point_[t];
 		result = std::max(result, squared_distance(center,p));
@@ -28431,9 +28431,9 @@ namespace VBW {
 	return result;
     }
 
-    
 
-    
+
+
 }
 
 /******* extracted from periodic.cpp *******/
@@ -28447,11 +28447,11 @@ namespace GEO {
 	{ -1, -1,  0}, //1  -> 2   -
 	{ -1, -1,  1}, //2  -> 3   -
 	{ -1,  0, -1}, //3  -> 4   -
-	{ -1,  0,  0}, //4  -> 5   - 
+	{ -1,  0,  0}, //4  -> 5   -
 	{ -1,  0,  1}, //5  -> 6   -
 	{ -1,  1, -1}, //6  -> 7   -
 	{ -1,  1,  0}, //7  -> 8   -
-	{ -1,  1,  1}, //8  -> 9   - 
+	{ -1,  1,  1}, //8  -> 9   -
 	{  0, -1, -1}, //9  -> 10  -
 	{  0, -1,  0}, //10 -> 11  -
 	{  0, -1,  1}, //11 -> 12  -
@@ -28479,9 +28479,9 @@ namespace GEO {
     };
 
     bool Periodic::instance_is_positive[27] = {
-	true,  false, false, false, false, false, 
-	false, false, false, false, false, false, 
-	false, false, true,  false, true,  true,  
+	true,  false, false, false, false, false,
+	false, false, false, false, false, false,
+	false, false, true,  false, true,  true,
 	false, false, false, false, true,  true,
 	false, true,  true
     };
@@ -28557,14 +28557,14 @@ namespace GEO {
     class PeriodicDelaunay3dThread : public GEO::Thread, public Periodic {
     public:
 	friend class PeriodicDelaunay3d;
-	
+
         static const index_t NO_THREAD = thread_index_t(-1);
 
         PeriodicDelaunay3dThread(
             PeriodicDelaunay3d* master,
             index_t pool_begin,
             index_t pool_end
-        ) : 
+        ) :
             master_(master),
 	    periodic_(master->periodic_),
 	    period_(master->period_),
@@ -28598,9 +28598,9 @@ namespace GEO {
 
             b_hint_ = NO_TETRAHEDRON;
             e_hint_ = NO_TETRAHEDRON;
-	    
+
 	    set_pool(pool_begin, pool_end);
-	   
+
         }
 
 	void set_pool(
@@ -28632,7 +28632,7 @@ namespace GEO {
             max_used_t_ = std::max(max_used_t, index_t(1));
 	}
 
-	
+
         ~PeriodicDelaunay3dThread() {
             pthread_mutex_destroy(&mutex_);
             pthread_cond_destroy(&cond_);
@@ -28641,7 +28641,7 @@ namespace GEO {
 	bool has_empty_cells() {
 	    return has_empty_cells_;
 	}
-	
+
         void initialize_from(const PeriodicDelaunay3dThread* rhs) {
             max_used_t_ = rhs->max_used_t_;
             max_t_ = rhs->max_t_;
@@ -28662,11 +28662,11 @@ namespace GEO {
 	index_t nb_traversed_tets() const {
 	    return nb_traversed_tets_;
 	}
-	
+
         void set_work(index_t b, index_t e) {
             work_begin_ = signed_index_t(b);
             // e is one position past the last point index
-            // to insert. 
+            // to insert.
             work_end_ = signed_index_t(e)-1;
         }
 
@@ -28710,14 +28710,14 @@ namespace GEO {
             // If true, insert in b->e order,
             // else insert in e->b order
             direction_ = true;
-            
+
             while(
 		work_end_ >= work_begin_ &&
 		!memory_overflow_ &&
 		!has_empty_cells_ &&
 		!master_->has_empty_cells_
 	    ) {
-                index_t v = direction_ ? 
+                index_t v = direction_ ?
                     index_t(work_begin_) : index_t(work_end_) ;
                 index_t& hint = direction_ ? b_hint_ : e_hint_;
 
@@ -28749,7 +28749,7 @@ namespace GEO {
                             wait_for_event(interfering_thread_);
                         } else {
                             // If this thread has a lower priority than
-                            // the interfering thread, try inserting 
+                            // the interfering thread, try inserting
                             // from the other end of the points sequence.
                             direction_ = !direction_;
                         }
@@ -28761,7 +28761,7 @@ namespace GEO {
 	    if(has_empty_cells_) {
 		master_->has_empty_cells_ = true;
 	    }
-	    
+
 	    //   Fix by Hiep Vu: wake up threads that potentially missed
 	    // the previous wake ups.
 	    pthread_mutex_lock(&mutex_);
@@ -28772,20 +28772,20 @@ namespace GEO {
         static const index_t NO_TETRAHEDRON = index_t(-1);
 
         static const signed_index_t VERTEX_AT_INFINITY = -1;
-        
+
 
         index_t max_t() const {
             return max_t_;
         }
 
         bool tet_is_finite(index_t t) const {
-            return 
+            return
                 cell_to_v_store_[4 * t]     >= 0 &&
                 cell_to_v_store_[4 * t + 1] >= 0 &&
                 cell_to_v_store_[4 * t + 2] >= 0 &&
                 cell_to_v_store_[4 * t + 3] >= 0;
         }
-        
+
         bool tet_is_real(index_t t) const {
             return !tet_is_free(t) && tet_is_finite(t);
         }
@@ -28797,14 +28797,14 @@ namespace GEO {
 		finite_tet_vertex(t,2) < nb_vertices_non_periodic_ ||
 		finite_tet_vertex(t,3) < nb_vertices_non_periodic_ ) ;
         }
-	
+
         bool tet_is_free(index_t t) const {
             return tet_is_in_list(t);
         }
-        
+
         bool tet_is_in_list(index_t t, index_t first) const {
             for(
-                index_t cur = first; cur != END_OF_LIST; 
+                index_t cur = first; cur != END_OF_LIST;
                 cur = tet_next(cur)
             ) {
                 if(cur == t) {
@@ -28822,7 +28822,7 @@ namespace GEO {
             }
 
             iv0 = 0;
-            
+
             iv1 = 1;
             while(
                 iv1 < nb_vertices_non_periodic_ &&
@@ -28836,7 +28836,7 @@ namespace GEO {
             if(iv1 == nb_vertices()) {
                 return NO_TETRAHEDRON;
             }
-            
+
             iv2 = iv1 + 1;
             while(
                 iv2 < nb_vertices_non_periodic_ &&
@@ -28871,16 +28871,16 @@ namespace GEO {
             }
 
             geo_debug_assert(s != ZERO);
-            
+
             if(s == NEGATIVE) {
                 std::swap(iv2, iv3);
             }
 
             // Create the first tetrahedron
             index_t t0 = new_tetrahedron(
-                signed_index_t(iv0), 
-                signed_index_t(iv1), 
-                signed_index_t(iv2), 
+                signed_index_t(iv0),
+                signed_index_t(iv1),
+                signed_index_t(iv2),
                 signed_index_t(iv3)
             );
 
@@ -28940,20 +28940,20 @@ namespace GEO {
 		);
 		cavity_.set_facet_tet(f, new_tet);
 	    }
-	
+
 	    for(index_t f=0; f<cavity_.nb_facets(); ++f) {
 		new_tet = cavity_.facet_tet(f);
 		index_t neigh1, neigh2, neigh3;
 		cavity_.get_facet_neighbor_tets(f, neigh1, neigh2, neigh3);
 		set_tet_adjacent(new_tet, 1, neigh1);
 		set_tet_adjacent(new_tet, 2, neigh2);
-		set_tet_adjacent(new_tet, 3, neigh3);		
+		set_tet_adjacent(new_tet, 3, neigh3);
 	    }
-	    
+
 	    return new_tet;
 	}
 
-	
+
         bool insert(index_t v, index_t& hint) {
 
             // If v is one of the vertices of the
@@ -28968,7 +28968,7 @@ namespace GEO {
             }
 
 	    vec3 p = vertex(v);
-	    
+
             Sign orient[4];
             index_t t = locate(v,p,hint,orient);
 
@@ -28987,7 +28987,7 @@ namespace GEO {
             // the triangulation. The point already exists
             // if it's located on three faces of the
             // tetrahedron returned by locate().
-            int nb_zero = 
+            int nb_zero =
                 (orient[0] == ZERO) +
                 (orient[1] == ZERO) +
                 (orient[2] == ZERO) +
@@ -29006,7 +29006,7 @@ namespace GEO {
 	    vec4 p_lifted = lifted_vertex(v,p);
 
 	    cavity_.clear();
-	    
+
             bool ok = find_conflict_zone(v,p_lifted,t,t_bndry,f_bndry);
 
             // When in multithreading mode, we cannot allocate memory
@@ -29041,12 +29041,12 @@ namespace GEO {
 
 
             geo_debug_assert(
-                nb_acquired_tets_ == 
+                nb_acquired_tets_ ==
                 tets_to_delete_.size() + tets_to_release_.size()
             );
 
 #ifdef GEO_DEBUG
-            // Sanity check: make sure this threads owns all the tets 
+            // Sanity check: make sure this threads owns all the tets
             // in conflict and their neighbors.
             for(index_t i=0; i<tets_to_delete_.size(); ++i) {
                 index_t tdel = tets_to_delete_[i];
@@ -29071,11 +29071,11 @@ namespace GEO {
 
             index_t new_tet = index_t(-1);
 	    if(cavity_.OK()) {
-		new_tet = stellate_cavity(v);	
+		new_tet = stellate_cavity(v);
 	    } else {
 		new_tet = stellate_conflict_zone_iterative(v,t_bndry,f_bndry);
 	    }
-       
+
             // Recycle the tetrahedra of the conflict zone.
             for(index_t i=0; i<tets_to_delete_.size()-1; ++i) {
                 cell_next_[tets_to_delete_[i]] = tets_to_delete_[i+1];
@@ -29098,7 +29098,7 @@ namespace GEO {
                 set_tet_vertex(tdel,2,-2);
                 set_tet_vertex(tdel,3,-2);
             }
-       
+
             // Return one of the newly created tets
             hint=new_tet;
             release_tets();
@@ -29107,7 +29107,7 @@ namespace GEO {
         }
 
         bool find_conflict_zone(
-            index_t v, const vec4& p, index_t t, 
+            index_t v, const vec4& p, index_t t,
             index_t& t_bndry, index_t& f_bndry
         ) {
             nb_tets_to_create_ = 0;
@@ -29120,7 +29120,7 @@ namespace GEO {
 
             //  Weighted triangulations can have dangling
             // vertices. Such vertices p are characterized by
-            // the fact that p is not in conflict with the 
+            // the fact that p is not in conflict with the
             // tetrahedron returned by locate().
             if(!tet_is_in_conflict(t,v,p)) {
                 release_tet(t);
@@ -29166,18 +29166,18 @@ namespace GEO {
                 for(index_t lf = 0; lf < 4; ++lf) {
 		    index_t v2=v;
 		    vec4 p2=p;
-		    
+
                     index_t t2 = index_t(tet_adjacent(t, lf));
-                
+
                     // If t2 is already owned by current thread, then
                     // its status was previously determined.
                     if(owns_tet(t2)) {
 
                         geo_debug_assert(
-                            tet_is_marked_as_conflict(t2) == 
+                            tet_is_marked_as_conflict(t2) ==
                             tet_is_in_conflict(t2,v2,p2)
                         );
-                    
+
                         // If t2 is not in conflict list, then t has a facet
                         // on the border of the conflict zone, and there is
                         // a tet to create.
@@ -29197,7 +29197,7 @@ namespace GEO {
                         S_.resize(0);
                         return false;
                     }
-                
+
                     geo_debug_assert(owns_tet(t2));
 
                     if(!tet_is_in_conflict(t2,v2,p2)) {
@@ -29213,8 +29213,8 @@ namespace GEO {
                         continue;
                     }
 
-                    //  At this point, t is in conflict 
-                    // and t2 is not in conflict. 
+                    //  At this point, t is in conflict
+                    // and t2 is not in conflict.
                     // We keep a reference to a tet on the boundary
                     t_boundary_ = t;
                     f_boundary_ = lf;
@@ -29242,7 +29242,7 @@ namespace GEO {
 	    return (weights_ == nullptr) ? 0.0 : weights_[i];
         }
 
-	
+
 	void get_vertex(index_t v, double* result) const {
 	    if(!periodic_) {
 		result[0] = vertices_[3*v];
@@ -29259,7 +29259,7 @@ namespace GEO {
 	    result[1] += double(translation[instance][1]) * period_;
 	    result[2] += double(translation[instance][2]) * period_;
 	}
-	
+
 	vec3 vertex(index_t v) const {
 	    vec3 result;
 	    get_vertex(v, result.data());
@@ -29284,7 +29284,7 @@ namespace GEO {
 	    result[3] +=
 		geo_sqr(result[0]) + geo_sqr(result[1]) + geo_sqr(result[2]);
 	}
-	
+
 	vec4 lifted_vertex(index_t v) const {
 	    vec4 result;
 	    get_lifted_vertex(v,result.data());
@@ -29298,7 +29298,7 @@ namespace GEO {
 		- non_periodic_weight(periodic_vertex_real(v))
 	    );
 	}
-	
+
 	Sign orient_3d(index_t i, index_t j, index_t k, index_t l) const {
 	    // No need to reorder since there is no SOS.
 	    double V[4][3];
@@ -29319,19 +29319,19 @@ namespace GEO {
 		const double* pj = non_periodic_vertex_ptr(j);
 		const double* pk = non_periodic_vertex_ptr(k);
 		const double* pl = non_periodic_vertex_ptr(l);
-		
+
 		double hi = geo_sqr(pi[0]) + geo_sqr(pi[1]) + geo_sqr(pi[2])
 		    - non_periodic_weight(i);
-		
+
 		double hj = geo_sqr(pj[0]) + geo_sqr(pj[1]) + geo_sqr(pj[2])
 		    - non_periodic_weight(j);
-		
+
 		double hk = geo_sqr(pk[0]) + geo_sqr(pk[1]) + geo_sqr(pk[2])
 		    - non_periodic_weight(k);
-		
+
 		double hl = geo_sqr(pl[0]) + geo_sqr(pl[1]) + geo_sqr(pl[2])
 		    - non_periodic_weight(l);
-		
+
 		return PCK::in_circle_3dlifted_SOS(
 		    pi, pj, pk, pl,
 		    hi, hj, hk, hl
@@ -29359,21 +29359,21 @@ namespace GEO {
 		const double* pi = non_periodic_vertex_ptr(i);
 		const double* pj = non_periodic_vertex_ptr(j);
 		const double* pk = non_periodic_vertex_ptr(k);
-		const double* pl = non_periodic_vertex_ptr(l);		
+		const double* pl = non_periodic_vertex_ptr(l);
 		const double* pm = non_periodic_vertex_ptr(m);
-		
+
 		double hi = geo_sqr(pi[0]) + geo_sqr(pi[1]) + geo_sqr(pi[2])
 		    - non_periodic_weight(i);
-		
+
 		double hj = geo_sqr(pj[0]) + geo_sqr(pj[1]) + geo_sqr(pj[2])
 		    - non_periodic_weight(j);
-		
+
 		double hk = geo_sqr(pk[0]) + geo_sqr(pk[1]) + geo_sqr(pk[2])
 		    - non_periodic_weight(k);
-		
+
 		double hl = geo_sqr(pl[0]) + geo_sqr(pl[1]) + geo_sqr(pl[2])
 		    - non_periodic_weight(l);
-		
+
 		double hm = geo_sqr(pm[0]) + geo_sqr(pm[1]) + geo_sqr(pm[2])
 		    - non_periodic_weight(m);
 
@@ -29384,7 +29384,7 @@ namespace GEO {
 	    }
 
 	    // Periodic mode.
-	    // Note: in periodic mode, SOS mode is lexicographic.	    
+	    // Note: in periodic mode, SOS mode is lexicographic.
 	    double V[5][4];
 
 	    /*
@@ -29396,19 +29396,19 @@ namespace GEO {
 	      get_lifted_vertex(l,V[3]);
 	      get_lifted_vertex(m,V[4]);
 	    */
-	    
+
 	    index_t ii = periodic_vertex_instance(i);
 	    index_t ij = periodic_vertex_instance(j);
 	    index_t ik = periodic_vertex_instance(k);
-	    index_t il = periodic_vertex_instance(l);	    
+	    index_t il = periodic_vertex_instance(l);
 	    index_t im = periodic_vertex_instance(m);
-	    
+
 	    i = periodic_vertex_real(i);
 	    j = periodic_vertex_real(j);
 	    k = periodic_vertex_real(k);
 	    l = periodic_vertex_real(l);
 	    m = periodic_vertex_real(m);
-	    
+
 	    V[0][0] = vertices_[3*i  ] + double(translation[ii][0]) * period_;
 	    V[0][1] = vertices_[3*i+1] + double(translation[ii][1]) * period_;
 	    V[0][2] = vertices_[3*i+2] + double(translation[ii][2]) * period_;
@@ -29429,23 +29429,23 @@ namespace GEO {
 	    //               |                               give always the same result.
 	    //               |________________________________________________________________________
 	    //                                  |                                                     |
-	    //                                  v                                                     v 
+	    //                                  v                                                     v
 	    V[0][3] = -non_periodic_weight(i) + (geo_sqr(V[0][0]) + geo_sqr(V[0][1]) + geo_sqr(V[0][2]));
 	    V[1][3] = -non_periodic_weight(j) + (geo_sqr(V[1][0]) + geo_sqr(V[1][1]) + geo_sqr(V[1][2]));
 	    V[2][3] = -non_periodic_weight(k) + (geo_sqr(V[2][0]) + geo_sqr(V[2][1]) + geo_sqr(V[2][2]));
-	    V[3][3] = -non_periodic_weight(l) + (geo_sqr(V[3][0]) + geo_sqr(V[3][1]) + geo_sqr(V[3][2]));	    
-	    V[4][3] = -non_periodic_weight(m) + (geo_sqr(V[4][0]) + geo_sqr(V[4][1]) + geo_sqr(V[4][2]));	    
+	    V[3][3] = -non_periodic_weight(l) + (geo_sqr(V[3][0]) + geo_sqr(V[3][1]) + geo_sqr(V[3][2]));
+	    V[4][3] = -non_periodic_weight(m) + (geo_sqr(V[4][0]) + geo_sqr(V[4][1]) + geo_sqr(V[4][2]));
 
 	    return PCK::orient_3dlifted_SOS(
 		V[0],    V[1],    V[2],    V[3],    V[4],
 		V[0][3], V[1][3], V[2][3], V[3][3], V[4][3]
 	    );
 	}
-	
+
         bool tet_is_in_conflict(index_t t, index_t v, const vec4& p) const {
 
 	    geo_argused(p);
-	    
+
             // Lookup tetrahedron vertices
 
 	    index_t iv[4];
@@ -29453,7 +29453,7 @@ namespace GEO {
                 iv[i] = index_t(tet_vertex(t,i));
 	    }
 
-	    
+
             // Check for virtual tetrahedra (then in_sphere()
             // is replaced with orient3d())
             for(index_t lf = 0; lf < 4; ++lf) {
@@ -29489,14 +29489,14 @@ namespace GEO {
                     if(owns_tet(t2)) {
                         return tet_is_marked_as_conflict(t2);
                     }
-                    
+
                     //  If t2 was not already visited, then we need to
                     // switch to the in_circum_circle_3d() predicate.
 
                     index_t iq0 = iv[(lf+1)%4];
                     index_t iq1 = iv[(lf+2)%4];
                     index_t iq2 = iv[(lf+3)%4];
-                    
+
 		    return (in_circle_3dlifted_SOS(iq0, iq1, iq2, v) > 0);
                 }
             }
@@ -29507,7 +29507,7 @@ namespace GEO {
 
 	    return (orient_3dlifted_SOS(iv[0], iv[1], iv[2], iv[3], v) > 0);
         }
-        
+
 
          index_t locate(
 	     index_t& v, vec3& p, index_t hint = NO_TETRAHEDRON,
@@ -29537,7 +29537,7 @@ namespace GEO {
                      hint = thread_safe_random_(max_used_t_);
                  }
                  if(
-                     tet_is_free(hint) || 
+                     tet_is_free(hint) ||
                      (!owns_tet(hint) && !acquire_tet(hint))
                  ) {
                      if(owns_tet(hint)) {
@@ -29549,7 +29549,7 @@ namespace GEO {
                          if(tet_vertex(hint,f) == VERTEX_AT_INFINITY) {
                              index_t new_hint = index_t(tet_adjacent(hint,f));
                              if(
-                                 tet_is_free(new_hint) || 
+                                 tet_is_free(new_hint) ||
                                  !acquire_tet(new_hint)
                              ) {
                                  new_hint = NO_TETRAHEDRON;
@@ -29600,20 +29600,20 @@ namespace GEO {
                  index_t f0 = thread_safe_random_4_();
                  for(index_t df = 0; df < 4; ++df) {
                      index_t f = (f0 + df) % 4;
-                     
+
                      signed_index_t s_t_next = tet_adjacent(t,f);
-                     
+
                      //  If the opposite tet is -1, then it means that
                      // we are trying to locate() (e.g. called from
-                     // nearest_vertex) within a tetrahedralization 
+                     // nearest_vertex) within a tetrahedralization
                      // from which the infinite tets were removed.
                      if(s_t_next == -1) {
                          release_tet(t);
                          return NO_TETRAHEDRON;
                      }
-                     
+
                      index_t t_next = index_t(s_t_next);
-                     
+
                      //   If the candidate next tetrahedron is the
                      // one we came from, then we know already that
                      // the orientation is positive, thus we examine
@@ -29621,7 +29621,7 @@ namespace GEO {
                      // are exhausted).
                      if(t_next == t_pred) {
                          orient[f] = POSITIVE ;
-                         continue ; 
+                         continue ;
                      }
 
                      //   To test the orientation of p w.r.t. the facet f of
@@ -29634,7 +29634,7 @@ namespace GEO {
                      orient[f] = PCK::orient_3d(
 			 pv[0].data(), pv[1].data(), pv[2].data(), pv[3].data()
 		     );
-                     
+
                      //   If the orientation is not negative, then we cannot
                      // walk towards t_next, and examine the next candidate
                      // (or exit the loop if they are exhausted).
@@ -29660,18 +29660,18 @@ namespace GEO {
                      }
 
 		     ++nb_traversed_tets_;
-		     
+
                      //   If we reach this point, then t_next is a valid
                      // successor, thus we are still walking.
                      t_pred = t;
                      t = t_next;
                      goto still_walking;
                  }
-             } 
+             }
 
              //   If we reach this point, we did not find a valid successor
-             // for walking (a face for which p has negative orientation), 
-             // thus we reached the tet for which p has all positive 
+             // for walking (a face for which p has negative orientation),
+             // thus we reached the tet for which p has all positive
              // face orientations (i.e. the tet that contains p).
 
 #ifdef GEO_DEBUG
@@ -29694,10 +29694,10 @@ namespace GEO {
 
              return t;
          }
-        
+
 
     protected:
-        
+
         bool tet_is_marked_as_conflict(index_t t) const {
             geo_debug_assert(owns_tet(t));
             return ((cell_thread_[t] & 1) != 0);
@@ -29724,14 +29724,14 @@ namespace GEO {
 
         void acquire_and_mark_tet_as_created(index_t t) {
             //  The tet was created in this thread's tet pool,
-            // therefore there is no need to use sync 
+            // therefore there is no need to use sync
             // primitives to acquire a lock on it.
             geo_debug_assert(cell_thread_[t] == NO_THREAD);
             cell_thread_[t] = thread_index_t(id() << 1);
 #ifdef GEO_DEBUG
             ++nb_acquired_tets_;
 #endif
-            tets_to_release_.push_back(t);            
+            tets_to_release_.push_back(t);
         }
 
 
@@ -29759,13 +29759,13 @@ namespace GEO {
                     (char)(id() << 1),
                     (char)(NO_THREAD)
                 ));
-#else            
-            interfering_thread_ = 
+#else
+            interfering_thread_ =
                 __sync_val_compare_and_swap(
                     &cell_thread_[t], NO_THREAD, thread_index_t(id() << 1)
                 );
 #endif
-            
+
             if(interfering_thread_ == NO_THREAD) {
                 geo_debug_assert(t == first_free_ || !tet_is_in_list(t));
 #ifdef GEO_DEBUG
@@ -29800,7 +29800,7 @@ namespace GEO {
                 cell_to_v_store_[4 * t + 3] == VERTEX_AT_INFINITY) ;
         }
 
-        
+
         static index_t tet_facet_vertex(index_t f, index_t v) {
             geo_debug_assert(f < 4);
             geo_debug_assert(v < 3);
@@ -29850,7 +29850,7 @@ namespace GEO {
             geo_debug_assert(owns_tet(t2));
             cell_to_cell_store_[4 * t1 + lf1] = signed_index_t(t2);
         }
-        
+
         index_t find_tet_adjacent(
             index_t t1, index_t t2_in
         ) const {
@@ -29886,7 +29886,7 @@ namespace GEO {
             geo_debug_assert(lv1 != lv2);
             return index_t(halfedge_facet_[lv1][lv2]);
         }
-        
+
 
         void get_facets_by_halfedge(
             index_t t, signed_index_t v1, signed_index_t v2,
@@ -29894,7 +29894,7 @@ namespace GEO {
         ) const {
             geo_debug_assert(t < max_t());
             geo_debug_assert(v1 != v2);
-        
+
             //   Find local index of v1 and v2 in tetrahedron t
             // The following expression is 10% faster than using
             // if() statements (multiply by boolean result of test).
@@ -29907,7 +29907,7 @@ namespace GEO {
 	    lv2 = (T[1] == v2) | ((T[2] == v2) * 2) | ((T[3] == v2) * 3);
 	    geo_debug_assert(lv1 != 0 || T[0] == v1);
 	    geo_debug_assert(lv2 != 0 || T[0] == v2);
-            
+
             geo_debug_assert(lv1 >= 0);
             geo_debug_assert(lv2 >= 0);
             geo_debug_assert(lv1 != lv2);
@@ -29976,7 +29976,7 @@ namespace GEO {
 		) {
 		    master_->nb_reallocations_++;
 		}
-		
+
                 master_->cell_to_v_store_.resize(
                     master_->cell_to_v_store_.size() + 4, -1
                 );
@@ -30011,7 +30011,7 @@ namespace GEO {
         }
 
         index_t new_tetrahedron(
-            signed_index_t v1, signed_index_t v2, 
+            signed_index_t v1, signed_index_t v2,
             signed_index_t v3, signed_index_t v4
         ) {
             index_t result = new_tetrahedron();
@@ -30024,9 +30024,9 @@ namespace GEO {
 
         static index_t find_4(const signed_index_t* T, signed_index_t v) {
             // The following expression is 10% faster than using
-            // if() statements. This uses the C++ norm, that 
-            // ensures that the 'true' boolean value converted to 
-            // an int is always 1. With most compilers, this avoids 
+            // if() statements. This uses the C++ norm, that
+            // ensures that the 'true' boolean value converted to
+            // an int is always 1. With most compilers, this avoids
             // generating branching instructions.
             // Thank to Laurent Alonso for this idea.
             // Note: Laurent also has this version:
@@ -30039,7 +30039,7 @@ namespace GEO {
             // Sanity check, important if it was T[0], not explicitly
             // tested (detects input that does not meet the precondition).
             geo_debug_assert(T[result] == v);
-            return result; 
+            return result;
         }
 
 
@@ -30051,11 +30051,11 @@ namespace GEO {
 	     geo_debug_assert(
 		 T[0] != -1 && T[1] != -1 && T[2] != -1 && T[3] != -1
 	     );
-	     
+
             // The following expression is 10% faster than using
-            // if() statements. This uses the C++ norm, that 
-            // ensures that the 'true' boolean value converted to 
-            // an int is always 1. With most compilers, this avoids 
+            // if() statements. This uses the C++ norm, that
+            // ensures that the 'true' boolean value converted to
+            // an int is always 1. With most compilers, this avoids
             // generating branching instructions.
             // Thank to Laurent Alonso for this idea.
             // Note: Laurent also has this version:
@@ -30067,30 +30067,30 @@ namespace GEO {
 		((periodic_vertex_real(index_t(T[2])) == v) * 2) |
 		((periodic_vertex_real(index_t(T[3])) == v) * 3)
 	    );
-    
+
             // Sanity check, important if it was T[0], not explicitly
             // tested (detects input that does not meet the precondition).
 	    geo_debug_assert(periodic_vertex_real(index_t(T[result])) == v);
-            return result; 
+            return result;
         }
 
-	
+
         void send_event() {
             pthread_cond_broadcast(&cond_);
         }
-        
+
         void wait_for_event(index_t t) {
 	    // Fixed by Hiep Vu: enlarged critical section (contains
 	    // now the test (!thrd->finished)
             PeriodicDelaunay3dThread* thrd = thread(t);
-	    pthread_mutex_lock(&(thrd->mutex_));	    
+	    pthread_mutex_lock(&(thrd->mutex_));
             if(!thrd->finished_) {
                 pthread_cond_wait(&(thrd->cond_), &(thrd->mutex_));
             }
-	    pthread_mutex_unlock(&(thrd->mutex_));	    
+	    pthread_mutex_unlock(&(thrd->mutex_));
         }
 
-                
+
 
         class StellateConflictStack {
         public:
@@ -30127,24 +30127,24 @@ namespace GEO {
                 t1ft2 = index_t(top().t1ft2);
                 t2ft1 = index_t(top().t2ft1);
             }
-            
+
             void pop() {
                 geo_debug_assert(!empty());
                 store_.pop_back();
             }
-            
+
             bool empty() const {
                 return store_.empty();
             }
-            
+
         private:
 
             struct Frame {
                 // Parameters
                 index_t t1;
-                index_t new_t;                
+                index_t new_t;
                 Numeric::uint8 t1fbord ;
-                
+
                 // Local variables
                 Numeric::uint8 t1fprev ;
                 Numeric::uint8 t1ft2   ;
@@ -30160,7 +30160,7 @@ namespace GEO {
                 geo_debug_assert(!empty());
                 return *store_.rbegin();
             }
-            
+
             std::vector<Frame> store_;
         };
 
@@ -30172,29 +30172,29 @@ namespace GEO {
             // inputs can cause stack overflow (system stack is limited to
             // a few megs). For instance, it can happen when a large number
             // of points are on the same sphere exactly.
-            
+
             //   To de-recursify, it uses class StellateConflictStack
             // that emulates system's stack for storing functions's
             // parameters and local variables in all the nested stack
-            // frames. 
-        
+            // frames.
+
             signed_index_t v = signed_index_t(v_in);
-            
+
             S2_.push(t1, t1fbord, t1fprev);
-            
+
             index_t new_t;   // the newly created tetrahedron.
-            
+
             index_t t1ft2;   // traverses the 4 facets of t1.
-            
+
             index_t t2;      // the tetrahedron on the border of
                              // the conflict zone that shares an
                              // edge with t1 along t1ft2.
-            
+
             index_t t2fbord; // the facet of t2 on the border of
                              // the conflict zone.
-        
+
             index_t t2ft1;   // the facet of t2 that is incident to t1.
-        
+
         entry_point:
             S2_.get_parameters(t1, t1fbord, t1fprev);
 
@@ -30222,24 +30222,24 @@ namespace GEO {
 	    // of the tet outside the conflict zone and the newly
 	    // created vertex in the local frame of the tet outside
 	    // the conflict zone.
-	    
-	    // Replace in new_t the vertex opposite to t1fbord with v		
-	    set_tet_vertex(new_t, t1fbord, v);		
+
+	    // Replace in new_t the vertex opposite to t1fbord with v
+	    set_tet_vertex(new_t, t1fbord, v);
 
             {
-		// Connect new_t with t1's neighbor across t1fbord		
+		// Connect new_t with t1's neighbor across t1fbord
                 set_tet_adjacent(new_t, t1fbord, tbord);
                 set_tet_adjacent(tbord, find_tet_adjacent(tbord,t1), new_t);
             }
-            
+
             //  Lookup new_t's neighbors across its three other
             // facets and connect them
             for(t1ft2=0; t1ft2<4; ++t1ft2) {
-                
+
                 if(t1ft2 == t1fprev || tet_adjacent(new_t,t1ft2) != -1) {
                     continue;
                 }
-                
+
                 // Get t1's neighbor along the border of the conflict zone
                 if(!get_neighbor_along_conflict_zone_border(
                        t1,t1fbord,t1ft2, t2,t2fbord,t2ft1
@@ -30254,18 +30254,18 @@ namespace GEO {
                     // This is the return value of the called function.
                     index_t result = new_t;
                     S2_.pop();
-                    
-                    // Special case: we were in the outermost frame, 
+
+                    // Special case: we were in the outermost frame,
                     // then we (truly) return from the function.
                     if(S2_.empty()) {
                         return result;
                     }
-                    
+
                     S2_.get_parameters(t1, t1fbord, t1fprev);
-                    S2_.get_locals(new_t, t1ft2, t2ft1); 
-                    t2 = result; 
+                    S2_.get_locals(new_t, t1ft2, t2ft1);
+                    t2 = result;
                 }
-                
+
                 set_tet_adjacent(t2, t2ft1, new_t);
                 set_tet_adjacent(new_t, t1ft2, t2);
             }
@@ -30285,24 +30285,24 @@ namespace GEO {
             index_t& t2fborder,
             index_t& t2ft1
         ) const {
-            
+
             // Note: this function is a bit long for an inline function,
             // but I observed a (modest) performance gain doing so.
-            
+
             //   Find two vertices that are both on facets new_f and f1
             //  (the edge around which we are turning)
             //  This uses duality as follows:
-            //  Primal form (not used here): 
+            //  Primal form (not used here):
             //    halfedge_facet_[v1][v2] returns a facet that is incident
             //    to both v1 and v2.
             //  Dual form (used here):
-            //    halfedge_facet_[f1][f2] returns a vertex that both 
+            //    halfedge_facet_[f1][f2] returns a vertex that both
             //    f1 and f2 are incident to.
-            signed_index_t ev1 = 
+            signed_index_t ev1 =
                 tet_vertex(t1, index_t(halfedge_facet_[t1ft2][t1fborder]));
-            signed_index_t ev2 = 
+            signed_index_t ev2 =
                 tet_vertex(t1, index_t(halfedge_facet_[t1fborder][t1ft2]));
-            
+
             //   Turn around edge [ev1,ev2] inside the conflict zone
             // until we reach again the boundary of the conflict zone.
             // Traversing inside the conflict zone is faster (as compared
@@ -30310,13 +30310,13 @@ namespace GEO {
             index_t cur_t = t1;
             index_t cur_f = t1ft2;
             index_t next_t = index_t(tet_adjacent(cur_t,cur_f));
-            while(tet_is_marked_as_conflict(next_t)) {            
+            while(tet_is_marked_as_conflict(next_t)) {
                 geo_debug_assert(next_t != t1);
                 cur_t = next_t;
                 cur_f = get_facet_by_halfedge(cur_t,ev1,ev2);
                 next_t = index_t(tet_adjacent(cur_t, cur_f));
             }
-             
+
             //  At this point, cur_t is in conflict zone and
             // next_t is outside the conflict zone.
             index_t f12,f21;
@@ -30325,7 +30325,7 @@ namespace GEO {
             signed_index_t v_neigh_opposite = tet_vertex(next_t,f12);
             t2ft1 = find_tet_vertex(t2, v_neigh_opposite);
             t2fborder = cur_f;
-            
+
             //  Test whether the found neighboring tet was created
             //  (then return true) or is an old tet in conflict
             //  (then return false).
@@ -30333,8 +30333,8 @@ namespace GEO {
         }
 
         StellateConflictStack S2_;
-        
-        
+
+
 
         void show_tet_adjacent(index_t t, index_t lf) const {
             signed_index_t adj = tet_adjacent(t, lf);
@@ -30345,7 +30345,7 @@ namespace GEO {
             std::cerr << ' ';
         }
 
-        
+
         void show_tet(index_t t) const {
             std::cerr << "tet"
                       << (tet_is_in_list(t) ? '*' : ' ')
@@ -30364,7 +30364,7 @@ namespace GEO {
             show_tet_adjacent(t, 2);
             show_tet_adjacent(t, 3);
             std::cerr << "] ";
-            
+
             for(index_t f = 0; f < 4; ++f) {
                 std::cerr << 'f' << f << ':';
                 for(index_t v = 0; v < 3; ++v) {
@@ -30414,7 +30414,7 @@ namespace GEO {
                             }
                             if(!found) {
                                 std::cerr
-                                    << lf 
+                                    << lf
                                     << ":Adjacent link is not bidirectional"
                                     << std::endl;
                                 ok = false;
@@ -30478,7 +30478,7 @@ namespace GEO {
                                 std::cerr << "Tet " << t <<
                                     " is in conflict with vertex " << v
                                           << std::endl;
-                                
+
                                 std::cerr << "  offending tet: ";
                                 show_tet(t);
                             }
@@ -30506,7 +30506,7 @@ namespace GEO {
         vector<signed_index_t>& cell_to_cell_store_;
         vector<index_t>& cell_next_;
         vector<thread_index_t>& cell_thread_;
-        
+
         index_t first_free_;
         index_t nb_free_;
         bool memory_overflow_;
@@ -30514,10 +30514,10 @@ namespace GEO {
         index_t v1_,v2_,v3_,v4_; // The first four vertices
 
 	struct SFrame {
-	    
+
 	    SFrame() {
 	    }
-	    
+
 	    SFrame(
 		index_t t_in,
 		index_t v_in,
@@ -30527,7 +30527,7 @@ namespace GEO {
 		v(v_in),
 		p(p_in) {
 	    }
-	    
+
 	    SFrame(
 		const SFrame& rhs
 	    ):
@@ -30542,15 +30542,15 @@ namespace GEO {
 		p = rhs.p;
 		return *this;
 	    }
-	    
+
 	    index_t t;
 	    index_t v;
 	    vec4 p;
 	};
-	
+
         vector<SFrame> S_;
         index_t nb_tets_to_create_;
-        index_t t_boundary_; // index of a tet,facet on the bndry 
+        index_t t_boundary_; // index of a tet,facet on the bndry
         index_t f_boundary_; // of the conflict zone.
 
         bool direction_;
@@ -30581,7 +30581,7 @@ namespace GEO {
 	vector<std::pair<index_t,index_t> > border_tet_2_periodic_vertex_;
 
 	bool has_empty_cells_;
-	
+
         static char tet_facet_vertex_[4][3];
 
         static char halfedge_facet_[4][4];
@@ -30616,10 +30616,10 @@ namespace GEO {
     };
 
 
-    
 
-    
-    
+
+
+
     PeriodicDelaunay3d::PeriodicDelaunay3d(
 	bool periodic, double period
     ) :
@@ -30667,7 +30667,7 @@ namespace GEO {
 	    "Analysis of the different versions of the line walk algorithm "
 	    " used by \\verb|locate()|."
 	);
-	
+
         debug_mode_ = CmdLine::get_arg_bool("dbg:delaunay");
         verbose_debug_mode_ = CmdLine::get_arg_bool("dbg:delaunay_verbose");
         debug_mode_ = (debug_mode_ || verbose_debug_mode_);
@@ -30675,12 +30675,12 @@ namespace GEO {
 	nb_vertices_non_periodic_ = 0;
     }
 
-    
+
     void PeriodicDelaunay3d::set_vertices(
         index_t nb_vertices, const double* vertices
     ) {
 	has_empty_cells_ = false;
-	
+
 	#ifndef GARGANTUA
 	{
 	    Numeric::uint64 expected_max_index =
@@ -30691,17 +30691,17 @@ namespace GEO {
 	    if(expected_max_index > Numeric::uint64(INT32_MAX)) {
 		Logger::err("OTM") << "indices will overflow" << std::endl;
 		Logger::err("OTM")
-		    << "recompile with -DGARGANTUA " 
+		    << "recompile with -DGARGANTUA "
 		    << "to activate 64bit indices" << std::endl;
 		exit(0);
 	    }
 	}
 	#endif
 
-	if(periodic_) { 
+	if(periodic_) {
 	    PCK::set_SOS_mode(PCK::SOS_LEXICO);
 	}
-	
+
         Stopwatch* W = nullptr ;
         if(benchmark_mode_) {
             W = new Stopwatch("SpatialSort");
@@ -30716,7 +30716,7 @@ namespace GEO {
 		3, dimension(),
                 64, 0.125,
                 &levels_
-            );        
+            );
         } else {
             reorder_.resize(nb_vertices);
             for(index_t i = 0; i < nb_vertices; ++i) {
@@ -30730,24 +30730,24 @@ namespace GEO {
 
     void PeriodicDelaunay3d::set_weights(const double* weights) {
 	has_empty_cells_ = false;
-	weights_ = weights;	
+	weights_ = weights;
     }
-    
+
     void PeriodicDelaunay3d::compute() {
-	
+
 	has_empty_cells_ = false;
-	
+
 	if(periodic_) {
 	    reorder_.resize(nb_vertices_non_periodic_);
 	}
-	
+
         Stopwatch* W = nullptr ;
         if(benchmark_mode_) {
             W = new Stopwatch("DelInternal");
         }
 
         index_t expected_tetra = nb_vertices() * 7;
-    
+
         // Allocate the tetrahedra
         cell_to_v_store_.assign(expected_tetra * 4,-1);
         cell_to_cell_store_.assign(expected_tetra * 4,-1);
@@ -30761,7 +30761,7 @@ namespace GEO {
         index_t pool_begin = 0;
         threads_.clear();
         for(index_t t=0; t<nb_threads; ++t) {
-            index_t pool_end = 
+            index_t pool_end =
                 (t == nb_threads - 1) ? expected_tetra : pool_begin + pool_size;
             threads_.push_back(
                 new PeriodicDelaunay3dThread(this, pool_begin, pool_end)
@@ -30770,7 +30770,7 @@ namespace GEO {
         }
 
 
-        // Create first tetrahedron and triangulate first set of points 
+        // Create first tetrahedron and triangulate first set of points
         // in sequential mode.
 
 
@@ -30778,12 +30778,12 @@ namespace GEO {
         while(lvl < (levels_.size() - 1) && levels_[lvl] < 1000) {
             ++lvl;
         }
-	
+
         if(benchmark_mode_) {
             Logger::out("PDEL")
                 << "Using " << levels_.size()-1 << " levels" << std::endl;
-            Logger::out("PDEL") 
-                << "Levels 0 - " << lvl-1 
+            Logger::out("PDEL")
+                << "Levels 0 - " << lvl-1
                 << ": bootstraping with first levels in sequential mode"
                 << std::endl;
         }
@@ -30796,14 +30796,14 @@ namespace GEO {
 	    has_empty_cells_ = true;
 	    return;
 	}
-	
+
         index_t first_lvl = lvl;
 
         // Insert points in all BRIO levels
         for(; lvl<levels_.size()-1; ++lvl) {
 
             if(benchmark_mode_) {
-                Logger::out("PDEL") << "Level " 
+                Logger::out("PDEL") << "Level "
                                     << lvl << " : start" << std::endl;
             }
 
@@ -30815,7 +30815,7 @@ namespace GEO {
             index_t b = lvl_b;
             for(index_t t=0; t<threads_.size(); ++t) {
                 index_t e = t == threads_.size()-1 ? lvl_e : b+work_size;
-                
+
                 // Copy the indices of the first created tetrahedron
                 // and the maximum valid tetrahedron index max_t_
                 if(lvl == first_lvl && t!=0) {
@@ -30839,8 +30839,8 @@ namespace GEO {
             index_t tot_rollbacks = 0 ;
             index_t tot_failed_locate = 0 ;
             for(index_t t=0; t<threads_.size(); ++t) {
-                Logger::out("PDEL") 
-                    << "thread " << t << " : " 
+                Logger::out("PDEL")
+                    << "thread " << t << " : "
                     << thread(t)->nb_rollbacks() << " rollbacks  "
                     << thread(t)->nb_failed_locate() << " failed locate"
                     << std::endl;
@@ -30848,7 +30848,7 @@ namespace GEO {
                 tot_failed_locate += thread(t)->nb_failed_locate();
             }
             Logger::out("PDEL") << "------------------" << std::endl;
-            Logger::out("PDEL") << "total: " 
+            Logger::out("PDEL") << "total: "
                                 << tot_rollbacks << " rollbacks  "
                                 << tot_failed_locate << " failed locate"
                                 << std::endl;
@@ -30863,7 +30863,7 @@ namespace GEO {
             PeriodicDelaunay3dThread* t1 = thread(t);
             nb_sequential_points += t1->work_size();
             if(t != 0) {
-                // We need to copy max_t_ from previous thread, 
+                // We need to copy max_t_ from previous thread,
                 // since the memory pool may have grown.
                 PeriodicDelaunay3dThread* t2 = thread(t-1);
                 t1->initialize_from(t2);
@@ -30876,7 +30876,7 @@ namespace GEO {
         // the threads in increasing number, so we copy it from the
         // last thread into thread0 since we use thread0 afterwards
         // to do the "compaction" afterwards.
-        
+
         if(nb_sequential_points != 0) {
             PeriodicDelaunay3dThread* t0 = thread(0);
 	    PeriodicDelaunay3dThread* tn = thread(
@@ -30884,7 +30884,7 @@ namespace GEO {
 	    );
             t0->initialize_from(tn);
         }
-        
+
 	if(periodic_) {
 	    handle_periodic_boundaries();
 	}
@@ -30892,7 +30892,7 @@ namespace GEO {
 	if(has_empty_cells_) {
 	    return;
 	}
-	
+
         if(benchmark_mode_) {
             if(nb_sequential_points != 0) {
                 Logger::out("PDEL") << "Local thread memory overflow occurred:"
@@ -30901,7 +30901,7 @@ namespace GEO {
                                     << " points inserted in sequential mode"
                                     << std::endl;
             } else {
-                Logger::out("PDEL") 
+                Logger::out("PDEL")
                     << "All the points were inserted in parallel mode"
                     << std::endl;
             }
@@ -30909,7 +30909,7 @@ namespace GEO {
 
         if(benchmark_mode_) {
             Logger::out("DelInternal2") << "Core insertion algo:"
-                                       << W->elapsed_time() 
+                                       << W->elapsed_time()
                                        << std::endl;
         }
         delete W;
@@ -30920,7 +30920,7 @@ namespace GEO {
                     static_cast<PeriodicDelaunay3dThread*>(threads_[i].get())
                     ->max_t() << std::endl;
             }
-            
+
             thread0->check_combinatorics(verbose_debug_mode_);
             thread0->check_geometry(verbose_debug_mode_);
         }
@@ -30934,18 +30934,18 @@ namespace GEO {
         );
 
 	// We need v_to_cell even if CICL is not
-	// stored. 
+	// stored.
 	if(!stores_cicl()) {
 	    update_v_to_cell();
 	}
-	
+
 	if(periodic_) {
-#ifdef GEO_DEBUG	    
+#ifdef GEO_DEBUG
 	    FOR(v, nb_vertices_non_periodic_) {
 		index_t t = index_t(v_to_cell_[v]);
 		geo_assert(t == index_t(-1) || t < nb_tets);
 	    }
-#endif	    
+#endif
 	}
     }
 
@@ -30955,7 +30955,7 @@ namespace GEO {
         //   Since cell_next_ is not used at this point,
         // we reuse it for storing the conversion array that
         // maps old tet indices to new tet indices
-        // Note: tet_is_real() uses the previous value of 
+        // Note: tet_is_real() uses the previous value of
         // cell_next(), but we are processing indices
         // in increasing order and since old2new[t] is always
         // smaller or equal to t, we never overwrite a value
@@ -30998,7 +30998,7 @@ namespace GEO {
 		cell_to_v_store_.resize(4 * nb_tets);
 		cell_to_cell_store_.resize(4 * nb_tets);
 	    }
-	    
+
             for(index_t i = 0; i < 4 * nb_tets; ++i) {
                 signed_index_t t = cell_to_cell_store_[i];
                 geo_debug_assert(t >= 0);
@@ -31015,7 +31015,7 @@ namespace GEO {
         // In "keep_infinite" mode, we reorder the cells in such
         // a way that finite cells have indices [0..nb_finite_cells_-1]
         // and infinite cells have indices [nb_finite_cells_ .. nb_cells_-1]
-        
+
         if(keep_infinite_) {
             nb_finite_cells_ = 0;
             index_t finite_ptr = 0;
@@ -31059,23 +31059,23 @@ namespace GEO {
                 cell_to_cell_store_[i] = t;
             }
         }
-        
-        
+
+
         if(benchmark_mode_) {
-	    Logger::out("DelCompress") 
+	    Logger::out("DelCompress")
 		<< "max tets " << thread0->max_t()
 		<< std::endl;
-	    
-	    Logger::out("DelCompress") 
+
+	    Logger::out("DelCompress")
 		<< "Final number of tets " << nb_tets
 		<< std::endl;
             if(keep_infinite_) {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_tets_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_tets_to_delete
                     << " tets (free list)" << std::endl;
             } else {
-                Logger::out("DelCompress") 
-                    << "Removed " << nb_tets_to_delete 
+                Logger::out("DelCompress")
+                    << "Removed " << nb_tets_to_delete
                     << " tets (free list and infinite)" << std::endl;
             }
         }
@@ -31096,7 +31096,7 @@ namespace GEO {
 	}
 	return nb_tets;
     }
-    
+
     index_t PeriodicDelaunay3d::nearest_vertex(const double* p) const {
         // TODO
         return Delaunay::nearest_vertex(p);
@@ -31125,7 +31125,7 @@ namespace GEO {
 	    }
 	    periodic_v_to_cell_data_.assign(cur, index_t(-1));
 	}
-	
+
 	if(keeps_infinite()) {
 	    geo_assert(!periodic_);
 	    v_to_cell_.assign(nb_vertices()+1, -1);
@@ -31139,7 +31139,7 @@ namespace GEO {
 		}
 	    }
 	} else {
-	    v_to_cell_.assign(nb_vertices(), -1);	    
+	    v_to_cell_.assign(nb_vertices(), -1);
 	    for(index_t c = 0; c < nb_cells(); c++) {
 		for(index_t lv = 0; lv < 4; lv++) {
 		    index_t v = index_t(cell_vertex(c, lv));
@@ -31156,7 +31156,7 @@ namespace GEO {
 			    (vertex_instances_[v_real] &
 			     (1u << v_instance))!=0
 			);
-			
+
 			index_t slot = pop_count(
 			    vertex_instances_[v_real] & ((1u << v_instance)-1)
 			) - 1;
@@ -31164,7 +31164,7 @@ namespace GEO {
 			periodic_v_to_cell_data_[
 			    periodic_v_to_cell_rowptr_[v_real] + slot
 			] = c;
-			
+
 			// periodic_v_to_cell_[v] = c;
 		    }
 		}
@@ -31191,7 +31191,7 @@ namespace GEO {
 		set_next_around_vertex(index_t(t), lv, index_t(t));
 	    }
 	}
-	
+
 	if(keeps_infinite()) {
 
 	    {
@@ -31216,8 +31216,8 @@ namespace GEO {
 		    }
 		}
 	    }
-	    
-	    
+
+
 	} else {
 	    for(index_t t = 0; t < nb_cells(); ++t) {
 		for(index_t lv = 0; lv < 4; ++lv) {
@@ -31235,7 +31235,7 @@ namespace GEO {
 		}
 	    }
 	}
-	
+
         is_locked_ = false;
     }
 
@@ -31255,7 +31255,7 @@ namespace GEO {
 	} else {
 	    index_t v_real = periodic_vertex_real(v);
 	    index_t v_instance = periodic_vertex_instance(v);
-	    
+
 	    geo_debug_assert(
 		(vertex_instances_[v_real] & (1u << v_instance))!=0
 	    );
@@ -31268,7 +31268,7 @@ namespace GEO {
 		periodic_v_to_cell_rowptr_[v_real] + slot
 	    ];
 	}
-	
+
 	// Can happen: empty power cell.
 	if(t == index_t(-1)) {
 	    return;
@@ -31308,7 +31308,7 @@ namespace GEO {
 	return
 	    geo_sqr(p[0]-q[0]) +
 	    geo_sqr(p[1]-q[1]) +
-	    geo_sqr(p[2]-q[2]) ; 
+	    geo_sqr(p[2]-q[2]) ;
     }
 
     void PeriodicDelaunay3d::copy_Laguerre_cell_from_Delaunay(
@@ -31319,10 +31319,10 @@ namespace GEO {
 	// Create global vertex indices if not present.
 	C.create_vglobal();
 	C.clear();
-	
+
 	// Create the vertex at infinity.
 	C.create_vertex(vec4(0.0, 0.0, 0.0, 0.0), index_t(-1));
-	
+
 	GEO::vec3 Pi = vertex(i);
 	double wi = weight(i);
 	double Pi_len2 = Pi[0]*Pi[0] + Pi[1]*Pi[1] + Pi[2]*Pi[2];
@@ -31352,7 +31352,7 @@ namespace GEO {
 	}
     }
 
-    
+
     GEO::index_t PeriodicDelaunay3d::copy_Laguerre_cell_facet_from_Delaunay(
 	GEO::index_t i,
 	const GEO::vec3& Pi,
@@ -31363,7 +31363,7 @@ namespace GEO {
 	IncidentTetrahedra& W
     ) const {
 	geo_argused(W);
-	
+
 	// Local tet vertex indices from facet
 	// and vertex in facet indices.
 	static GEO::index_t fv[4][3] = {
@@ -31372,18 +31372,18 @@ namespace GEO {
 	    {3,1,0},
 	    {0,1,2}
 	};
-	
+
 	GEO::index_t f = index(t,GEO::signed_index_t(i));
 	GEO::index_t jkl[3];  // Global index (in Delaunay) of triangle vertices
 	VBW::index_t l_jkl[3];// Local index (in C) of triangle vertices
 
-	
+
 	// Find or create the three vertices of the facet.
 	for(int lfv=0; lfv<3; ++lfv) {
 
 	    jkl[lfv] = GEO::index_t(cell_vertex(t, fv[f][lfv]));
 	    l_jkl[lfv] = VBW::index_t(-1);
-	    
+
 	    // Vertex already created in C (note:
 	    // also works for vertex at infinity)
 	    for(VBW::index_t u=0; u<C.nb_v(); ++u) {
@@ -31415,37 +31415,37 @@ namespace GEO {
 	return f;
     }
 
-    
+
 
     void PeriodicDelaunay3d::insert_vertices(index_t b, index_t e) {
 	nb_vertices_ = reorder_.size();
-	
+
 	PeriodicDelaunay3dThread* thread0 = thread(0);
 
 	Hilbert_sort_periodic(
 	    // total nb of possible periodic vertices
-	    nb_vertices_non_periodic_ * 27, 
+	    nb_vertices_non_periodic_ * 27,
 	    vertex_ptr(0),
 	    reorder_,
-	    3, dimension(), 
+	    3, dimension(),
 	    reorder_.begin() + long(b),
 	    reorder_.begin() + long(e),
 	    period_
 	);
-	
+
 	if(benchmark_mode_) {
 	    Logger::out("Periodic") << "Inserting "	<< (e-b)
 				    << " additional vertices" << std::endl;
 	}
 
-#ifdef GEO_DEBUG	    
+#ifdef GEO_DEBUG
 	for(index_t i=b; i+1<e; ++i) {
 	    geo_debug_assert(reorder_[i] != reorder_[i+1]);
 	}
 #endif
-	
+
 	nb_reallocations_ = 0;
-		
+
 	index_t expected_tetra = reorder_.size() * 7;
 	cell_to_v_store_.reserve(expected_tetra * 4);
 	cell_to_cell_store_.reserve(expected_tetra * 4);
@@ -31473,7 +31473,7 @@ namespace GEO {
 		<< double(total_nb_traversed_tets) / double(e-b)
 		<< " avg. traversed tet per insertion." << std::endl;
 	}
-	
+
 	set_arrays(
 	    thread0->max_t(),
 	    cell_to_v_store_.data(),
@@ -31488,7 +31488,7 @@ namespace GEO {
 	bool& cell_is_on_boundary,
 	bool& cell_is_outside_cube,
 	IncidentTetrahedra& W
-    ) {	
+    ) {
 	// Integer translations associated with the six plane equations
 	// Note: indexing matches code below (order of the clipping
 	// operations).
@@ -31503,14 +31503,14 @@ namespace GEO {
 
 	copy_Laguerre_cell_from_Delaunay(v, C, W);
 	geo_assert(!C.empty());
-	    
+
 	// Determine the periodic instances of the vertex to be created
 	// ************************************************************
 	//   - Find all the intersected boundary faces
 	//   - The instances to create correspond to all the possible
 	//     sums of translation vectors associated with the
 	//     intersected boundary faces
-	
+
 	FOR(i,27) {
 	    use_instance[i] = false;
 	}
@@ -31520,15 +31520,15 @@ namespace GEO {
 	C.clip_by_plane(vec4( 1.0, 0.0, 0.0,  0.0));
 	C.clip_by_plane(vec4(-1.0, 0.0, 0.0,  period_));
 	C.clip_by_plane(vec4( 0.0, 1.0, 0.0,  0.0));
-	C.clip_by_plane(vec4( 0.0,-1.0, 0.0,  period_));	
+	C.clip_by_plane(vec4( 0.0,-1.0, 0.0,  period_));
 	C.clip_by_plane(vec4( 0.0, 0.0, 1.0,  0.0));
 	C.clip_by_plane(vec4( 0.0, 0.0,-1.0,  period_));
 
 	cell_is_outside_cube = false;
 	cell_is_on_boundary = false;
-	
+
 	if(C.empty()) {
-	    // Special case: cell is completely outside the cube.	    
+	    // Special case: cell is completely outside the cube.
 	    cell_is_outside_cube = true;
 	    copy_Laguerre_cell_from_Delaunay(v, C, W);
 	    // Clip the cell with the 3x3x3 (rubic's) cube that
@@ -31539,14 +31539,14 @@ namespace GEO {
 	    C.clip_by_plane(vec4( 1.0, 0.0, 0.0,  period_));
 	    C.clip_by_plane(vec4(-1.0, 0.0, 0.0,  2.0*period_));
 	    C.clip_by_plane(vec4( 0.0, 1.0, 0.0,  period_));
-	    C.clip_by_plane(vec4( 0.0,-1.0, 0.0,  2.0*period_));	
+	    C.clip_by_plane(vec4( 0.0,-1.0, 0.0,  2.0*period_));
 	    C.clip_by_plane(vec4( 0.0, 0.0, 1.0,  period_));
 	    C.clip_by_plane(vec4( 0.0, 0.0,-1.0,  2.0*period_));
 
 	    // Normally we cannot have an empty cell, empty cells were
 	    // detected before.
 	    geo_assert(!C.empty());
-	    
+
 	    // Now detect the bounds of the sub-(rubic's) cube overlapped
 	    // by the cell.
 	    int TXmin = 0, TXmax = 0,
@@ -31566,10 +31566,10 @@ namespace GEO {
 	    }
 	    if(C.cell_has_conflict(vec4( 0.0, 0.0, 1.0,  0.0))) {
 		TZmin = -1;
-	    } 
+	    }
 	    if(C.cell_has_conflict(vec4( 0.0, 0.0,-1.0,  period_))) {
 		TZmax = 1;
-	    } 
+	    }
 	    for(int TX = TXmin; TX <= TXmax; ++TX) {
 		for(int TY = TYmin; TY <= TYmax; ++TY) {
 		    for(int TZ = TZmin; TZ <= TZmax; ++TZ) {
@@ -31584,7 +31584,7 @@ namespace GEO {
 	    //   - The instances to create correspond to all the possible
 	    //     sums of translation vectors associated with the
 	    //     intersected boundary faces
-	    
+
 	    // Traverse all the Voronoi vertices of the face
 	    for(
 		VBW::ushort t = C.first_triangle();
@@ -31618,16 +31618,16 @@ namespace GEO {
 		    for(int dU=0; dU<2; ++dU) {
 			for(int dV=0; dV<2; ++dV) {
 			    for(int dW=0; dW<2; ++dW) {
-				
+
 				int Tx = dU*VXLAT[0][0] + dV*VXLAT[1][0] +
 				    dW*VXLAT[2][0];
-				
+
 				int Ty = dU*VXLAT[0][1] + dV*VXLAT[1][1] +
 				    dW*VXLAT[2][1];
-				
+
 				int Tz = dU*VXLAT[0][2] + dV*VXLAT[1][2] +
 				    dW*VXLAT[2][2];
-				
+
 				use_instance[T_to_instance(Tx,Ty,Tz)] = true;
 			    }
 			}
@@ -31641,7 +31641,7 @@ namespace GEO {
 	}
 	return result;
     }
-    
+
     void PeriodicDelaunay3d::handle_periodic_boundaries() {
 
 	// Update pointers so that queries function will work (even in our
@@ -31658,14 +31658,14 @@ namespace GEO {
 	if(stores_cicl()) {
 	    update_cicl();
 	}
-	
+
 	for(index_t v=0; v<nb_vertices_non_periodic_; ++v) {
 	    if(v_to_cell_[v] == -1) {
 		has_empty_cells_ = true;
 		return;
 	    }
 	}
-	
+
 	// -----------------------------------------------------------
 	// Phase I: find the cells that intersect the boundaries, and
 	// create periodic vertices for each possible translation.
@@ -31675,14 +31675,14 @@ namespace GEO {
 	// Each bit of vertex_instances_[v] indicates which instance
 	// is used.
 	vertex_instances_.assign(nb_vertices_non_periodic_,1);
-	
+
 	index_t nb_cells_on_boundary = 0;
 	index_t nb_cells_outside_cube = 0;
 
 	Process::spinlock lock = GEOGRAM_SPINLOCK_INIT;
 
 	parallel_for_slice(
-	    0, nb_vertices_non_periodic_,		     
+	    0, nb_vertices_non_periodic_,
 	    [this,&lock,&nb_cells_on_boundary,&nb_cells_outside_cube](
 		index_t from, index_t to
 	    ) {
@@ -31694,7 +31694,7 @@ namespace GEO {
 		  bool use_instance[27];
 		  bool cell_is_on_boundary = false;
 		  bool cell_is_outside_cube = false;
-		  
+
 		  // Determines the periodic vertices to create, that is,
 		  // whenever the cell of the current vertex has an
 		  // intersection with one of the 27 cubes, an instance
@@ -31708,7 +31708,7 @@ namespace GEO {
 
 
 		  Process::acquire_spinlock(lock);
-		  
+
 		  if(cell_is_on_boundary) {
 		      ++nb_cells_on_boundary;
 		  }
@@ -31716,7 +31716,7 @@ namespace GEO {
 		  if(cell_is_outside_cube) {
 		      ++nb_cells_outside_cube;
 		  }
-	    
+
 		  // Append the new periodic vertices in the list of vertices.
 		  // (we put them in the reorder_ vector that is always used
 		  //  to do the insertions).
@@ -31730,8 +31730,8 @@ namespace GEO {
 			  }
 		      }
 		  }
-		  
-		  Process::release_spinlock(lock);		
+
+		  Process::release_spinlock(lock);
 	      }
 	   }
 	);
@@ -31754,17 +31754,17 @@ namespace GEO {
 	// vertices (the periodic_v_to_cell_ table).
 	update_periodic_v_to_cell_ = true;
 	update_v_to_cell();
-	update_periodic_v_to_cell_ = false;	    	    
+	update_periodic_v_to_cell_ = false;
 	if(stores_cicl()) {
 	    update_cicl();
 	}
 
 	index_t nb_vertices_phase_I = reorder_.size();
 
-	// -----------------------------------------------------------	
+	// -----------------------------------------------------------
 	// Phase II: Insert the real neighbors of the virtual vertices,
 	//  back-translated to the original position.
-	// -----------------------------------------------------------		
+	// -----------------------------------------------------------
 
 	{
 	    IncidentTetrahedra W;
@@ -31774,12 +31774,12 @@ namespace GEO {
 	    // that we will modify.
 	    vector<Numeric::uint32> vertex_instances = vertex_instances_;
 	    for(index_t v=0; v<nb_vertices_non_periodic_; ++v) {
-		
+
 		for(index_t instance=1; instance<27; ++instance) {
 		    int vTx = translation[instance][0];
 		    int vTy = translation[instance][1];
 		    int vTz = translation[instance][2];
-		    
+
 		    if((vertex_instances_[v] & (1u << instance)) != 0) {
 			index_t vp = make_periodic_vertex(v, instance);
 			get_incident_tets(vp, W);
@@ -31834,15 +31834,15 @@ namespace GEO {
 
     void PeriodicDelaunay3d::check_volume() {
 	ConvexCell C;
-	C.use_exact_predicates(convex_cell_exact_predicates_);	
-	
+	C.use_exact_predicates(convex_cell_exact_predicates_);
+
 	Logger::out("Periodic") << "Checking total volume..." << std::endl;
 	double sumV = 0;
 	IncidentTetrahedra W;
-	
+
 	FOR(v, nb_vertices_non_periodic_) {
 	    copy_Laguerre_cell_from_Delaunay(v, C, W);
-#ifdef GEO_DEBUG	    
+#ifdef GEO_DEBUG
 	    for(
 		VBW::ushort t = C.first_triangle();
 		t!=VBW::END_OF_LIST; t=C.next_triangle(t)
@@ -31854,13 +31854,13 @@ namespace GEO {
 		    );
 		}
 	    }
-#endif	    
+#endif
 	    C.compute_geometry();
 	    sumV += C.volume();
 	}
 
 	double expectedV = period_*period_*period_;
-	
+
 	Logger::out("Periodic") << "Sum volumes = " << sumV << std::endl;
 	Logger::out("Periodic") << "  (expected " <<  expectedV << ")"
 				<< std::endl;
@@ -31870,7 +31870,7 @@ namespace GEO {
 				 << std::endl;
 	    exit(-1);
 	}
-	
+
     }
 
     void PeriodicDelaunay3d::save_cells(
@@ -31882,12 +31882,12 @@ namespace GEO {
 	while(index_string.length() < 3) {
 	    index_string = "0" + index_string;
 	}
-	
+
 	std::ofstream out((basename+index_string+".obj").c_str());
 	index_t v_off = 1;
-	
+
 	ConvexCell C;
-	C.use_exact_predicates(convex_cell_exact_predicates_);		
+	C.use_exact_predicates(convex_cell_exact_predicates_);
 	IncidentTetrahedra W;
 	for(index_t vv=0; vv<nb_vertices_non_periodic_; ++vv) {
 	    copy_Laguerre_cell_from_Delaunay(vv, C, W);
@@ -31895,7 +31895,7 @@ namespace GEO {
 		C.clip_by_plane(vec4( 1.0, 0.0, 0.0,  0.0));
 		C.clip_by_plane(vec4(-1.0, 0.0, 0.0,  period_));
 		C.clip_by_plane(vec4( 0.0, 1.0, 0.0,  0.0));
-		C.clip_by_plane(vec4( 0.0,-1.0, 0.0,  period_));	
+		C.clip_by_plane(vec4( 0.0,-1.0, 0.0,  period_));
 		C.clip_by_plane(vec4( 0.0, 0.0, 1.0,  0.0));
 		C.clip_by_plane(vec4( 0.0, 0.0,-1.0,  period_));
 	    }
@@ -31937,7 +31937,7 @@ namespace GEO {
 	    neighbors_sq_dist
 	);
     }
-    
+
     void NearestNeighborSearch::get_nearest_neighbors(
         index_t nb_neighbors,
         index_t query_point,
@@ -31945,9 +31945,9 @@ namespace GEO {
         double* neighbors_sq_dist
     ) const {
         get_nearest_neighbors(
-            nb_neighbors, 
-            point_ptr(query_point), 
-            neighbors, 
+            nb_neighbors,
+            point_ptr(query_point),
+            neighbors,
             neighbors_sq_dist
         );
     }
@@ -31994,7 +31994,7 @@ namespace GEO {
         geo_register_NearestNeighborSearch_creator(
             AdaptiveKdTree, "CNN"
         );
-	
+
         std::string name = name_in;
         if(name == "default") {
             name = CmdLine::get_arg("algo:nn_search");
@@ -32086,7 +32086,7 @@ namespace GEO {
         for(index_t i = 0; i < nb_points; i++) {
             point_index_[i] = i;
         }
-	
+
         // Compute the bounding box.
         for(coord_index_t c = 0; c < dimension(); ++c) {
             bbox_min_[c] =  Numeric::max_float64();
@@ -32099,7 +32099,7 @@ namespace GEO {
                 bbox_max_[c] = std::max(bbox_max_[c], p[c]);
             }
         }
-	
+
 	root_ = build_tree();
     }
 
@@ -32175,7 +32175,7 @@ namespace GEO {
 	    (double*)alloca(sizeof(double) * (nb_neighbors+1))
         );
 	NN.copy_from_user();
-        get_nearest_neighbors_recursive( 
+        get_nearest_neighbors_recursive(
             root_, 0, nb_points(), bbox_min, bbox_max, box_dist, query_point, NN
         );
 	NN.copy_to_user();
@@ -32190,10 +32190,10 @@ namespace GEO {
         // TODO: optimized version that uses the fact that
         // we know that query_point is in the search data
         // structure already.
-        // (I tried something already, see in the Attic, 
+        // (I tried something already, see in the Attic,
         //  but it did not give any significant speedup).
         get_nearest_neighbors(
-            nb_neighbors, point_ptr(q_index), 
+            nb_neighbors, point_ptr(q_index),
             neighbors, neighbors_sq_dist
         );
     }
@@ -32216,15 +32216,15 @@ namespace GEO {
 	index_t left_node_index;
 	index_t right_node_index;
 	coord_index_t coord;
-	index_t m;	
+	index_t m;
 	double val;
-	
+
 	get_node(
 	    node_index, b, e,
 	    left_node_index, right_node_index,
 	    coord, m, val
 	);
-	
+
         double cut_diff = query_point[coord] - val;
 
         // If the query point is on the left side
@@ -32235,7 +32235,7 @@ namespace GEO {
                 double bbox_max_save = bbox_max[coord];
                 bbox_max[coord] = val;
                 get_nearest_neighbors_recursive(
-                    left_node_index, b, m, 
+                    left_node_index, b, m,
                     bbox_min, bbox_max, box_dist, query_point, NN
                 );
                 bbox_max[coord] = bbox_max_save;
@@ -32258,7 +32258,7 @@ namespace GEO {
                 double bbox_min_save = bbox_min[coord];
                 bbox_min[coord] = val;
                 get_nearest_neighbors_recursive(
-                    right_node_index, m, e, 
+                    right_node_index, m, e,
                     bbox_min, bbox_max, box_dist, query_point, NN
                 );
                 bbox_min[coord] = bbox_min_save;
@@ -32271,7 +32271,7 @@ namespace GEO {
                 double bbox_min_save = bbox_min[coord];
                 bbox_min[coord] = val;
                 get_nearest_neighbors_recursive(
-                    right_node_index, m, e, 
+                    right_node_index, m, e,
                     bbox_min, bbox_max, box_dist, query_point, NN
                 );
                 bbox_min[coord] = bbox_min_save;
@@ -32289,7 +32289,7 @@ namespace GEO {
                 double bbox_max_save = bbox_max[coord];
                 bbox_max[coord] = val;
                 get_nearest_neighbors_recursive(
-                    left_node_index, b, m, 
+                    left_node_index, b, m,
                     bbox_min, bbox_max, box_dist, query_point, NN
                 );
                 bbox_max[coord] = bbox_max_save;
@@ -32300,7 +32300,7 @@ namespace GEO {
     void KdTree::get_nearest_neighbors_leaf(
 	index_t node_index, index_t b, index_t e,
 	const double* query_point,
-	NearestNeighbors& NN	    
+	NearestNeighbors& NN
     ) const {
 	geo_argused(node_index);
         NN.nb_visited += (e-b);
@@ -32310,7 +32310,7 @@ namespace GEO {
 
 	// TODO: check generated ASM (I'd like to have AVX here).
 	// We may need to dispatch according to dimension.
-	
+
 	index_t local_idx[MAX_LEAF_SIZE];
 	double  local_sq_dist[MAX_LEAF_SIZE];
 
@@ -32364,9 +32364,9 @@ namespace GEO {
             }
         }
     }
-    
 
-    
+
+
     BalancedKdTree::BalancedKdTree(coord_index_t dim) :
         KdTree(dim),
         m0_(max_index_t()),
@@ -32387,7 +32387,7 @@ namespace GEO {
         index_t sz = max_node_index(1, 0, nb_points()) + 1;
         splitting_coord_.resize(sz);
         splitting_val_.resize(sz);
-	
+
         // If there are more than 16*MAX_LEAF_SIZE (=256) points,
         // create the tree in parallel
         if(
@@ -32398,21 +32398,21 @@ namespace GEO {
             m8_ = nb_points();
             // Create the first level of the tree
             m4_ = split_kd_node(1, m0_, m8_);
-	    
+
             // Create the second level of the tree
             //  (using two threads)
 	    parallel(
 		[this]() { m2_ = split_kd_node(2, m0_, m4_); },
 		[this]() { m6_ = split_kd_node(3, m4_, m8_); }
 	    );
-	    
+
             // Create the third level of the tree
             //  (using four threads)
 	    parallel(
 		[this]() { m1_ = split_kd_node(4, m0_, m2_); },
 		[this]() { m3_ = split_kd_node(5, m2_, m4_); },
 		[this]() { m5_ = split_kd_node(6, m4_, m6_); },
-		[this]() { m7_ = split_kd_node(7, m6_, m8_); }		
+		[this]() { m7_ = split_kd_node(7, m6_, m8_); }
 	    );
 
             // Create the fourth level of the tree
@@ -32425,13 +32425,13 @@ namespace GEO {
 		[this]() { create_kd_tree_recursive(12, m4_, m5_); },
 		[this]() { create_kd_tree_recursive(13, m5_, m6_); },
 		[this]() { create_kd_tree_recursive(14, m6_, m7_); },
-		[this]() { create_kd_tree_recursive(15, m7_, m8_); }		
+		[this]() { create_kd_tree_recursive(15, m7_, m8_); }
 	    );
-	    
+
         } else {
             create_kd_tree_recursive(1, 0, nb_points());
         }
-	
+
 	// Root node is number 1.
 	// This is because "children at 2*n and 2*n+1" does not
 	// work with 0 !!
@@ -32508,19 +32508,19 @@ namespace GEO {
 	splitting_val = splitting_val_[n];
     }
 
-    
+
 
     AdaptiveKdTree::AdaptiveKdTree(coord_index_t dim) : KdTree(dim) {
     }
 
     index_t AdaptiveKdTree::new_node() {
 	splitting_coord_.push_back(0);
-	splitting_val_.push_back(0.0);	
+	splitting_val_.push_back(0.0);
 	node_m_.push_back(0);
 	node_right_child_.push_back(0);
 	return nb_nodes()-1;
     }
-    
+
     index_t AdaptiveKdTree::build_tree() {
 	// Create kd-tree. Local copy of the bbox is used, because it
 	// is modified during traversal.
@@ -32530,19 +32530,19 @@ namespace GEO {
             bbox_min[c] = bbox_min_[c];
             bbox_max[c] = bbox_max_[c];
 	}
-	
+
         splitting_coord_.resize(0);
         splitting_val_.resize(0);
 	node_m_.resize(0);
 	node_right_child_.resize(0);
-	
+
 	return create_kd_tree_recursive(0, nb_points(), bbox_min, bbox_max);
     }
 
 
     index_t AdaptiveKdTree::create_kd_tree_recursive(
 	index_t b, index_t e,
-	double* bbox_min, double* bbox_max	    	    
+	double* bbox_min, double* bbox_max
     ) {
 	if(e - b <= MAX_LEAF_SIZE) {
 	    return index_t(-1);
@@ -32563,7 +32563,7 @@ namespace GEO {
 	splitting_coord_[n] = cut_dim;
 	splitting_val_[n] = cut_val;
 	node_m_[n] = m;
-	
+
 	{
 	    double bbox_max_save = bbox_max[cut_dim];
 	    bbox_max[cut_dim] = cut_val;
@@ -32590,19 +32590,19 @@ namespace GEO {
 	    node_right_child_[n] = right_child;
 	    bbox_min[cut_dim] = bbox_min_save;
 	}
-	
+
 	return n;
     }
 
     void AdaptiveKdTree::split_kd_node(
         index_t b, index_t e,
 	double* bbox_min, double* bbox_max,
-	index_t& m, coord_index_t& cut_dim, double& cut_val	
+	index_t& m, coord_index_t& cut_dim, double& cut_val
     ) {
 	// Like "sliding midpoint split" in ANN.
-	
+
 	const double ERR=0.001;
-	
+
 	// Find length of longest box size
 	double max_length = -1.0;
 	for(coord_index_t d=0; d<dimension(); ++d) {
@@ -32612,7 +32612,7 @@ namespace GEO {
 
 	// Cutting coordinate
 	cut_dim=0;
-	
+
 	// Find long side with most spread
 	double max_spread = -1.0;
 	for(coord_index_t d=0; d<dimension(); ++d) {
@@ -32633,20 +32633,20 @@ namespace GEO {
 	get_minmax(b, e, cut_dim, coord_min, coord_max);
 
 	cut_val = ideal_cut_val;
-	
+
 	// Make it slide if need be.
 	if(ideal_cut_val < coord_min) {
 	    cut_val = coord_min;
 	} else if (ideal_cut_val > coord_max) {
 	    cut_val = coord_max;
 	}
-	
+
 	index_t br1,br2;
 	plane_split(b,e,cut_dim,cut_val,br1,br2);
 
 	index_t m0 = b + (e-b)/2;
 	m = m0;
-	
+
 	if(ideal_cut_val < coord_min) {
 	    m = b+1;
 	} else if(ideal_cut_val > coord_max) {
@@ -32655,9 +32655,9 @@ namespace GEO {
 	    m = br1;
 	} else if(br2 < m0) {
 	    m = br2;
-	} 
+	}
     }
-    
+
     void AdaptiveKdTree::plane_split(
 	index_t b_in, index_t e_in, coord_index_t coord, double val,
 	index_t& br1_out, index_t& br2_out
@@ -32715,9 +32715,9 @@ namespace GEO {
 	m = node_m_[n];
 	splitting_val = splitting_val_[n];
     }
-    
-    
-    
+
+
+
 }
 
 
@@ -32740,7 +32740,7 @@ namespace GEO {
 	if(initialized) {
 	    return;
 	}
-	
+
         // When locale is set to non-us countries,
         // this may cause some problems when reading
         // floating-point numbers (some locale expect
@@ -32751,11 +32751,11 @@ namespace GEO {
         setenv("LC_NUMERIC","POSIX",1);
 #endif
 
-#ifndef GEOGRAM_PSM						
+#ifndef GEOGRAM_PSM
         Environment* env = Environment::instance();
         env->set_value("version", VORPALINE_VERSION);
         env->set_value("release_date", VORPALINE_BUILD_DATE);
-        env->set_value("SVN revision", VORPALINE_SVN_REVISION);        
+        env->set_value("SVN revision", VORPALINE_SVN_REVISION);
 #endif
 	FileSystem::initialize();
         Logger::initialize();
@@ -32765,44 +32765,44 @@ namespace GEO {
         PCK::initialize();
         Delaunay::initialize();
 
-#ifndef GEOGRAM_PSM		
+#ifndef GEOGRAM_PSM
 	Biblio::initialize();
 #endif
         atexit(GEO::terminate);
 
-#ifndef GEOGRAM_PSM	
+#ifndef GEOGRAM_PSM
         mesh_io_initialize();
 #endif
-	
+
         // Clear last system error
         errno = 0;
 
-#ifndef GEOGRAM_PSM		
+#ifndef GEOGRAM_PSM
         // Register attribute types that can be saved into files.
-        geo_register_attribute_type<Numeric::uint8>("bool");                
-        geo_register_attribute_type<char>("char");        
+        geo_register_attribute_type<Numeric::uint8>("bool");
+        geo_register_attribute_type<char>("char");
         geo_register_attribute_type<int>("int");
-        geo_register_attribute_type<unsigned int>("unsigned int");	
+        geo_register_attribute_type<unsigned int>("unsigned int");
         geo_register_attribute_type<index_t>("index_t");
-        geo_register_attribute_type<signed_index_t>("signed_index_t");	
+        geo_register_attribute_type<signed_index_t>("signed_index_t");
         geo_register_attribute_type<float>("float");
         geo_register_attribute_type<double>("double");
 
         geo_register_attribute_type<vec2>("vec2");
         geo_register_attribute_type<vec3>("vec3");
 #endif
-	
+
 #ifdef GEO_OS_EMSCRIPTEN
-        
+
         // This mounts the local file system when an emscripten-compiled
         // program runs in node.js.
         // Current working directory is mounted in /working,
         // and root directory is mounted in /root
-        
+
         EM_ASM(
             if(typeof module !== 'undefined' && this.module !== module) {
                 FS.mkdir('/working');
-                FS.mkdir('/root');            
+                FS.mkdir('/root');
                 FS.mount(NODEFS, { root: '.' }, '/working');
                 FS.mount(NODEFS, { root: '/' }, '/root');
             }
@@ -32817,18 +32817,18 @@ namespace GEO {
         geo_declare_image_serializer<ImageSerializerSTBReadWrite>("jpeg");
         geo_declare_image_serializer<ImageSerializerSTBReadWrite>("tga");
         geo_declare_image_serializer<ImageSerializerSTBReadWrite>("bmp");
-	
+
         geo_declare_image_serializer<ImageSerializer_xpm>("xpm") ;
-        geo_declare_image_serializer<ImageSerializer_pgm>("pgm") ;		
+        geo_declare_image_serializer<ImageSerializer_pgm>("pgm") ;
 #endif
-	
+
 	initialized = true;
     }
 
     void terminate() {
         if(
             CmdLine::arg_is_declared("sys:stats") &&
-            CmdLine::get_arg_bool("sys:stats") 
+            CmdLine::get_arg_bool("sys:stats")
         ) {
             Logger::div("System Statistics");
             PCK::show_stats();
@@ -32841,7 +32841,7 @@ namespace GEO {
         ImageLibrary::terminate() ;
 	Biblio::terminate();
 #endif
-	
+
         Progress::terminate();
         Process::terminate();
         CmdLine::terminate();
